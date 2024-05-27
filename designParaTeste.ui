@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>491</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Selecione a pasta com os CIFs que serão comparados com seu padrão de difração:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Selecionar pasta</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>501</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Selecione a pasta com os únicos dois arquivos necessários do seu padrão de difração:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>281</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>O caminho aparecerá aqui quando selecionado</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Selecionar pasta</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>160</y>
+      <width>161</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>O caminho aparecerá aqui</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>480</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Comparar</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>230</y>
+      <width>73</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>CuKa</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CuKa1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CuKa2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CuKb1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CoKb1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CoKa1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CoKa2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CoKa</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FeKb1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FeKa1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FeKa2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FeKa</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CrKb1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CrKa1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CrKa2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CrKa</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MoKa</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MoKa1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MoKa2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MoKb1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>AgKa</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>AgKa1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>AgKa2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>AgKb1</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>200</y>
+      <width>491</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Selecione a radiação característica a utilizar na construção dos padrões de difração:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>600</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuComparar">
+    <property name="title">
+     <string>Comparar</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAjuda">
+    <property name="title">
+     <string>Ajuda</string>
+    </property>
+   </widget>
+   <addaction name="menuComparar"/>
+   <addaction name="menuAjuda"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

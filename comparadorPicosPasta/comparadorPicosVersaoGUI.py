@@ -24,7 +24,7 @@ import logging #módulo para permitir colocar os erros num arquivo de log
 
 import sys #módulo para controlar o sistema/programa para poder fechar ele, por exemplo (Acho, não entrei em detalhes)
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QProgressDialog 
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QComboBox, QLineEdit 
 from PyQt5.QtCore import QTimer, Qt
 #módulos para poder criar uma interface visual para o usuário.
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
@@ -151,12 +151,12 @@ class JanelaPricipal(QMainWindow):
         self.labelSeuPadrao = QLabel(self)
         self.labelSeuPadrao.setText("Selecione a pasta com os únicos dois arquivos necessários do seu padrão de difração:")
         self.labelSeuPadrao.adjustSize()
-        self.labelSeuPadrao.move(10,120)
+        self.labelSeuPadrao.move(10,140)
 
         self.botaoDirSeuPadrao = QPushButton(self)
         self.botaoDirSeuPadrao.setText("Selecionar a pasta")
         self.botaoDirSeuPadrao.adjustSize()
-        self.botaoDirSeuPadrao.move(10,140)
+        self.botaoDirSeuPadrao.move(10,160)
         self.botaoDirSeuPadrao.clicked.connect(self.abrirDirEventSeuPadrao)
 
         self.caminhoPadraoLabel = QTextEdit(self)
@@ -164,7 +164,29 @@ class JanelaPricipal(QMainWindow):
         self.caminhoPadraoLabel.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoPadraoLabel.setStyleSheet("border: 2px solid black; padding: 5px;")
         #self.caminhoPadraoLabel.adjustSize()
-        self.caminhoPadraoLabel.setGeometry(10,180,580,50)
+        self.caminhoPadraoLabel.setGeometry(10,200,580,50)
+
+        self.labelRadiacao=QLabel(self)
+        self.labelRadiacao.setText('Selecione a radiação característica a utilizar na construção dos padrões de difração:')
+        self.labelRadiacao.adjustSize()
+        self.labelRadiacao.move(10,260)
+
+        self.caixaRadiacoes = QComboBox(self)
+        self.caixaRadiacoes.setEditable(True)
+        self.itens = [
+            "CuKa", "CuKa1", "CuKa2", "CuKb1",
+            "CoKb1", "CoKa1", "CoKa2", "CoKa",
+            "FeKb1", "FeKa1", "FeKa2", "FeKa",
+            "CrKb1", "CrKa1", "CrKa2", "CrKa",
+            "MoKa", "MoKa1", "MoKa2", "MoKb1",
+            "AgKa", "AgKa1", "AgKa2", "AgKb1"
+        ]
+        for self.item in self.itens:
+            self.caixaRadiacoes.addItem(self.item,userData=self.item)
+        self.lineEdit=self.caixaRadiacoes.lineEdit()
+        self.lineEdit.setPlaceholderText("Digite aqui...")
+        self.caixaRadiacoes.move(10,290)
+        self.caixaRadiacoes.activated.connect(self.itemSelecionado)
 
         self.botaoExecutarAcao = QPushButton(self)
         self.botaoExecutarAcao.setText("Comparar")
@@ -178,6 +200,8 @@ class JanelaPricipal(QMainWindow):
         #para interação
         self.show()
     
+    def itemSelecionado(self,index):
+        self.valorSelecionado=self.caixaRadiacoes.itemData(index)
     #Método para abrir o explorer do computador e selecionar a pasta necessária
     def abrirDirEventCIFs(self):
         #Essa variável aloca a classe Options, não sei exatamente o que faz (Não entrei em detalhes)
@@ -229,7 +253,7 @@ class JanelaPricipal(QMainWindow):
         caminhoCIFs=self.diretorioCIFs
         caminhoPadrao=self.diretorioPadrao
         #Variável para saber o comprimento de onda utilizado para montar os padrões de difração dos CIFs
-        comprimentoOndaAngstronStr=1.5406
+        comprimentoOndaAngstronStr=self.valorSelecionado
         comprimentoOndaAngstron=float(comprimentoOndaAngstronStr)
         #Arquivo que vai guardar o caminho do arquivo .xy
         buscaXyPadrao = os.path.join(caminhoPadrao,'*.xy')
