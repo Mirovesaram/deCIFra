@@ -24,8 +24,7 @@ import logging #módulo para permitir colocar os erros num arquivo de log
 
 import sys #módulo para controlar o sistema/programa para poder fechar ele, por exemplo (Acho, não entrei em detalhes)
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QComboBox, QLineEdit 
-from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QComboBox 
 #módulos para poder criar uma interface visual para o usuário.
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
@@ -124,6 +123,7 @@ class JanelaPricipal(QMainWindow):
         self.labelCIFs.setText("Selecione a pasta com os CIFs que serão comparados com seu padrão de difração:")
         #Ajustar o tamanho do rótulo de acordo com o texto inserido
         self.labelCIFs.adjustSize()
+        #Mover esse rótulo para a posição em (x,y)
         self.labelCIFs.move(10,10)
 
         #Criação de um botão
@@ -145,7 +145,6 @@ class JanelaPricipal(QMainWindow):
         #Isso é para criar uma borda preta ao redor dessa label
         #Importante colocar antes do adjustSize()
         self.caminhoCIFsLabel.setStyleSheet("border: 2px solid black; padding: 5px;")
-        #self.caminhoCIFsLabel.adjustSize()
         self.caminhoCIFsLabel.setGeometry(10,70,580,50)
 
         self.labelSeuPadrao = QLabel(self)
@@ -159,20 +158,35 @@ class JanelaPricipal(QMainWindow):
         self.botaoDirSeuPadrao.move(10,160)
         self.botaoDirSeuPadrao.clicked.connect(self.abrirDirEventSeuPadrao)
 
+        #A utilização de uma caixa de texto é um recurso, do ponto de vista de design,
+        #estranho. Mas foi a maneira proposta para garantir que caso um caminho seja
+        #muito grande, ele não ultrapasse o tamanho proposto da janela, pois a primeira
+        #ideia foi utilizar um QLabel seguido de adjustSize().
         self.caminhoPadraoLabel = QTextEdit(self)
+        #Comando para impedir o usuário de editar o texto
         self.caminhoPadraoLabel.setReadOnly(True)
         self.caminhoPadraoLabel.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoPadraoLabel.setStyleSheet("border: 2px solid black; padding: 5px;")
-        #self.caminhoPadraoLabel.adjustSize()
         self.caminhoPadraoLabel.setGeometry(10,200,580,50)
 
         self.labelRadiacao=QLabel(self)
-        self.labelRadiacao.setText('Selecione a radiação característica a utilizar na construção dos padrões de difração:')
+        self.labelRadiacao.setText('Selecione a radiação característica a utilizar na construção dos padrões de difração (Radiação em Angstrons):')
         self.labelRadiacao.adjustSize()
         self.labelRadiacao.move(10,260)
-
+        #Comando para criar uma caixa com diversas opções
         self.caixaRadiacoes = QComboBox(self)
-        self.caixaRadiacoes.setEditable(True)
+        #Comandos para adicionar o item que vai aparecer para o usuário
+        #como os valores dessas strings e os dados desses itens são
+        #o valor do parâmetro userData=
+        #Esses são valores isolados pois foram tirados como padrão
+        #do software Diamond e de um arquivo instrumental utilizado
+        #no software GSAS EXPGUI, sendo o terceiro a média aritmética
+        #dos dois primeiros
+        self.caixaRadiacoes.addItem("1.540598",userData=1.540598)
+        self.caixaRadiacoes.addItem("1.544426",userData=1.544426)
+        self.caixaRadiacoes.addItem("1.542512",userData=1.542512)
+        #Essa array de dados são as strings que a documentação do
+        #pymatgen entrega para radiação característica
         self.itens = [
             "CuKa", "CuKa1", "CuKa2", "CuKb1",
             "CoKb1", "CoKa1", "CoKa2", "CoKa",
@@ -181,11 +195,17 @@ class JanelaPricipal(QMainWindow):
             "MoKa", "MoKa1", "MoKa2", "MoKb1",
             "AgKa", "AgKa1", "AgKa2", "AgKb1"
         ]
+        #comando simples para adicionar os itens com esse nome
+        #para aparecer aos usuários e também ser o mesmo valor
         for self.item in self.itens:
             self.caixaRadiacoes.addItem(self.item,userData=self.item)
-        self.lineEdit=self.caixaRadiacoes.lineEdit()
-        self.lineEdit.setPlaceholderText("Digite aqui...")
         self.caixaRadiacoes.move(10,290)
+        #gatilho que usa o sinal activated, que basicamente indica
+        #se o checkbox está com algum valor selecionado (Isso significa
+        #ele estar ativado) e por padrão, ele está. Com isso, ativa uma função
+        #que tem como parâmetro index e resgata a partir desse sinal qual valor
+        #é equivalente para o index e aloca o dado desse item numa variável
+        #para ser usado na função compararPicos(). Creio que seja assim que funciona
         self.caixaRadiacoes.activated.connect(self.itemSelecionado)
 
         self.botaoExecutarAcao = QPushButton(self)
@@ -199,7 +219,7 @@ class JanelaPricipal(QMainWindow):
         #Comando para mostrar essa janela com os elementos postos e preparados
         #para interação
         self.show()
-    
+    #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
     #Método para abrir o explorer do computador e selecionar a pasta necessária
@@ -216,7 +236,11 @@ class JanelaPricipal(QMainWindow):
         #Atualiza o atributo antigamente inicializado para receber como valor a string do caminho
         #da pasta
         self.diretorioCIFs=diretorioCIFs
+        #laço condicional para mudar o texto da caixa de texto antes feita
+        #Se diretorioCIFs não está vazio...
         if diretorioCIFs:
+            #...mude o texto da caixa de texto para o valor
+            #do diretorioCIFs
             self.caminhoCIFsLabel.setText(diretorioCIFs)
     #Não vou me estender, basicamente o mesmo do anterior
     def abrirDirEventSeuPadrao(self):
@@ -253,8 +277,7 @@ class JanelaPricipal(QMainWindow):
         caminhoCIFs=self.diretorioCIFs
         caminhoPadrao=self.diretorioPadrao
         #Variável para saber o comprimento de onda utilizado para montar os padrões de difração dos CIFs
-        comprimentoOndaAngstronStr=self.valorSelecionado
-        comprimentoOndaAngstron=float(comprimentoOndaAngstronStr)
+        comprimentoOndaAngstron=self.valorSelecionado #Utiliza o valor slecionado na caixaRadiacoes
         #Arquivo que vai guardar o caminho do arquivo .xy
         buscaXyPadrao = os.path.join(caminhoPadrao,'*.xy')
         #Transforma numa array de strings caminho
@@ -505,19 +528,18 @@ class JanelaPricipal(QMainWindow):
         with pd.ExcelWriter(f"{caminhoCIFs}/planilhaCIFs.xlsx") as writer2:
             for numeroAba in range(numeroDeAbas):
                 arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
+        #Método utilizado para mostrar ao usuário que a função compararPicos() finalizou com sucesso.
         self.mostrarConclusao()
-    #O método citado mais acima no método verificar()
-    #Mesmo papo do método global e com as explicações da diferença funcional
-    #desses métodos no método verificar()
-
+    #Os métodos a seguir são pop-ups como o de método de erro.
+    #Por isso vou me abster de explicar esses comandos de novo
+    #com a ressalva de um que vou citar no primeiro método
     def mostrarInicio(self):
         self.inicio=QMessageBox()
-        self.inicio.setIcon(QMessageBox.Information)
+        self.inicio.setIcon(QMessageBox.Information) #O ícone que aparece dentro do pop-up é de informação
         self.inicio.setText('A comparação vai começar. Isso normalmente demora alguns segundos, mas pode demorar minutos. Clique em OK para continuar.')
         self.inicio.setWindowTitle("Processo de comparação iniciada")
         self.inicio.exec_()
     def mostrarConclusao(self):
-        self.inicio.close()
         conclusao = QMessageBox()
         conclusao.setIcon(QMessageBox.Information)
         conclusao.setText("A comparação foi concluída com sucesso.")
