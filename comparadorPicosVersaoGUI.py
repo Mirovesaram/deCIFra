@@ -25,6 +25,7 @@ import logging #módulo para permitir colocar os erros num arquivo de log
 import sys #módulo para controlar o sistema/programa para poder fechar ele, por exemplo (Acho, não entrei em detalhes)
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QComboBox 
+from PyQt5.QtGui import QIcon
 #módulos para poder criar uma interface visual para o usuário.
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
@@ -76,6 +77,9 @@ def capturarExcecao(exctype,value,tb):
     #Esse é o título que aparecerá na caixa,
     #No canto superior esquerdo da caixa
     erro.setWindowTitle("Erro")
+    #Comando para adicionar um ícone ao canto superior
+    #esquerdo da janela
+    erro.setWindowIcon(QIcon(r"C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico"))
     #E os detalhes do erro, como onde
     #ocorreu nas linhas de código
     erro.setDetailedText(mensagemErro)
@@ -111,6 +115,7 @@ class JanelaPricipal(QMainWindow):
         #como argumento para o método de colocar um título na
         #janela
         self.setWindowTitle(self.title)
+        self.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico'))
         #O seguinte comando dita o tamanho e a posição da janela
         #Posição da janela em x, posição em y, largura e altura da janela
         self.setGeometry(500, 250, 600, 600) 
@@ -534,16 +539,18 @@ class JanelaPricipal(QMainWindow):
     #Por isso vou me abster de explicar esses comandos de novo
     #com a ressalva de um que vou citar no primeiro método
     def mostrarInicio(self):
-        self.inicio=QMessageBox()
-        self.inicio.setIcon(QMessageBox.Information) #O ícone que aparece dentro do pop-up é de informação
-        self.inicio.setText('A comparação vai começar. Isso normalmente demora alguns segundos, mas pode demorar minutos. Clique em OK para continuar.')
-        self.inicio.setWindowTitle("Processo de comparação iniciada")
-        self.inicio.exec_()
+        inicio=QMessageBox()
+        inicio.setIcon(QMessageBox.Information) #O ícone que aparece dentro do pop-up é de informação
+        inicio.setText('A comparação vai começar. Isso normalmente demora alguns segundos, mas pode demorar minutos. Clique em OK para continuar.')
+        inicio.setWindowTitle("Processo de comparação iniciada")
+        inicio.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico'))
+        inicio.exec_()
     def mostrarConclusao(self):
         conclusao = QMessageBox()
         conclusao.setIcon(QMessageBox.Information)
         conclusao.setText("A comparação foi concluída com sucesso.")
         conclusao.setWindowTitle("Tarefa concluída!")
+        conclusao.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico'))
         conclusao.exec_()
 #Caso o código seja inicializado? Esse arranjo do if (Ainda mais
 #por ser considerado um bom comportamento na escrita de códigos python)
