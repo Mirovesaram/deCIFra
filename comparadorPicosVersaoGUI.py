@@ -350,8 +350,7 @@ class JanelaPricipal(QMainWindow):
                 df = linhasFiltradas
                 arrayDeDataFramesCIFs.append(df)
         #Criacao da tabela que armazenara as linhas criadas
-        dataFrameResultados=pd.DataFrame(columns=['2theta-Padrão','2theta','Intensidade','Diferença','Corresponde','Classificação','Picos Excedentes',
-                                                'Picos Faltantes','Nota'])
+        dataFrameResultados=pd.DataFrame(columns=['2theta-Padrão','2theta','Intensidade','Diferença','Corresponde','Classificação','Picos Excedentes','Picos Faltantes','Nota'])
         #Criação do DataFrame modelo vazio com todas as suas colunas correspondentes, tal modelo é que será utilizado em cada aba da planilha de saída
         
         arrayDataFramesComparacao=[] #Aqui é o array de DataFrames modelo, tal arranjo é importante para haver uma distinção autônoma de cada dataFrame para cada
@@ -532,7 +531,7 @@ class JanelaPricipal(QMainWindow):
                 arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
         with pd.ExcelWriter(f"{caminhoCIFs}/planilhaCIFs.xlsx") as writer2:
             for numeroAba in range(numeroDeAbas):
-                arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
+                arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)         
         #Método utilizado para mostrar ao usuário que a função compararPicos() finalizou com sucesso.
         self.mostrarConclusao()
     #Os métodos a seguir são pop-ups como o de método de erro.
