@@ -46,7 +46,7 @@ import os #módulo utilizado para criar responsividade e flexibilidade na coleta
 #Configuração do arquivo .log de erro
 logging.basicConfig(
     #Nome do arquivo
-    filename='relatorioErrosComparadorPicos.log',
+    filename=r'relatorioErros.log',
     level=logging.ERROR, #Nível do aviso do log (Por assim dizer, não entrei em muitos detalhes),
     #como meu caso é erro, pus ERROR
 
