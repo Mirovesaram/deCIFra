@@ -80,6 +80,8 @@ def processar_arquivos_na_pasta(pasta):
 
 def main():
     # Obtém o diretório atual onde o script está sendo executado
+    diretorioScript=os.path.dirname(os.path.abspath(__file__))
+    os.chdir(diretorioScript)
     pasta_atual = os.getcwd()
 
     # Processa todos os arquivos na pasta atual
