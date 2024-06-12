@@ -24,7 +24,7 @@ import logging #módulo para permitir colocar os erros num arquivo de log
 
 import sys #módulo para controlar o sistema/programa para poder fechar ele, por exemplo (Acho, não entrei em detalhes)
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QComboBox 
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QComboBox, QDialog 
 from PyQt5.QtGui import QIcon
 #módulos para poder criar uma interface visual para o usuário.
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
@@ -118,7 +118,9 @@ class JanelaPricipal(QMainWindow):
         self.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico'))
         #O seguinte comando dita o tamanho e a posição da janela
         #Posição da janela em x, posição em y, largura e altura da janela
-        self.setGeometry(500, 250, 600, 600) 
+        self.setGeometry(500, 250, 600, 600)
+        #Comando para deixar a janela não redimensionável
+        self.setFixedSize(600,600)
 
         #Criação dos elementos que aparecerão na janela
 
@@ -126,6 +128,8 @@ class JanelaPricipal(QMainWindow):
         self.labelCIFs = QLabel(self)
         #Inserir o texto desse rótulo
         self.labelCIFs.setText("Selecione a pasta com os CIFs:")
+        #Aumentando o tamanho da fonte
+        self.labelCIFs.setStyleSheet('QLabel {font-size: 17px}')
         #Ajustar o tamanho do rótulo de acordo com o texto inserido
         self.labelCIFs.adjustSize()
         #Mover esse rótulo para a posição em (x,y)
@@ -221,6 +225,7 @@ class JanelaPricipal(QMainWindow):
         #os caminhos necessários antes de apertar o botão para fazer a comparação
         self.botaoExecutarAcao.clicked.connect(self.verificar)
 
+        
         #Comando para mostrar essa janela com os elementos postos e preparados
         #para interação
         self.show()
@@ -344,7 +349,7 @@ class JanelaPricipal(QMainWindow):
             #Variável responsável por armazenar a leitura do arquivo .cif 
             #O nome da variável é em referência ao processo de parsing 
             #(Leitura de um arquivo, explicando de um jeito bem rude)
-            parser = CifParser(arquivoCIF)
+            parser = CifParser(arquivoCIF, occupancy_tolerance=100)
             #Variável para armazenar a estrutura cristalina do arquivo a partir dessa leitura
             #o [0] se deve ao fato de o parse_structures ser uma lista de estruturas
             #Isso eu já não sei explicar pois não me delonguei muito no módulo
