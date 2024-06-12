@@ -98,9 +98,6 @@ class JanelaPricipal(QMainWindow):
         #O uso específico desse comando é no construtor da classe filhas
         #Título da janela principal - Primeiro atributo adicionado ao construtor
         self.title = 'Comparador De Picos'
-        #Adição de mais atributos como vazios, None. Serão utilizados mais à frente
-        self.diretorioCIFs = None
-        self.diretorioPadrao = None
         #Chamada do método de inicialização do método que vai construir os elementos
         #da janela e dar gatilhos a esses elementos que podem desencadear em eventos
         #quando o usuário interage com eles.
@@ -110,7 +107,10 @@ class JanelaPricipal(QMainWindow):
     #Método chamado no construtor, o método incializador. initUI é uma convenção
     #aparentemente
     def initUI(self):
-        
+        #Adição de mais atributos como vazios, None. Serão utilizados mais à frente
+        self.diretorioCIFs = None
+        self.diretorioPadrao = None
+        self.valorSelecionado = None
         #Aqui é chamado aquele primeiro atributo do construtor
         #como argumento para o método de colocar um título na
         #janela
@@ -187,9 +187,9 @@ class JanelaPricipal(QMainWindow):
         #do software Diamond e de um arquivo instrumental utilizado
         #no software GSAS EXPGUI, sendo o terceiro a média aritmética
         #dos dois primeiros
-        self.caixaRadiacoes.addItem("1.540598",userData=1.540598)
-        self.caixaRadiacoes.addItem("1.544426",userData=1.544426)
-        self.caixaRadiacoes.addItem("1.542512",userData=1.542512)
+        self.caixaRadiacoes.addItem("1,540598",userData=1.540598)
+        self.caixaRadiacoes.addItem("1,544426",userData=1.544426)
+        self.caixaRadiacoes.addItem("1,542512",userData=1.542512)
         #Essa array de dados são as strings que a documentação do
         #pymatgen entrega para radiação característica
         self.itens = [
@@ -224,11 +224,27 @@ class JanelaPricipal(QMainWindow):
         #Comando para mostrar essa janela com os elementos postos e preparados
         #para interação
         self.show()
+        
+        """
+        Uma ação programática para o primeiro item ser escolhido para engatilhar o activated
+        No caso a primeira linha de código seleciona o primeiro item
+        E a segunda linha emite um sinal de evento activated para o índice 0, disparando o método
+        """
+        self.caixaRadiacoes.setCurrentIndex(0)
+        self.caixaRadiacoes.activated.emit(0)
     #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
     #Método para abrir o explorer do computador e selecionar a pasta necessária
     def abrirDirEventCIFs(self):
+        """
+        Essa primeira linha de código garante que toda vez que o botão seja aberto
+        e o diálogo de diretório seja iniciado o valor volte novamente a ser None não importa
+        quantas vezes o usuário faz isso. Não sei se pode causar um erro no futuro, caso ocorra
+        retirarei essa linha por ela não ser exatamente tão necessária. Essas medidas vão ser colocados no
+        outro método de abrir diretórios também
+        """
+        self.diretorioCIFs=None      
         #Essa variável aloca a classe Options, não sei exatamente o que faz (Não entrei em detalhes)
         opcoes = QFileDialog.Options()
         #Não sei que operador é esse, mas essa função também dá a variável inicializada na linha anterior
@@ -247,14 +263,24 @@ class JanelaPricipal(QMainWindow):
             #...mude o texto da caixa de texto para o valor
             #do diretorioCIFs
             self.caminhoCIFsLabel.setText(diretorioCIFs)
+        #Essa segunda linha de código garante que caso o usuário não selecione nada no
+        #diálogo de diretórios ele seja informado disso mostrando que não há caminho selecionado
+        #Setar None é interessante pois no momento que o diálogo é iniciado, não importa se já
+        #tivesse um caminho selecionado, novamente ele voltaria à mensagem padrão imediatamente
+        #demonstrando que a informação do caminho já foi sobrescrita
+        else:
+            self.caminhoCIFsLabel.setText('O caminho aparecerá aqui quando selecionado')
     #Não vou me estender, basicamente o mesmo do anterior
     def abrirDirEventSeuPadrao(self):
+        self.diretorioPadrao=None
         opcoes = QFileDialog.Options()
         opcoes |= QFileDialog.ShowDirsOnly
         diretorioPadrao = QFileDialog.getExistingDirectory(self,'Selecionar Pasta do seu Padrão','',options=opcoes)
         self.diretorioPadrao=diretorioPadrao
         if diretorioPadrao:
             self.caminhoPadraoLabel.setText(diretorioPadrao)
+        else:
+            self.caminhoPadraoLabel.setText('O caminho aparecerá aqui quando selecionado')
     #Método que verifica se os dois últimos atributos do construtor deixaram de ser
     #Nones (vazios)
     def verificar(self):
