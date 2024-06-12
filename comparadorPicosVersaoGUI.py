@@ -125,7 +125,7 @@ class JanelaPricipal(QMainWindow):
         #Um rótulo para acompanhar o seguinte botão
         self.labelCIFs = QLabel(self)
         #Inserir o texto desse rótulo
-        self.labelCIFs.setText("Selecione a pasta com os CIFs que serão comparados com seu padrão de difração:")
+        self.labelCIFs.setText("Selecione a pasta com os CIFs:")
         #Ajustar o tamanho do rótulo de acordo com o texto inserido
         self.labelCIFs.adjustSize()
         #Mover esse rótulo para a posição em (x,y)
@@ -153,7 +153,7 @@ class JanelaPricipal(QMainWindow):
         self.caminhoCIFsLabel.setGeometry(10,70,580,50)
 
         self.labelSeuPadrao = QLabel(self)
-        self.labelSeuPadrao.setText("Selecione a pasta com os únicos dois arquivos necessários do seu padrão de difração:")
+        self.labelSeuPadrao.setText("Selecione a pasta para seu padrão de difração:")
         self.labelSeuPadrao.adjustSize()
         self.labelSeuPadrao.move(10,140)
 
@@ -175,7 +175,7 @@ class JanelaPricipal(QMainWindow):
         self.caminhoPadraoLabel.setGeometry(10,200,580,50)
 
         self.labelRadiacao=QLabel(self)
-        self.labelRadiacao.setText('Selecione a radiação característica a utilizar na construção dos padrões de difração (Radiação em Angstrons):')
+        self.labelRadiacao.setText('Selecione a radiação característica (Em Angstrons):')
         self.labelRadiacao.adjustSize()
         self.labelRadiacao.move(10,260)
         #Comando para criar uma caixa com diversas opções
