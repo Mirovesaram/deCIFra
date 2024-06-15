@@ -14,254 +14,338 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>491</width>
-      <height>16</height>
+      <x>0</x>
+      <y>0</y>
+      <width>600</width>
+      <height>600</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Selecione a pasta com os CIFs que serão comparados com seu padrão de difração:</string>
+    <property name="currentIndex">
+     <number>0</number>
     </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>111</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Selecionar pasta</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>100</y>
-      <width>501</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Selecione a pasta com os únicos dois arquivos necessários do seu padrão de difração:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>281</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>O caminho aparecerá aqui quando selecionado</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>120</y>
-      <width>111</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Selecionar pasta</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>160</y>
-      <width>161</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>O caminho aparecerá aqui</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_3">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>480</y>
-      <width>121</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Comparar</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>230</y>
-      <width>73</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>CuKa</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CuKa1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CuKa2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CuKb1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CoKb1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CoKa1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CoKa2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CoKa</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>FeKb1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>FeKa1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>FeKa2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>FeKa</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CrKb1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CrKa1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CrKa2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CrKa</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>MoKa</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>MoKa1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>MoKa2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>MoKb1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>AgKa</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>AgKa1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>AgKa2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>AgKb1</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>200</y>
-      <width>491</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Selecione a radiação característica a utilizar na construção dos padrões de difração:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Comparar</string>
+     </attribute>
+     <widget class="QPushButton" name="botaoComparar">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>470</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Comparar</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSelecCIF">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>600</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>Selecione a pasta com os CIFs:</string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="botaoSelecCIF">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>150</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Selecionar pasta</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelCaminhoCIFs">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>80</y>
+        <width>600</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>O caminho aparecerá aqui quando selecionado</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSelecPadrao">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>130</y>
+        <width>600</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>Selecione a pasta com seu padrão de difração:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="botaoSelecPadrao">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>150</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Selecionar pasta</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelCaminhoPadrao">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>210</y>
+        <width>600</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>O caminho aparecerá aqui quando selecionado</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSelecRadiacao">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>260</y>
+        <width>600</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>Selecione a radiação característica (Em angstrons):</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="caixaRadiacoes">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>310</y>
+        <width>80</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <item>
+       <property name="text">
+        <string>CuKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CuKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CuKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CuKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKb1</string>
+       </property>
+      </item>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Tab_2">
+     <attribute name="title">
+      <string>Detectar picos</string>
+     </attribute>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -273,18 +357,6 @@
      <height>26</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuComparar">
-    <property name="title">
-     <string>Comparar</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuAjuda">
-    <property name="title">
-     <string>Ajuda</string>
-    </property>
-   </widget>
-   <addaction name="menuComparar"/>
-   <addaction name="menuAjuda"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

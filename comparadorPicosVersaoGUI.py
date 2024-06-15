@@ -1,6 +1,3 @@
-#Uma aba de ajuda para guiar o usuário
-#Um checkbox com as radiações características comuns
-
 #ATENÇÃO
 #Em alguns lugares do código, haverá eu dizendo coisas como "Acho, não entrei em detalhes"
 #Isso se deve ao fato de que esse código foi feito em auxílio com o ChatGPT, no caso,
@@ -27,6 +24,7 @@ import sys #módulo para controlar o sistema/programa para poder fechar ele, por
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QTextEdit, QFileDialog, QMessageBox, QComboBox, QDialog 
 from PyQt5.QtGui import QIcon
 #módulos para poder criar uma interface visual para o usuário.
+
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
 from pymatgen.io.cif import CifParser #módulo para ler os arquivos CIF e extrair as informações necessárias para fazer
@@ -128,12 +126,9 @@ class JanelaPricipal(QMainWindow):
         self.labelCIFs = QLabel(self)
         #Inserir o texto desse rótulo
         self.labelCIFs.setText("Selecione a pasta com os CIFs:")
-        #Aumentando o tamanho da fonte
-        self.labelCIFs.setStyleSheet('QLabel {font-size: 17px}')
-        #Ajustar o tamanho do rótulo de acordo com o texto inserido
-        self.labelCIFs.adjustSize()
-        #Mover esse rótulo para a posição em (x,y)
-        self.labelCIFs.move(10,10)
+        #Aumentando o tamanho da fonte e adicionar uma margem interna de 10px
+        self.labelCIFs.setStyleSheet('QLabel {font-size: 17px; padding: 10px}')
+        self.labelCIFs.setGeometry(0,0,600,50)
 
         #Criação de um botão
         self.botaoDirCIFs = QPushButton(self)
