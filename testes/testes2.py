@@ -42,19 +42,18 @@ fp.plot_persistence()
 fp.plot_mesh()
 """
 def testar1():
-    caminho=r"C:\Users\aojor\Downloads\repositorioCienciasExatasTerra\PIBIC\praticaFPRM\DadosZnO"
-    #caminho=r"C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos"
+    #caminho=r"C:\Users\aojor\Downloads\repositorioCienciasExatasTerra\PIBIC\praticaFPRM\DadosZnO"
+    caminho=r"C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos"
     buscaXyPadrao=os.path.join(caminho,'*.xy')
     ArrayCaminhoXy=glob.glob(buscaXyPadrao)
     dataFramePadrao =pd.read_csv(ArrayCaminhoXy[0], delim_whitespace=True, header=None, names=['x','y'])
     angulos=dataFramePadrao.x.values
     intensidades=dataFramePadrao.y.values
     X = intensidades
-    #fp=findpeaks.stats.topology()
-    fp = findpeaks(method='topology',limit=None)
+    fp = findpeaks(method='topology',limit=160)
     print(np.min(np.min(X))-1)
     results = fp.fit(X)
-    fp.plot()
+    #fp.plot()
 
     # Extract peak positions
     peak_positions = results['df'].index[results['df']['peak'] == True].tolist()
@@ -63,15 +62,16 @@ def testar1():
     plt.plot(angulos, intensidades, label='Data')
     plt.scatter(angulos[peak_positions], intensidades[peak_positions], color='red', label='Peaks')
     plt.legend()
+    plt.savefig("picosEncontrados.png")
     plt.show()
 
     # Print peak positions
     print("Peak positions:", angulos[peak_positions])
-    print(len(angulos[peak_positions]))
+    #print(len(angulos[peak_positions]))
+    #df=pd.DataFrame(results['df'])
+    #caminho=r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\df.xlsx'
+    #df.to_excel(caminho)
     
-    df=pd.DataFrame(results['df'])
-    caminho=r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\df.xlsx'
-    df.to_excel(caminho)
     
 if __name__ == "__main__":
     testar1()
