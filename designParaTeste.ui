@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>700</height>
+    <width>800</width>
+    <height>800</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -19,12 +25,17 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>700</width>
-      <height>700</height>
+      <width>800</width>
+      <height>800</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tabComparar">
      <attribute name="title">
@@ -38,6 +49,11 @@
         <width>120</width>
         <height>40</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
       </property>
       <property name="text">
        <string>Comparar</string>
@@ -61,7 +77,7 @@
        <string notr="true">padding: 10px;</string>
       </property>
       <property name="text">
-       <string>Selecione a pasta com os CIFs:</string>
+       <string>Selecione a pasta com os arquivos .cif's:</string>
       </property>
       <property name="scaledContents">
        <bool>false</bool>
@@ -133,7 +149,7 @@
        <string notr="true">padding: 10px;</string>
       </property>
       <property name="text">
-       <string>Selecione a pasta com seu padrão de difração:</string>
+       <string>Selecione a pasta com seu padrão de difração (.xlsx e .xy):</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -199,7 +215,7 @@
        <string notr="true">padding: 10px;</string>
       </property>
       <property name="text">
-       <string>Selecione a radiação característica (Em angstrons):</string>
+       <string>Selecione a radiação característica (Angstrons):</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -340,6 +356,19 @@
        </property>
       </item>
      </widget>
+     <widget class="QCommandLinkButton" name="commandLinkButtonAjuda">
+      <property name="geometry">
+       <rect>
+        <x>710</x>
+        <y>0</y>
+        <width>90</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Ajuda</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tabDetectar">
      <attribute name="title">
@@ -349,22 +378,25 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>130</y>
-        <width>700</width>
-        <height>460</height>
+        <y>110</y>
+        <width>800</width>
+        <height>580</height>
        </rect>
       </property>
       <property name="text">
-       <string/>
+       <string>O gráfico aparecerá aqui quando selecionar um arquivo compatível</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="labelSelecionarPadraoNoTodo">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>10</x>
         <y>0</y>
-        <width>260</width>
-        <height>50</height>
+        <width>250</width>
+        <height>30</height>
        </rect>
       </property>
       <property name="font">
@@ -373,7 +405,7 @@
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">Padding: 10px;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>Selecione o arquivo .xy:</string>
@@ -383,7 +415,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>50</y>
+        <y>30</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -407,7 +439,7 @@
       <property name="geometry">
        <rect>
         <x>260</x>
-        <y>13</y>
+        <y>0</y>
         <width>150</width>
         <height>30</height>
        </rect>
@@ -421,32 +453,12 @@
        <string>Selecionar arquivo</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="caixaSelecionaLimite">
-      <property name="geometry">
-       <rect>
-        <x>330</x>
-        <y>100</y>
-        <width>120</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <item>
-       <property name="text">
-        <string>Automático</string>
-       </property>
-      </item>
-     </widget>
      <widget class="QLabel" name="labelLimite">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>100</y>
-        <width>90</width>
+        <x>10</x>
+        <y>80</y>
+        <width>150</width>
         <height>30</height>
        </rect>
       </property>
@@ -456,17 +468,17 @@
        </font>
       </property>
       <property name="text">
-       <string>Limite:</string>
+       <string>Limite padrão:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pushButtonSalvarFigura">
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>590</y>
+        <y>690</y>
         <width>170</width>
         <height>30</height>
        </rect>
@@ -480,11 +492,11 @@
        <string>Salvar figura (.png)</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="pushButtonImportar">
       <property name="geometry">
        <rect>
         <x>300</x>
-        <y>590</y>
+        <y>690</y>
         <width>200</width>
         <height>30</height>
        </rect>
@@ -498,11 +510,11 @@
        <string>Importar ângulos (.xlsx)</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_3">
+     <widget class="QPushButton" name="pushButtonDetectar">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>590</y>
+        <y>690</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -519,9 +531,9 @@
      <widget class="QLabel" name="labelValorLimite">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>100</y>
-        <width>90</width>
+        <x>160</x>
+        <y>80</y>
+        <width>100</width>
         <height>30</height>
        </rect>
       </property>
@@ -540,8 +552,8 @@
      <widget class="QLabel" name="labelAjustarLimite">
       <property name="geometry">
        <rect>
-        <x>180</x>
-        <y>100</y>
+        <x>510</x>
+        <y>80</y>
         <width>150</width>
         <height>30</height>
        </rect>
@@ -556,6 +568,74 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="doubleSpinBoxMudarLimite">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>80</y>
+        <width>100</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <double>1000000.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelLimitAtual">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>80</y>
+        <width>150</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Limite atual:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelValorLimiteAjustar">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>80</y>
+        <width>100</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QCommandLinkButton" name="commandLinkButtonAjuda_2">
+      <property name="geometry">
+       <rect>
+        <x>710</x>
+        <y>0</y>
+        <width>90</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Ajuda</string>
       </property>
      </widget>
     </widget>
@@ -760,11 +840,268 @@
        <string>Comparar</string>
       </property>
      </widget>
+     <widget class="QLabel" name="labelSelecCIF_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>210</y>
+        <width>700</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>Selecione a pasta com os CIFs:</string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="botaoSelecCIF_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>260</y>
+        <width>150</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Selecionar pasta</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelCaminhoCIFs_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>290</y>
+        <width>700</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>O caminho aparecerá aqui quando selecionado</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSelecRadiacao_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>340</y>
+        <width>700</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>Selecione a radiação característica (Em angstrons):</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="caixaRadiacoes_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>390</y>
+        <width>80</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <item>
+       <property name="text">
+        <string>CuKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CuKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CuKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CuKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CoKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>FeKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CrKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MoKb1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKa1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKa2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AgKb1</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QCommandLinkButton" name="commandLinkButtonAjuda_3">
+      <property name="geometry">
+       <rect>
+        <x>710</x>
+        <y>0</y>
+        <width>90</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Ajuda</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tabAjuda">
      <attribute name="title">
       <string>Ajuda</string>
      </attribute>
+     <widget class="QScrollBar" name="verticalScrollBar">
+      <property name="geometry">
+       <rect>
+        <x>770</x>
+        <y>0</y>
+        <width>30</width>
+        <height>800</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -773,7 +1110,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>700</width>
+     <width>800</width>
      <height>26</height>
     </rect>
    </property>
