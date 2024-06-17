@@ -162,7 +162,6 @@ cython_debug/
 #data
 *.csv
 *.xlsx
-*.ico
 *.png
 *.xy
 *.txt
