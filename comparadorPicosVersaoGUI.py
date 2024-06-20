@@ -299,7 +299,7 @@ class JanelaPricipal(QMainWindow):
             if not self.diretorioPadrao:
                 #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
                 raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
-
+    #Método para comparar picos
     def compararPicos(self):
         self.mostrarInicio()
         #Variável responsável por armazenar qual tipo de arquivo deve ser buscado
