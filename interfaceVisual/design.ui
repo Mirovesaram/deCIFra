@@ -107,35 +107,11 @@
        <string>Selecionar pasta</string>
       </property>
      </widget>
-     <widget class="QLabel" name="labelCaminhoCIFs">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>80</y>
-        <width>700</width>
-        <height>50</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="text">
-       <string>O caminho aparecerá aqui quando selecionado</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
      <widget class="QLabel" name="labelSelecPadrao">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>130</y>
+        <y>180</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -159,7 +135,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>180</y>
+        <y>230</y>
         <width>150</width>
         <height>30</height>
        </rect>
@@ -173,35 +149,11 @@
        <string>Selecionar pasta</string>
       </property>
      </widget>
-     <widget class="QLabel" name="labelCaminhoPadrao">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>210</y>
-        <width>700</width>
-        <height>50</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="text">
-       <string>O caminho aparecerá aqui quando selecionado</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
      <widget class="QLabel" name="labelSelecRadiacao">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>260</y>
+        <y>360</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -225,7 +177,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>310</y>
+        <y>410</y>
         <width>125</width>
         <height>30</height>
        </rect>
@@ -424,30 +376,6 @@
       </property>
       <property name="text">
        <string>Selecione o arquivo .xy:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelCaminhoPadraoNoTodo">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>30</y>
-        <width>700</width>
-        <height>50</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="text">
-       <string>O caminho aparecerá aqui quando selecionado</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QPushButton" name="botaoSelecionarArquivoXy">
@@ -662,7 +590,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>130</y>
+        <y>180</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -683,7 +611,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>180</y>
+        <y>230</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -703,7 +631,7 @@
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>180</y>
+        <y>230</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -723,7 +651,7 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>180</y>
+        <y>230</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -743,7 +671,7 @@
       <property name="geometry">
        <rect>
         <x>340</x>
-        <y>180</y>
+        <y>230</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -763,7 +691,7 @@
       <property name="geometry">
        <rect>
         <x>450</x>
-        <y>180</y>
+        <y>230</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -797,10 +725,10 @@
        <string notr="true">Padding: 10px;</string>
       </property>
       <property name="text">
-       <string>Selecione o arquivo .xlsx:</string>
+       <string>Selecione a pasta com seu padrão de difração (.xlsx e .xy):</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="botaoSelecionarArquivoXlsx">
+     <widget class="QPushButton" name="botaoSelecPadrao_2">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -815,31 +743,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Selecionar arquivo</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelCaminhoXlsx">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>80</y>
-        <width>700</width>
-        <height>50</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="text">
-       <string>O caminho aparecerá aqui quando selecionado</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <string>Selecionar pasta</string>
       </property>
      </widget>
      <widget class="QPushButton" name="botaoComparar_2">
@@ -859,7 +763,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>210</y>
+        <y>260</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -889,7 +793,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>260</y>
+        <y>310</y>
         <width>150</width>
         <height>30</height>
        </rect>
@@ -903,35 +807,11 @@
        <string>Selecionar pasta</string>
       </property>
      </widget>
-     <widget class="QLabel" name="labelCaminhoCIFs_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>290</y>
-        <width>700</width>
-        <height>50</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="text">
-       <string>O caminho aparecerá aqui quando selecionado</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
      <widget class="QLabel" name="labelSelecRadiacao_2">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>340</y>
+        <y>440</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -968,7 +848,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>390</y>
+        <y>490</y>
         <width>125</width>
         <height>30</height>
        </rect>

@@ -11,7 +11,7 @@ import sys #módulo para controlar o sistema/programa para poder fechar ele, por
 
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QLabel
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
@@ -65,7 +65,7 @@ def capturarExcecao(exctype,value,tb):
     erro.setWindowTitle("Erro")
     #Comando para adicionar um ícone ao canto superior
     #esquerdo da janela
-    erro.setWindowIcon(QIcon(r"C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico"))
+    erro.setWindowIcon(QIcon(r"C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico"))
     #E os detalhes do erro, como onde
     #ocorreu nas linhas de código
     erro.setDetailedText(mensagemErro)
@@ -81,23 +81,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
         #Comando para deixar a janela não redimensionável
         self.setFixedSize(800,800)
+        self.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
         #Criar um gatilho que envolve clicar esse botão
         #Caso clique no botão, o método abrirDirEventCIFs
         #será chamado e iniciado
         self.botaoSelecCIF.clicked.connect(self.abrirDirEventCIFs)
         #Criação de uma caixa de texto que permite scrollar para 
         #textos maiores
-        self.caminhoCIFsLabel = QTextEdit(self.tabComparar)
+        self.caminhoCIFsText = QTextEdit(self.tabComparar)
         #Comando para permitir somente leitura, sem alteração
         #do texto pelo usuário
-        self.caminhoCIFsLabel.setReadOnly(True)
+        self.caminhoCIFsText.setReadOnly(True)
         #Inserir o texto padrão presente nessa caixa de texto
-        self.caminhoCIFsLabel.setText('O caminho aparecerá aqui quando selecionado')
+        self.caminhoCIFsText.setText('O caminho aparecerá aqui quando selecionado')
         #Padding cria uma margem interna de 10 px
-        self.caminhoCIFsLabel.setStyleSheet("padding: 10px;")
+        self.caminhoCIFsText.setStyleSheet("padding: 10px;")
         #Comando que ajusta a posição x, a posição y, a largura,
         #a altura, respectivamente na caixa de edição de texto
-        self.caminhoCIFsLabel.setGeometry(0,80,800,50)
+        self.caminhoCIFsText.setGeometry(0,80,800,100)
 
         self.botaoSelecPadrao.clicked.connect(self.abrirDirEventSeuPadrao)
 
@@ -105,11 +106,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #estranho. Mas foi a maneira proposta para garantir que caso um caminho seja
         #muito grande, ele não ultrapasse o tamanho proposto da janela, pois a primeira
         #ideia foi utilizar um QLabel seguido de adjustSize().
-        self.caminhoPadraoLabel = QTextEdit(self.tabComparar)
-        self.caminhoPadraoLabel.setReadOnly(True)
-        self.caminhoPadraoLabel.setText('O caminho aparecerá aqui quando selecionado')
-        self.caminhoPadraoLabel.setStyleSheet('padding: 10px;')
-        self.caminhoPadraoLabel.setGeometry(0,210,800,50)
+        self.caminhoPadraoText = QTextEdit(self.tabComparar)
+        self.caminhoPadraoText.setReadOnly(True)
+        self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
+        self.caminhoPadraoText.setStyleSheet('padding: 10px;')
+        self.caminhoPadraoText.setGeometry(0,260,800,100)
         #Comandos para adicionar os dados dos itens da combo
         #Box de radiação que são
         #os valores do parâmetro userData=, a string vazia ""
@@ -166,6 +167,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text = self.caixaRadiacoes.currentText()
         self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
         self.label.adjustSize()"""
+        self.caminhoArquivoXyText = QTextEdit(self.tabDetectar)
+        self.caminhoArquivoXyText.setReadOnly(True)
+        self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
+        self.caminhoArquivoXyText.setStyleSheet("padding: 10px;")
+        self.caminhoArquivoXyText.setGeometry(0,30,800,50)
+
+        self.botaoSelecionarArquivoXy.clicked.connect(self.abrirDirEventXy)
+        
+        self.caminhoPadraoText_2 = QTextEdit(self.tabCompararPoucosPicos)
+        self.caminhoPadraoText_2.setReadOnly(True)
+        self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
+        self.caminhoPadraoText_2.setStyleSheet("padding: 10px;")
+        self.caminhoPadraoText_2.setGeometry(0,80,800,100)
+
+        self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadrao2)
+
+        self.caminhoCIFsText_2 = QTextEdit(self.tabCompararPoucosPicos)
+        self.caminhoCIFsText_2.setReadOnly(True)
+        self.caminhoCIFsText_2.setText('O caminho aparecerá aqui quando selecionado')
+        self.caminhoCIFsText_2.setStyleSheet("padding: 10px;")
+        self.caminhoCIFsText_2.setGeometry(0,340,800,100)
+
+        self.botaoSelecCIF_2.clicked.connect(self.abrirDirEventCIFs2)
     #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
@@ -196,14 +220,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if diretorioCIFs:
             #...mude o texto da caixa de texto para o valor
             #do diretorioCIFs
-            self.caminhoCIFsLabel.setText(diretorioCIFs)
+            self.caminhoCIFsText.setText(diretorioCIFs)
         #Essa segunda linha de código garante que caso o usuário não selecione nada no
         #diálogo de diretórios ele seja informado disso mostrando que não há caminho selecionado
         #Setar None é interessante pois no momento que o diálogo é iniciado, não importa se já
         #tivesse um caminho selecionado, novamente ele voltaria à mensagem padrão imediatamente
         #demonstrando que a informação do caminho já foi sobrescrita
         else:
-            self.caminhoCIFsLabel.setText('O caminho aparecerá aqui quando selecionado')
+            self.caminhoCIFsText.setText('O caminho aparecerá aqui quando selecionado')
         #Não vou me estender, basicamente o mesmo do anterior
     def abrirDirEventSeuPadrao(self):
         self.diretorioPadrao=None
@@ -212,9 +236,40 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         diretorioPadrao = QFileDialog.getExistingDirectory(self,'Selecionar Pasta do seu Padrão','',options=opcoes)
         self.diretorioPadrao=diretorioPadrao
         if diretorioPadrao:
-            self.caminhoPadraoLabel.setText(diretorioPadrao)
+            self.caminhoPadraoText.setText(diretorioPadrao)
         else:
-            self.caminhoPadraoLabel.setText('O caminho aparecerá aqui quando selecionado')
+            self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
+
+    def abrirDirEventSeuPadrao2(self):
+        self.diretorioPadrao2=None
+        opcoes = QFileDialog.Options()
+        opcoes |= QFileDialog.ShowDirsOnly
+        diretorioPadrao = QFileDialog.getExistingDirectory(self,'Selecionar Pasta do seu Padrão','',options=opcoes)
+        self.diretorioPadrao2=diretorioPadrao
+        if diretorioPadrao:
+            self.caminhoPadraoText_2.setText(diretorioPadrao)
+        else:
+            self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
+
+    def abrirDirEventCIFs2(self):
+        self.diretorioCIFs2=None
+        opcoes = QFileDialog.Options()
+        opcoes |= QFileDialog.ShowDirsOnly
+        diretorioCIFs = QFileDialog.getExistingDirectory(self,'Selecionar Pasta dos CIFs','',options=opcoes)
+        self.diretorioCIFs2=diretorioCIFs
+        if diretorioCIFs:
+            self.caminhoCIFsText_2.setText(diretorioCIFs)
+        else:
+            self.caminhoCIFsText_2.setText('O caminho aparecerá aqui quando selecionado')
+    def abrirDirEventXy(self):
+        self.arquivoXy=None
+        opcoes = QFileDialog.Options()
+        arquivoXy, _ = QFileDialog.getOpenFileName(self, 'Selecionar arquivo .xy', '', 'Arquivos XY (*.xy);;Todos os arquivos (*)', options=opcoes)
+        self.arquivoXy=arquivoXy
+        if arquivoXy:
+            self.caminhoArquivoXyText.setText(arquivoXy)
+        else:
+            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
     #Método que verifica se os dois últimos atributos do construtor deixaram de ser
     #Nones (vazios)
     def verificar(self):
@@ -502,7 +557,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         inicio.setIcon(QMessageBox.Information) #O ícone que aparece dentro do pop-up é de informação
         inicio.setText('A comparação vai começar. Isso normalmente demora alguns segundos, mas pode demorar minutos. Clique em OK para continuar.')
         inicio.setWindowTitle("Processo de comparação iniciada")
-        inicio.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico'))
+        inicio.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
         inicio.exec_()
 
     def mostrarConclusao(self):
@@ -510,7 +565,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         conclusao.setIcon(QMessageBox.Information)
         conclusao.setText("A comparação foi concluída com sucesso.")
         conclusao.setWindowTitle("Tarefa concluída!")
-        conclusao.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icone.ico'))
+        conclusao.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
         conclusao.exec_()
 #Caso o código seja inicializado? Esse arranjo do if (Ainda mais
 #por ser considerado um bom comportamento na escrita de códigos python)
