@@ -160,13 +160,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #comboBox foram corretamente adicionados
         """self.botaoComparar.clicked.connect(self.testeComboBox)
         self.label = QLabel(self.tabComparar)
-        self.label.move(200,650)
-    def testeComboBox(self):
-        self.index = self.caixaRadiacoes.currentIndex()
-        self.data = self.caixaRadiacoes.currentData()
-        self.text = self.caixaRadiacoes.currentText()
-        self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
-        self.label.adjustSize()"""
+        self.label.move(200,650)"""
+    
         self.caminhoArquivoXyText = QTextEdit(self.tabDetectar)
         self.caminhoArquivoXyText.setReadOnly(True)
         self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
@@ -181,7 +176,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoPadraoText_2.setStyleSheet("padding: 10px;")
         self.caminhoPadraoText_2.setGeometry(0,80,800,100)
 
-        self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadrao2)
+        #pequeno teste para ver se os itens da
+        #comboBox foram corretamente adicionados
+        self.botaoComparar_2.clicked.connect(self.testeComboBox)
+        self.label = QLabel(self.tabCompararPoucosPicos)
+        self.label.move(200,650)
+
+        self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadraoAdicionarPicos)
 
         self.caminhoCIFsText_2 = QTextEdit(self.tabCompararPoucosPicos)
         self.caminhoCIFsText_2.setReadOnly(True)
@@ -190,6 +191,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoCIFsText_2.setGeometry(0,340,800,100)
 
         self.botaoSelecCIF_2.clicked.connect(self.abrirDirEventCIFs2)
+    #pequeno teste para ver se os itens da
+    #comboBox foram corretamente adicionados
+    def testeComboBox(self):
+        self.index = self.comboBoxPico1.currentIndex()
+        self.data = self.comboBoxPico1.currentData()
+        self.text = self.comboBoxPico1.currentText()
+        self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
+        self.label.adjustSize()
     #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
@@ -240,7 +249,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
 
-    def abrirDirEventSeuPadrao2(self):
+    def abrirDirEventSeuPadraoAdicionarPicos(self):
         self.diretorioPadrao2=None
         opcoes = QFileDialog.Options()
         opcoes |= QFileDialog.ShowDirsOnly
@@ -248,9 +257,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.diretorioPadrao2=diretorioPadrao
         if diretorioPadrao:
             self.caminhoPadraoText_2.setText(diretorioPadrao)
+            #Variaveis que vão receber e adicionar os caminhos em string para utilizar mais na frente
+            self.caminhoPadrao=diretorioPadrao
+            #Arquivo que vai guardar o caminho do arquivo .xlsx
+            buscaPlanilhaPadrao = os.path.join(self.caminhoPadrao,'*.xlsx')
+            ArrayCaminhoPlanilhaPadrao = glob.glob(buscaPlanilhaPadrao)
+            if ArrayCaminhoPlanilhaPadrao:
+                #Coleta-se o único item dessa array criada na linha anterior
+                self.caminhoPadrao=ArrayCaminhoPlanilhaPadrao[0]
+                self.tabelaPadrao = pd.read_excel(self.caminhoPadrao)
+                self.numeroLinhasPadrao=self.tabelaPadrao.iloc[:,0].count()
+                for numeroLinha in range(self.numeroLinhasPadrao):
+                    pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                    self.comboBoxPico1.addItem(str(pico))
+                    self.comboBoxPico1.setItemData(numeroLinha+1,pico)
+                self.ultimoIndex=self.comboBoxPico1.count()-1
+            else:
+                raise ValueError("A pasta não tem um arquivo .xlsx")
         else:
             self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
-
+            numeroLinha=1
+            for numeroLinha in range(self.ultimoIndex):
+                self.comboBoxPico1.removeItem(numeroLinha)
+        
     def abrirDirEventCIFs2(self):
         self.diretorioCIFs2=None
         opcoes = QFileDialog.Options()
