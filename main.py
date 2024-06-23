@@ -80,6 +80,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
 
+        self.verificou1=None
+
+        self.verificou2=None
+
+        self.travaLogica=None
+
+        self.diretorioCIFs2=None
+
+        self.diretorioPadrao2=None
+
+        self.diretorioCIFs=None
+
+        self.diretorioPadrao=None
+
+        self.dfPicos=None
+
         self.arrayPicos=[None, None, None, None,None]
 
         self.ultimoIndex=None
@@ -151,7 +167,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #é equivalente para o index e aloca o dado desse item numa variável
         #para ser usado na função compararPicos(). Creio que seja assim que funciona
         self.caixaRadiacoes.activated.connect(self.itemSelecionado)
-        self.caixaRadiacoes_2.activated.connect(self.itemSelecionado)
+        self.caixaRadiacoes_2.activated.connect(self.itemSelecionado2)
         """
         Uma ação programática para o primeiro item ser escolhido para engatilhar o activated
         No caso a primeira linha de código seleciona o primeiro item
@@ -208,6 +224,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoCIFsText_2.setGeometry(0,340,800,100)
 
         self.botaoComparar_2.clicked.connect(self.verificar2)
+        #Para fins de teste
+        #self.botaoComparar_2.clicked.connect(self.arrayParaDataFrame)
         
     #pequeno teste para ver se os itens da
     #comboBox foram corretamente adicionados
@@ -250,13 +268,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
         print(self.arrayPicosSemNone)"""
         print(self.arrayPicos)
-        
+    
+    def arrayParaDataFrame(self):
+        self.arraySemNone = [item for item in self.arrayPicos if item is not None]
+        if self.arraySemNone != []:
+            self.arraySNoneSRepet=set(self.arraySemNone)
+            self.dfPicos=pd.DataFrame(self.arraySNoneSRepet, columns=["angulos"])
+            #Para fins de teste e avaliação do valor recebido
+            #print(self.dfPicos)
+            self.travaLogica=False
+        else:
+            self.dfPicos=None
+            self.travaLogica=True
+            
+            
         
         
        
     #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
+    def itemSelecionado2(self,index):
+        self.valorSelecionado2=self.caixaRadiacoes_2.itemData(index)
     #Método para abrir o explorer do computador e selecionar a pasta necessária
     def abrirDirEventCIFs(self):
         """
@@ -330,27 +363,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.comboBoxPico4.removeItem(i)
                     for i in range(self.ultimoIndex,0,-1):
                         self.comboBoxPico5.removeItem(i)
-                self.caminhoPadrao=ArrayCaminhoPlanilhaPadrao[0]
-                self.tabelaPadrao = pd.read_excel(self.caminhoPadrao)
-                self.numeroLinhasPadrao=self.tabelaPadrao.iloc[:,0].count()
-                for numeroLinha in range(self.numeroLinhasPadrao):
-                    pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                    self.emitirSinaisComboBoxPicos()
+                caminhoPadrao=ArrayCaminhoPlanilhaPadrao[0]
+                tabelaPadrao = pd.read_excel(caminhoPadrao)
+                numeroLinhasPadrao=tabelaPadrao.iloc[:,0].count()
+                for numeroLinha in range(numeroLinhasPadrao):
+                    pico=tabelaPadrao.iloc[numeroLinha,0]
                     self.comboBoxPico1.addItem(str(pico))
                     self.comboBoxPico1.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(self.numeroLinhasPadrao):
-                    pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                for numeroLinha in range(numeroLinhasPadrao):
+                    pico=tabelaPadrao.iloc[numeroLinha,0]
                     self.comboBoxPico2.addItem(str(pico))
                     self.comboBoxPico2.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(self.numeroLinhasPadrao):
-                    pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                for numeroLinha in range(numeroLinhasPadrao):
+                    pico=tabelaPadrao.iloc[numeroLinha,0]
                     self.comboBoxPico3.addItem(str(pico))
                     self.comboBoxPico3.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(self.numeroLinhasPadrao):
-                    pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                for numeroLinha in range(numeroLinhasPadrao):
+                    pico=tabelaPadrao.iloc[numeroLinha,0]
                     self.comboBoxPico4.addItem(str(pico))
                     self.comboBoxPico4.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(self.numeroLinhasPadrao):
-                    pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                for numeroLinha in range(numeroLinhasPadrao):
+                    pico=tabelaPadrao.iloc[numeroLinha,0]
                     self.comboBoxPico5.addItem(str(pico))
                     self.comboBoxPico5.setItemData(numeroLinha+1,pico)
                 self.ultimoIndex=self.comboBoxPico1.count()-1
@@ -368,12 +402,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     for i in range(self.ultimoIndex,0,-1):
                         self.comboBoxPico5.removeItem(i)
                 self.emitirSinaisComboBoxPicos()
-                raise ValueError("A pasta não tem um arquivo .xlsx")                  
+                raise ValueError("A pasta não tem um arquivo .xlsx.")                  
         else:
             self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
             if self.ultimoIndex:
                 for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico1.removeItem(i)
+                    self.comboBoxPico1.removeItem(i)
                 for i in range(self.ultimoIndex,0,-1):
                     self.comboBoxPico2.removeItem(i)
                 for i in range(self.ultimoIndex,0,-1):
@@ -412,10 +446,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #Atributos que vão receber e adicionar os caminhos em string para utilizar mais na frente
             self.caminhoCIFs=self.diretorioCIFs
             self.caminhoPadrao=self.diretorioPadrao
+            self.verificou2=False
+            self.verificou1=True
             #Inicia a comparação
             self.compararPicos()
         #Se não
         else:
+            self.verificou2=None
+            self.verificou1=None
             #Se esse atributo ainda está vazio
             if not self.diretorioCIFs:
                 #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
@@ -428,12 +466,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Se os dois atributos estão preenchidos simultaneamente
         #(Não são mais vazios)
         if self.diretorioCIFs2 and self.diretorioPadrao2:
-            self.caminhoCIFs=self.diretorioCIFs2
-            self.caminhoPadrao=self.diretorioPadrao2
-            #Inicia a comparação
-            self.compararPicos()
+            self.arrayParaDataFrame()
+            if self.travaLogica == False:
+                self.caminhoCIFs=self.diretorioCIFs2
+                self.caminhoPadrao=self.diretorioPadrao2
+                self.verificou2=True
+                self.verificou1=False
+                #Inicia a comparação
+                self.compararPicos()
+            else:
+                self.verificou2=None
+                self.verificou1=None
+                raise ValueError("Nenhum pico foi selecionado.")
+
         #Se não
         else:
+            self.verificou2=None
+            self.verificou1=None
             #Se esse atributo ainda está vazio
             if not self.diretorioCIFs2:
                 #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
@@ -447,8 +496,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mostrarInicio()
         #Variável responsável por armazenar qual tipo de arquivo deve ser buscado
         extensaoArquivo='*.cif'
-        #Variável para saber o comprimento de onda utilizado para montar os padrões de difração dos CIFs
-        comprimentoOndaAngstron=self.valorSelecionado #Utiliza o valor slecionado na caixaRadiacoes
+        if self.verificou1==True:
+            #Variável para saber o comprimento de onda utilizado para montar os padrões de difração dos CIFs
+            comprimentoOndaAngstron=self.valorSelecionado #Utiliza o valor slecionado na caixaRadiacoes
+        elif self.verificou2==True:
+            comprimentoOndaAngstron=self.valorSelecionado2
         #Arquivo que vai guardar o caminho do arquivo .xy
         buscaXyPadrao = os.path.join(self.caminhoPadrao,'*.xy')
         #Transforma numa array de strings caminho
@@ -536,7 +588,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #para todas elas com a linha escolhida no primeiro while
         for numeroAba in range(numeroDeAbas):
             #Criando variável que lerá os dados de pico na coluna 2theta da planilha do seu padrão designado
-            tabelaPadrao = pd.read_excel(caminhoPadrao)
+            if self.verificou1 == True:
+                tabelaPadrao = pd.read_excel(caminhoPadrao)
+            elif self.verificou2 == True:
+                tabelaPadrao = self.dfPicos
             #Trazendo o item da lista de dataframes do cif para comparacao
             tabelaAmostra = arrayDeDataFramesCIFs[numeroAba]
             #Criando variável para endereço da linha da amostra que vai ser comparada
