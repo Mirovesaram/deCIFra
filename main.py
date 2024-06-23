@@ -80,6 +80,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
 
+        self.arrayPicos=[None, None, None, None,None]
+
         self.ultimoIndex=None
         #Comando para deixar a janela não redimensionável
         self.setFixedSize(800,800)
@@ -184,11 +186,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoPadraoText_2.setStyleSheet("padding: 10px;")
         self.caminhoPadraoText_2.setGeometry(0,80,800,100)
 
-        self.comboBoxPico1.activated.connect(self.picoSelecionado)
-        self.comboBoxPico2.activated.connect(self.picoSelecionado)
-        self.comboBoxPico3.activated.connect(self.picoSelecionado)
-        self.comboBoxPico4.activated.connect(self.picoSelecionado)
-        self.comboBoxPico5.activated.connect(self.picoSelecionado)
+        self.comboBoxPico1.activated.connect(self.picoSelecionado1)
+        self.comboBoxPico2.activated.connect(self.picoSelecionado2)
+        self.comboBoxPico3.activated.connect(self.picoSelecionado3)
+        self.comboBoxPico4.activated.connect(self.picoSelecionado4)
+        self.comboBoxPico5.activated.connect(self.picoSelecionado5)
         self.comboBoxPico1.setCurrentIndex(0)
         self.comboBoxPico1.activated.emit(0)
         self.comboBoxPico2.setCurrentIndex(0)
@@ -224,9 +226,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text = self.comboBoxPico1.currentText()
         self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
         self.label.adjustSize()"""
-    #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
-    def picoSelecionado(self,index):
+    def picoSelecionado1(self,index):
+        self.pico1=self.comboBoxPico1.itemData(index)
+        self.arrayPicos[0]=self.pico1
+        print(self.arrayPicos)
+    def picoSelecionado2(self,index):
+        self.pico2=self.comboBoxPico2.itemData(index)
+        self.arrayPicos[1]=self.pico2
+        print(self.arrayPicos)
+    def picoSelecionado3(self,index):
+        self.pico3=self.comboBoxPico3.itemData(index)
+        self.arrayPicos[2]=self.pico3
+        print(self.arrayPicos)
+    def picoSelecionado4(self,index):
+        self.pico4=self.comboBoxPico4.itemData(index)
+        self.arrayPicos[3]=self.pico4
+        print(self.arrayPicos)
+    def picoSelecionado5(self,index):
+        self.pico5=self.comboBoxPico5.itemData(index)
+        self.arrayPicos[4]=self.pico5          
+        """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
+        print(self.arrayPicosSemNone)"""
+        print(self.arrayPicos)
         
+        
+        
+       
+    #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
     #Método para abrir o explorer do computador e selecionar a pasta necessária
@@ -339,7 +365,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.comboBoxPico4.removeItem(i)
                     for i in range(self.ultimoIndex,0,-1):
                         self.comboBoxPico5.removeItem(i)
-                raise ValueError("A pasta não tem um arquivo .xlsx")         
+                self.comboBoxPico1.setCurrentIndex(0)
+                self.comboBoxPico1.activated.emit(0)
+                self.comboBoxPico2.setCurrentIndex(0)
+                self.comboBoxPico2.activated.emit(0)
+                self.comboBoxPico3.setCurrentIndex(0)
+                self.comboBoxPico3.activated.emit(0)
+                self.comboBoxPico4.setCurrentIndex(0)
+                self.comboBoxPico4.activated.emit(0)
+                self.comboBoxPico5.setCurrentIndex(0)
+                self.comboBoxPico5.activated.emit(0)
+                raise ValueError("A pasta não tem um arquivo .xlsx")                  
         else:
             self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
             if self.ultimoIndex:
@@ -353,6 +389,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.comboBoxPico4.removeItem(i)
                 for i in range(self.ultimoIndex,0,-1):
                     self.comboBoxPico5.removeItem(i)
+            self.comboBoxPico1.setCurrentIndex(0)
+            self.comboBoxPico1.activated.emit(0)
+            self.comboBoxPico2.setCurrentIndex(0)
+            self.comboBoxPico2.activated.emit(0)
+            self.comboBoxPico3.setCurrentIndex(0)
+            self.comboBoxPico3.activated.emit(0)
+            self.comboBoxPico4.setCurrentIndex(0)
+            self.comboBoxPico4.activated.emit(0)
+            self.comboBoxPico5.setCurrentIndex(0)
+            self.comboBoxPico5.activated.emit(0)
                 
     def abrirDirEventCIFs2(self):
         self.diretorioCIFs2=None
