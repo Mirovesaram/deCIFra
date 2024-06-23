@@ -191,16 +191,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comboBoxPico3.activated.connect(self.picoSelecionado3)
         self.comboBoxPico4.activated.connect(self.picoSelecionado4)
         self.comboBoxPico5.activated.connect(self.picoSelecionado5)
-        self.comboBoxPico1.setCurrentIndex(0)
-        self.comboBoxPico1.activated.emit(0)
-        self.comboBoxPico2.setCurrentIndex(0)
-        self.comboBoxPico2.activated.emit(0)
-        self.comboBoxPico3.setCurrentIndex(0)
-        self.comboBoxPico3.activated.emit(0)
-        self.comboBoxPico4.setCurrentIndex(0)
-        self.comboBoxPico4.activated.emit(0)
-        self.comboBoxPico5.setCurrentIndex(0)
-        self.comboBoxPico5.activated.emit(0)
+        self.emitirSinaisComboBoxPicos()
 
         #pequeno teste para ver se os itens da
         #comboBox foram corretamente adicionados
@@ -226,6 +217,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text = self.comboBoxPico1.currentText()
         self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
         self.label.adjustSize()"""
+    def emitirSinaisComboBoxPicos(self):
+            self.comboBoxPico1.setCurrentIndex(0)
+            self.comboBoxPico1.activated.emit(0)
+            self.comboBoxPico2.setCurrentIndex(0)
+            self.comboBoxPico2.activated.emit(0)
+            self.comboBoxPico3.setCurrentIndex(0)
+            self.comboBoxPico3.activated.emit(0)
+            self.comboBoxPico4.setCurrentIndex(0)
+            self.comboBoxPico4.activated.emit(0)
+            self.comboBoxPico5.setCurrentIndex(0)
+            self.comboBoxPico5.activated.emit(0)
     def picoSelecionado1(self,index):
         self.pico1=self.comboBoxPico1.itemData(index)
         self.arrayPicos[0]=self.pico1
@@ -365,16 +367,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.comboBoxPico4.removeItem(i)
                     for i in range(self.ultimoIndex,0,-1):
                         self.comboBoxPico5.removeItem(i)
-                self.comboBoxPico1.setCurrentIndex(0)
-                self.comboBoxPico1.activated.emit(0)
-                self.comboBoxPico2.setCurrentIndex(0)
-                self.comboBoxPico2.activated.emit(0)
-                self.comboBoxPico3.setCurrentIndex(0)
-                self.comboBoxPico3.activated.emit(0)
-                self.comboBoxPico4.setCurrentIndex(0)
-                self.comboBoxPico4.activated.emit(0)
-                self.comboBoxPico5.setCurrentIndex(0)
-                self.comboBoxPico5.activated.emit(0)
+                self.emitirSinaisComboBoxPicos()
                 raise ValueError("A pasta não tem um arquivo .xlsx")                  
         else:
             self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
@@ -389,16 +382,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.comboBoxPico4.removeItem(i)
                 for i in range(self.ultimoIndex,0,-1):
                     self.comboBoxPico5.removeItem(i)
-            self.comboBoxPico1.setCurrentIndex(0)
-            self.comboBoxPico1.activated.emit(0)
-            self.comboBoxPico2.setCurrentIndex(0)
-            self.comboBoxPico2.activated.emit(0)
-            self.comboBoxPico3.setCurrentIndex(0)
-            self.comboBoxPico3.activated.emit(0)
-            self.comboBoxPico4.setCurrentIndex(0)
-            self.comboBoxPico4.activated.emit(0)
-            self.comboBoxPico5.setCurrentIndex(0)
-            self.comboBoxPico5.activated.emit(0)
+            self.emitirSinaisComboBoxPicos()
                 
     def abrirDirEventCIFs2(self):
         self.diretorioCIFs2=None
