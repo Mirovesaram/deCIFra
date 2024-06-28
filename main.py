@@ -29,6 +29,12 @@ import glob #módulo utilizado para criar arrays com os caminhos dos arquivos se
 import os #módulo utilizado para criar responsividade e flexibilidade na coleta dos caminhos
 #indepente do sistema operacional (Aparentemente, não entrei em muitos detalhes)
 
+import numpy as np
+
+from findpeaks import findpeaks
+
+import matplotlib.pyplot as plt 
+
 #Configuração do arquivo .log de erro
 logging.basicConfig(
     #Nome do arquivo
@@ -79,6 +85,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #O uso específico desse comando é no construtor da classe filhas
         super().__init__()
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
+
+        self.valorLimite = self.doubleSpinBoxMudarLimite.value()
+
+        self.limitePadrao = None
+
+        self.arquivoXy = None
 
         self.verificou1=None
 
@@ -190,9 +202,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoArquivoXyText.setReadOnly(True)
         self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoArquivoXyText.setStyleSheet("padding: 10px;")
-        self.caminhoArquivoXyText.setGeometry(0,30,800,50)
+        self.caminhoArquivoXyText.setGeometry(0,40,800,100)
 
         self.botaoSelecionarArquivoXy.clicked.connect(self.abrirDirEventXy)
+
+        self.pushButtonDetectar.clicked.connect(self.detectarVisualizarPicos)
+
+        self.pushButtonSalvarFigura.clicked.connect(self.salvarGrafico)
+
+        self.pushButtonImportar.clicked.connect(self.importarAngulos)
 
         self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadraoAdicionarPicos)
         
@@ -246,28 +264,41 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.comboBoxPico4.activated.emit(0)
             self.comboBoxPico5.setCurrentIndex(0)
             self.comboBoxPico5.activated.emit(0)
+    def removerItens(self):
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico1.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico2.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico3.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico4.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico5.removeItem(i)
+        self.emitirSinaisComboBoxPicos()
     def picoSelecionado1(self,index):
         self.pico1=self.comboBoxPico1.itemData(index)
         self.arrayPicos[0]=self.pico1
-        print(self.arrayPicos)
+        #Somente para testes
+        #print(self.arrayPicos)
     def picoSelecionado2(self,index):
         self.pico2=self.comboBoxPico2.itemData(index)
         self.arrayPicos[1]=self.pico2
-        print(self.arrayPicos)
+        #print(self.arrayPicos)
     def picoSelecionado3(self,index):
         self.pico3=self.comboBoxPico3.itemData(index)
         self.arrayPicos[2]=self.pico3
-        print(self.arrayPicos)
+        #print(self.arrayPicos)
     def picoSelecionado4(self,index):
         self.pico4=self.comboBoxPico4.itemData(index)
         self.arrayPicos[3]=self.pico4
-        print(self.arrayPicos)
+        #print(self.arrayPicos)
     def picoSelecionado5(self,index):
         self.pico5=self.comboBoxPico5.itemData(index)
         self.arrayPicos[4]=self.pico5          
         """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
         print(self.arrayPicosSemNone)"""
-        print(self.arrayPicos)
+        #print(self.arrayPicos)
     
     def arrayParaDataFrame(self):
         self.arraySemNone = [item for item in self.arrayPicos if item is not None]
@@ -280,11 +311,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.dfPicos=None
             self.travaLogica=True
-            
-            
-        
-        
-       
+             
     #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
@@ -353,17 +380,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.caminhoPadraoText_2.setText(diretorioPadrao)
                 #Coleta-se o único item dessa array criada na linha anterior
                 if self.ultimoIndex:
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico1.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico2.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico3.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico4.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico5.removeItem(i)
-                    self.emitirSinaisComboBoxPicos()
+                    self.removerItens()
                 caminhoPadrao=ArrayCaminhoPlanilhaPadrao[0]
                 tabelaPadrao = pd.read_excel(caminhoPadrao)
                 numeroLinhasPadrao=tabelaPadrao.iloc[:,0].count()
@@ -391,32 +408,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
                 if self.ultimoIndex:
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico1.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico2.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico3.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico4.removeItem(i)
-                    for i in range(self.ultimoIndex,0,-1):
-                        self.comboBoxPico5.removeItem(i)
-                self.emitirSinaisComboBoxPicos()
+                    self.removerItens()
                 raise ValueError("A pasta não tem um arquivo .xlsx.")                  
         else:
             self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
             if self.ultimoIndex:
-                for i in range(self.ultimoIndex,0,-1):
-                    self.comboBoxPico1.removeItem(i)
-                for i in range(self.ultimoIndex,0,-1):
-                    self.comboBoxPico2.removeItem(i)
-                for i in range(self.ultimoIndex,0,-1):
-                    self.comboBoxPico3.removeItem(i)
-                for i in range(self.ultimoIndex,0,-1):
-                    self.comboBoxPico4.removeItem(i)
-                for i in range(self.ultimoIndex,0,-1):
-                    self.comboBoxPico5.removeItem(i)
-            self.emitirSinaisComboBoxPicos()
+                self.removerItens()
                 
     def abrirDirEventCIFs2(self):
         self.diretorioCIFs2=None
@@ -428,15 +425,105 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.caminhoCIFsText_2.setText(diretorioCIFs)
         else:
             self.caminhoCIFsText_2.setText('O caminho aparecerá aqui quando selecionado')
+
     def abrirDirEventXy(self):
         self.arquivoXy=None
         opcoes = QFileDialog.Options()
         arquivoXy, _ = QFileDialog.getOpenFileName(self, 'Selecionar arquivo .xy', '', 'Arquivos XY (*.xy);;Todos os arquivos (*)', options=opcoes)
-        self.arquivoXy=arquivoXy
         if arquivoXy:
+            self.arquivoXy=arquivoXy
             self.caminhoArquivoXyText.setText(arquivoXy)
+            dataFramePadrao = pd.read_csv(self.arquivoXy, delim_whitespace=True, header=None, names=['x','y'])
+            self.angulos=dataFramePadrao.x.values
+            self.intensidades=dataFramePadrao.y.values
+            self.X = self.intensidades
+            self.limitePadrao=np.min(np.min(self.X))-1
+            self.doubleSpinBoxMudarLimite.setValue(self.limitePadrao)
+            self.mostrarLimitePadrao()
         else:
-            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
+            self.arquivoXy=None
+            self.limitePadrao=None
+            self.mostrarLimitePadrao()
+            self.doubleSpinBoxMudarLimite.setValue(0)
+            self.valorLimite=self.doubleSpinBoxMudarLimite.value()
+            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')  
+
+    def detectarVisualizarPicos(self):
+        #buscaXyPadrao=os.path.join(caminho,'*.xy')
+        #ArrayCaminhoXy=glob.glob(buscaXyPadrao)
+        if self.arquivoXy:
+            self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
+            fp = findpeaks(method='topology',limit=self.valorLimite)
+            results = fp.fit(self.X)
+            #fp.plot()
+            # Extract peak positions
+            angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
+
+            # Plotting the results
+            #plt.switch_backend('Qt5Agg')
+            plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
+            plt.scatter(self.angulos[angulosPicos], self.intensidades[angulosPicos], color='red', label='Picos')
+            plt.legend()
+            #plt.savefig("picosEncontrados.png")
+
+            gerenciador=plt.get_current_fig_manager()
+            gerenciador.set_window_title("Picos detectados com o limite "+str(self.valorLimite))
+
+            plt.show()
+
+            # Print peak positions
+            #print("Peak positions:", self.angulos[self.angulosPicos])
+            #print(len(angulos[peak_positions]))
+            #df=pd.DataFrame(results['df'])
+            #caminho=r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\df.xlsx'
+            #df.to_excel(caminho)
+        else:
+            raise ValueError('O arquivo .xy não foi selecionado.')
+        
+    def salvarGrafico(self):
+        if self.arquivoXy:
+            self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
+            fp = findpeaks(method='topology',limit=self.valorLimite)
+            results = fp.fit(self.X)
+            #fp.plot()
+            # Extract peak positions
+            angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
+
+            # Plotting the results
+            #plt.switch_backend('Qt5Agg')
+            plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
+            plt.scatter(self.angulos[angulosPicos], self.intensidades[angulosPicos], color='red', label='Picos')
+            plt.legend()
+            plt.savefig("picosEncontrados.png")
+            plt.close()
+
+
+            
+            # Print peak positions
+            #print("Peak positions:", self.angulos[self.angulosPicos])
+            #print(len(angulos[peak_positions]))
+            #df=pd.DataFrame(results['df'])
+            #caminho=r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\df.xlsx'
+            #df.to_excel(caminho)
+        else:
+            raise ValueError('O arquivo .xy não foi selecionado.')
+            
+    def importarAngulos(self):
+        if self.arquivoXy:
+            self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
+            fp = findpeaks(method='topology',limit=self.valorLimite)
+            results = fp.fit(self.X)
+            angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
+            dataFramePicos=pd.DataFrame(angulosPicos, columns=["Ângulos"])
+            dataFramePicos.to_excel(r'picosEncontrados.xlsx')
+        else:
+            raise ValueError('O arquivo .xy não foi selecionado.')
+        
+    def mostrarLimitePadrao(self):
+        if self.limitePadrao:
+            self.labelValorLimite.setText(str(self.limitePadrao))
+        else:
+            self.labelValorLimite.setText('-')
     #Método que verifica se os dois últimos atributos do construtor deixaram de ser
     #Nones (vazios)
     def verificar(self):

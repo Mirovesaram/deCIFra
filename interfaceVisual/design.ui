@@ -341,22 +341,6 @@
      <attribute name="title">
       <string>Detectar picos</string>
      </attribute>
-     <widget class="QLabel" name="labelImagemGrafico">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>110</y>
-        <width>800</width>
-        <height>580</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>O gráfico aparecerá aqui quando selecionar um arquivo compatível</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
      <widget class="QLabel" name="labelSelecionarPadraoNoTodo">
       <property name="geometry">
        <rect>
@@ -399,8 +383,8 @@
      <widget class="QLabel" name="labelLimite">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>80</y>
+        <x>60</x>
+        <y>140</y>
         <width>150</width>
         <height>30</height>
        </rect>
@@ -420,8 +404,8 @@
      <widget class="QPushButton" name="pushButtonSalvarFigura">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>690</y>
+        <x>300</x>
+        <y>200</y>
         <width>170</width>
         <height>30</height>
        </rect>
@@ -438,8 +422,8 @@
      <widget class="QPushButton" name="pushButtonImportar">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>690</y>
+        <x>540</x>
+        <y>200</y>
         <width>200</width>
         <height>30</height>
        </rect>
@@ -456,9 +440,9 @@
      <widget class="QPushButton" name="pushButtonDetectar">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>690</y>
-        <width>100</width>
+        <x>60</x>
+        <y>200</y>
+        <width>170</width>
         <height>30</height>
        </rect>
       </property>
@@ -468,14 +452,14 @@
        </font>
       </property>
       <property name="text">
-       <string>Detectar</string>
+       <string>Detectar e visualizar</string>
       </property>
      </widget>
      <widget class="QLabel" name="labelValorLimite">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>80</y>
+        <x>220</x>
+        <y>140</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -495,8 +479,8 @@
      <widget class="QLabel" name="labelAjustarLimite">
       <property name="geometry">
        <rect>
-        <x>510</x>
-        <y>80</y>
+        <x>490</x>
+        <y>140</y>
         <width>150</width>
         <height>30</height>
        </rect>
@@ -516,56 +500,20 @@
      <widget class="QDoubleSpinBox" name="doubleSpinBoxMudarLimite">
       <property name="geometry">
        <rect>
-        <x>660</x>
-        <y>80</y>
+        <x>640</x>
+        <y>140</y>
         <width>100</width>
         <height>30</height>
        </rect>
       </property>
       <property name="maximum">
-       <double>1000000.000000000000000</double>
+       <double>1000000000.000000000000000</double>
       </property>
-     </widget>
-     <widget class="QLabel" name="labelLimitAtual">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>80</y>
-        <width>150</width>
-        <height>30</height>
-       </rect>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
       </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Limite atual:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelValorLimiteAjustar">
-      <property name="geometry">
-       <rect>
-        <x>410</x>
-        <y>80</y>
-        <width>100</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>-</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
+      <property name="stepType">
+       <enum>QAbstractSpinBox::DefaultStepType</enum>
       </property>
      </widget>
      <widget class="QCommandLinkButton" name="commandLinkButtonAjuda_2">
