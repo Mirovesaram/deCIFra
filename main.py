@@ -86,6 +86,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
 
+        self.arrayAs3melhores = []
+
+        self.diretorioAtual=os.path.dirname(os.path.abspath(__file__))
+
         self.valorLimite = self.doubleSpinBoxMudarLimite.value()
 
         self.limitePadrao = None
@@ -488,7 +492,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #fp.plot()
             # Extract peak positions
             angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
-
             # Plotting the results
             #plt.switch_backend('Qt5Agg')
             plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
@@ -496,6 +499,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             plt.legend()
             plt.savefig("picosEncontrados.png")
             plt.close()
+            self.mostrarConclusao()
 
 
             
@@ -516,6 +520,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
             dataFramePicos=pd.DataFrame(angulosPicos, columns=["Ângulos"])
             dataFramePicos.to_excel(r'picosEncontrados.xlsx')
+            self.mostrarConclusao()
         else:
             raise ValueError('O arquivo .xy não foi selecionado.')
         
@@ -826,7 +831,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #pode se dar nos próprios encadeamentos do while com seu append feito nesse próprio array
         arrayDfCompOrden = [itemComparacao for itemMedia, itemComparacao, itemCIF, itemNome in array_ordenada_com_medias]
         #Agora vamos garantir que os arrays que dizem respeito à planilha de CIFs seguem a mesma linha
-        arrayDfCIFsOrden = [itemCIF for itemMedia, itemComparacao, itemCIF, itemNome in array_ordenada_com_medias]
+        self.arrayDfCIFsOrden = [itemCIF for itemMedia, itemComparacao, itemCIF, itemNome in array_ordenada_com_medias]
         arrayDfNomesOrden = [itemNome for itemMedia,itemComparacao,itemCIF,itemNome in array_ordenada_com_medias]
         with pd.ExcelWriter(f"{self.caminhoCIFs}/comparacao.xlsx") as writer1: #Cria-se um objeto para a planilha saída
         
@@ -839,7 +844,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
         with pd.ExcelWriter(f"{self.caminhoCIFs}/planilhaCIFs.xlsx") as writer2:
             for numeroAba in range(numeroDeAbas):
-                arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)         
+                self.arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)         
         #Método utilizado para mostrar ao usuário que a função compararPicos() finalizou com sucesso.
         self.mostrarConclusao()
     #Os métodos a seguir são pop-ups como o de método de erro.
@@ -856,7 +861,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def mostrarConclusao(self):
         conclusao = QMessageBox()
         conclusao.setIcon(QMessageBox.Information)
-        conclusao.setText("A comparação foi concluída com sucesso.")
+        conclusao.setText("A tarefa foi concluída com sucesso.\nO resultado foi colocado em:\n"+self.diretorioAtual)
         conclusao.setWindowTitle("Tarefa concluída!")
         conclusao.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
         conclusao.exec_()
