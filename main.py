@@ -831,7 +831,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #pode se dar nos próprios encadeamentos do while com seu append feito nesse próprio array
         arrayDfCompOrden = [itemComparacao for itemMedia, itemComparacao, itemCIF, itemNome in array_ordenada_com_medias]
         #Agora vamos garantir que os arrays que dizem respeito à planilha de CIFs seguem a mesma linha
-        self.arrayDfCIFsOrden = [itemCIF for itemMedia, itemComparacao, itemCIF, itemNome in array_ordenada_com_medias]
+        arrayDfCIFsOrden = [itemCIF for itemMedia, itemComparacao, itemCIF, itemNome in array_ordenada_com_medias]
         arrayDfNomesOrden = [itemNome for itemMedia,itemComparacao,itemCIF,itemNome in array_ordenada_com_medias]
         with pd.ExcelWriter(f"{self.caminhoCIFs}/comparacao.xlsx") as writer1: #Cria-se um objeto para a planilha saída
         
@@ -844,7 +844,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
         with pd.ExcelWriter(f"{self.caminhoCIFs}/planilhaCIFs.xlsx") as writer2:
             for numeroAba in range(numeroDeAbas):
-                self.arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)         
+                arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
+        for i in range(3):
+            self.arrayAs3melhores[i]=arrayDfCIFsOrden[i]
+        menorValor=dataFramePadraoNoTodo['y'].min()
+        for i in range(3):
+            if menorValor <= 500:
+                self.arrayAs3melhores.[i][1]=self.arrayAs3melhores.[i][1]*10
+            elif menorValor <= 1000:
+                self.arrayAs3melhores.[i][1]=self.arrayAs3melhores.[i][1]*100
+            plt.bar(self.arrayAs3melhores[i][0],self.arrayAs3melhores[i][1],label='Reflexões',color='red')
+        plt.plot(dataFramePadraoNoTodo['x'],dataFramePadraoNoTodo['y'],label='Dados',color='blue')
         #Método utilizado para mostrar ao usuário que a função compararPicos() finalizou com sucesso.
         self.mostrarConclusao()
     #Os métodos a seguir são pop-ups como o de método de erro.
