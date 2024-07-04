@@ -9,9 +9,8 @@ import logging #módulo para permitir colocar os erros num arquivo de log
 
 import sys #módulo para controlar o sistema/programa para poder fechar ele, por exemplo (Acho, não entrei em detalhes)
 
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QLabel
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QDialogButtonBox, QDialog, QPushButton, QVBoxLayout, QLabel
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtGui, QtCore
 
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
@@ -87,6 +86,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
 
         self.arrayAs3melhores = []
+
+        self.dataFramePadraoNoTodo = None
+
+        self.dialogo=None
 
         self.diretorioAtual=os.path.dirname(os.path.abspath(__file__))
 
@@ -583,6 +586,56 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if not self.diretorioPadrao2:
                 #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
                 raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
+    def mostrarPlot(self):
+        self.dialogo=QDialog()
+        self.dialogo.setWindowTitle("Comparação concluída")
+        self.dialogo.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
+        layout=QVBoxLayout()
+        texto=QLabel("Comparação concluída, resultados salvos em:\n"+self.diretorioAtual+"\nGráfico disponível:")
+        layout.addWidget(texto)
+        caixaBotoes=QDialogButtonBox()
+        botaoMostrarGrafico = QPushButton("Mostrar Gráfico")
+        botaoSalvarGrafico = QPushButton("Salvar Gráfico")
+        caixaBotoes.addButton(botaoMostrarGrafico, QDialogButtonBox.ActionRole)
+        caixaBotoes.addButton(botaoSalvarGrafico, QDialogButtonBox.ActionRole)
+        layout.addWidget(caixaBotoes)       
+        self.dialogo.setLayout(layout)
+        botaoMostrarGrafico.clicked.connect(self.mostrarGrafico)
+        botaoSalvarGrafico.clicked.connect(self.salvarGrafico)   
+        self.dialogo.open()
+    def mostrarGrafico(self):
+        menorValor=self.dataFramePadraoNoTodo['y'].min()
+        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
+        if menorValor <= 500:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*10
+        elif menorValor <= 1000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
+        elif menorValor <= 2000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*250
+        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label='Reflexões',color='red', width=0.1)
+        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label='Reflexões',color='green', width=0.1)
+        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label='Reflexões',color='black', width=0.1)
+        plt.show()
+    def salvarGrafico(self):
+        menorValor=self.dataFramePadraoNoTodo['y'].min()
+        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
+        for i in range(3):
+            dataFrameDaVez=self.arrayAs3melhores[i]
+            if menorValor <= 500:
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*10
+            elif menorValor <= 1000:
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
+            elif menorValor <= 2000:
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*250
+            plt.bar(dataFrameDaVez.iloc[:,0],dataFrameDaVez.iloc[:,1],label='Reflexões',color='red')
+        plt.savefig('graficoMelhoresCIFs.png')
+        plt.close()
     #Método para comparar picos
     def compararPicos(self):
         self.mostrarInicio()
@@ -845,18 +898,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with pd.ExcelWriter(f"{self.caminhoCIFs}/planilhaCIFs.xlsx") as writer2:
             for numeroAba in range(numeroDeAbas):
                 arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
-        for i in range(3):
-            self.arrayAs3melhores[i]=arrayDfCIFsOrden[i]
-        menorValor=dataFramePadraoNoTodo['y'].min()
-        for i in range(3):
-            if menorValor <= 500:
-                self.arrayAs3melhores.[i][1]=self.arrayAs3melhores.[i][1]*10
-            elif menorValor <= 1000:
-                self.arrayAs3melhores.[i][1]=self.arrayAs3melhores.[i][1]*100
-            plt.bar(self.arrayAs3melhores[i][0],self.arrayAs3melhores[i][1],label='Reflexões',color='red')
-        plt.plot(dataFramePadraoNoTodo['x'],dataFramePadraoNoTodo['y'],label='Dados',color='blue')
-        #Método utilizado para mostrar ao usuário que a função compararPicos() finalizou com sucesso.
-        self.mostrarConclusao()
+        self.arrayAs3melhores=arrayDfCIFsOrden
+        self.dataFramePadraoNoTodo=dataFramePadraoNoTodo
+        self.mostrarPlot()
     #Os métodos a seguir são pop-ups como o de método de erro.
     #Por isso vou me abster de explicar esses comandos de novo
     #com a ressalva de um que vou citar no primeiro método
