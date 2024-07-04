@@ -1,3 +1,17 @@
+#ATENÇÃO
+#Em alguns lugares do código, haverá eu dizendo coisas como "Acho, não entrei em detalhes"
+#Isso se deve ao fato de que esse código foi feito em auxílio com o ChatGPT, no caso,
+#foram pedidos sugestões e ajuda para desenvolver as funcionalidades que estavam além do meu
+#raciocínio no momento de concepção do código. No caso, eu me pus a entender o máximo que eu
+#achava cabível até para adicionar essas funcionalidades isoladas no código que eu primei-
+#ramente escrevi sem auxílio do mesmo. O ponto é que o raciocínio de como o código funciona
+#e como sua estrutura se interliga é de meu conhecimento. Até porque a ideia é poder melhorar
+#o que já foi construído, então sem ter a base não teria como construir mais andares. O ponto
+#é que a utilização do ChatGPT foi na sintaxe da linguagem que muito é de meu desconhecimento
+#bem como a sugestão de módulos e a explicação de como usá-los, o que me faz utilizar isso
+#como detalhes ao que exatamente quis dizer com "ajuda para desenvolver as funcionalidades"
+#que eu disse no começo. 
+
 from interfaceGerada.design import Ui_MainWindow  # Importa a classe gerada pela interface
 """'from pasta.scriptPy import classe' --- interessante"""
 #!pip install ipdb Esse ponto de exclamação só funciona no collab para instalação em meio ao código
@@ -11,6 +25,8 @@ import sys #módulo para controlar o sistema/programa para poder fechar ele, por
 
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QDialogButtonBox, QDialog, QPushButton, QVBoxLayout, QLabel
 from PyQt5.QtGui import QIcon
+
+from PyQt5 import QtGui
 
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
@@ -84,6 +100,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #O uso específico desse comando é no construtor da classe filhas
         super().__init__()
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
+
+        self.arrayDfNomesOrden = None
 
         self.arrayAs3melhores = []
 
@@ -595,13 +613,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         layout.addWidget(texto)
         caixaBotoes=QDialogButtonBox()
         botaoMostrarGrafico = QPushButton("Mostrar Gráfico")
-        botaoSalvarGrafico = QPushButton("Salvar Gráfico")
+        botaoSalvarGrafico = QPushButton("Salvar Gráfico (.png)")
         caixaBotoes.addButton(botaoMostrarGrafico, QDialogButtonBox.ActionRole)
         caixaBotoes.addButton(botaoSalvarGrafico, QDialogButtonBox.ActionRole)
         layout.addWidget(caixaBotoes)       
         self.dialogo.setLayout(layout)
+        fonte = QtGui.QFont()
+        fonte.setPointSize(11)
+        self.dialogo.setFont(fonte)
         botaoMostrarGrafico.clicked.connect(self.mostrarGrafico)
-        botaoSalvarGrafico.clicked.connect(self.salvarGrafico)   
+        botaoSalvarGrafico.clicked.connect(self.salvarGraficoCIFs)   
         self.dialogo.open()
     def mostrarGrafico(self):
         menorValor=self.dataFramePadraoNoTodo['y'].min()
@@ -609,33 +630,69 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if menorValor <= 500:
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*10
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
         elif menorValor <= 1000:
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
         elif menorValor <= 2000:
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*250
-        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label='Reflexões',color='red', width=0.1)
-        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label='Reflexões',color='green', width=0.1)
-        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label='Reflexões',color='black', width=0.1)
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150
+        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
+        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
+        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
+        plt.xlabel("Ângulo 2theta (°)")
+        plt.ylabel("Intensidade (Contagens)")
+        plt.legend()
         plt.show()
-    def salvarGrafico(self):
+        if menorValor <= 500:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/50
+        elif menorValor <= 1000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/100
+        elif menorValor <= 2000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
+    def salvarGraficoCIFs(self):
         menorValor=self.dataFramePadraoNoTodo['y'].min()
         plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
-        for i in range(3):
-            dataFrameDaVez=self.arrayAs3melhores[i]
-            if menorValor <= 500:
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*10
-            elif menorValor <= 1000:
+        if menorValor <= 500:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
-            elif menorValor <= 2000:
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*250
-            plt.bar(dataFrameDaVez.iloc[:,0],dataFrameDaVez.iloc[:,1],label='Reflexões',color='red')
+        elif menorValor <= 1000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
+        elif menorValor <= 2000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150
+        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
+        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
+        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
+        plt.xlabel("Ângulo 2theta (°)")
+        plt.ylabel("Intensidade (Contagens)")
+        plt.legend()
         plt.savefig('graficoMelhoresCIFs.png')
         plt.close()
+        if menorValor <= 500:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/50
+        elif menorValor <= 1000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/100
+        elif menorValor <= 2000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
     #Método para comparar picos
     def compararPicos(self):
         self.mostrarInicio()
@@ -900,7 +957,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
         self.arrayAs3melhores=arrayDfCIFsOrden
         self.dataFramePadraoNoTodo=dataFramePadraoNoTodo
+        self.arrayDfNomesOrden=arrayDfNomesOrden
         self.mostrarPlot()
+        self.arrayAs3melhores=None
+        self.dataFramePadraoNoTodo=None
+        self.arrayDfNomesOrden=None
     #Os métodos a seguir são pop-ups como o de método de erro.
     #Por isso vou me abster de explicar esses comandos de novo
     #com a ressalva de um que vou citar no primeiro método
@@ -915,7 +976,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def mostrarConclusao(self):
         conclusao = QMessageBox()
         conclusao.setIcon(QMessageBox.Information)
-        conclusao.setText("A tarefa foi concluída com sucesso.\nO resultado foi colocado em:\n"+self.diretorioAtual)
+        conclusao.setText("A tarefa foi concluída com sucesso.\nO resultado foi colocado em:\n"+self.diretorioAtual+"\n")
         conclusao.setWindowTitle("Tarefa concluída!")
         conclusao.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
         conclusao.exec_()
