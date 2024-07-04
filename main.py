@@ -23,11 +23,21 @@ import logging #módulo para permitir colocar os erros num arquivo de log
 
 import sys #módulo para controlar o sistema/programa para poder fechar ele, por exemplo (Acho, não entrei em detalhes)
 
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QDialogButtonBox, QDialog, QPushButton, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QDialogButtonBox, QDialog, QPushButton, QVBoxLayout, QLabel 
+"""
+Importandoo os widgets do PyQt5 que serão necessários para adicionar elementos que não estão na interface visual gerada em .py
+que é importada nesse projeto para se colocar os gatilhos e dar vida à interface visual
+"""
 from PyQt5.QtGui import QIcon
-
+"""
+Aqui é para adicionar ícones às janelas
+e pop-ups do programa
+"""
 from PyQt5 import QtGui
-
+"""
+Aqui é para permitir acesso à mudança de fonte
+em um pop-up específico da tab Comparar
+"""
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
 from pymatgen.io.cif import CifParser #módulo para ler os arquivos CIF e extrair as informações necessárias para fazer
@@ -44,11 +54,17 @@ import glob #módulo utilizado para criar arrays com os caminhos dos arquivos se
 import os #módulo utilizado para criar responsividade e flexibilidade na coleta dos caminhos
 #indepente do sistema operacional (Aparentemente, não entrei em muitos detalhes)
 
-import numpy as np
-
+import numpy as np 
+"""
+Necessário para uma certa função que é utilizada no findpeaks
+"""
 from findpeaks import findpeaks
-
-import matplotlib.pyplot as plt 
+"""
+Necessário para utilizar o método de encontrar
+picos com homologia persistente
+"""
+import matplotlib.pyplot as plt # Utilizado para fazer os plots e
+#importar os gráficos feitos
 
 #Configuração do arquivo .log de erro
 logging.basicConfig(
@@ -97,47 +113,122 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         #Chamando o construtor (Método inicializador)
         #da classe pai no método construtor da classe filha.
-        #O uso específico desse comando é no construtor da classe filhas
+        #O uso específico desse comando é no construtor da classe filha
         super().__init__()
         self.setupUi(self)  # Configura a interface definida em Ui_MainWindow
 
+        #Inicialização de diversos atributos que
+        #serão utilizados ao longo dos métodos
+        #engatilhados ao longo do programa
+
+        #Esse atributo vai armazenar a array
+        #criada a partir da ordenação de itens
+        #de uma array já criada no método de
+        #comparar picos (No caso, tal)
+        #array será as dos nomes do CIFs
         self.arrayDfNomesOrden = None
-
-        self.arrayAs3melhores = []
-
+        """
+        Esse vai armazenar os dataframes
+        criados das reflexões de cada cif
+        entregue pelo usuário
+        """
+        self.arrayAs3melhores = None
+        """
+        Esse vai armazenar o dataFrame do padrão
+        de difração no todo entregue pelo arquivo
+        .xy
+        """
         self.dataFramePadraoNoTodo = None
-
+        """
+        Esse atributo é criado para abrigar
+        um QDialogBox. O porquê de fazer isso
+        é para poder utilizar o método .open()
+        ao invés do método .exec(), o primeiro
+        permite o QDialogBox ficar em segundo
+        plano mas caso ele não seja um atributo
+        inicial da classe principal após o 
+        .open(), o mesmo é destruído caso
+        seja armazenado numa variável comum criada
+        num método à parte da classe principal
+        """
         self.dialogo=None
-
+        """
+        Esse atributo foi feito para acessar o diretório
+        em que o script está sendo executado, tal informação
+        é utilizada nos pop-ups QMessageBox e QDialogBox
+        """
         self.diretorioAtual=os.path.dirname(os.path.abspath(__file__))
-
+        """Esse inicializa o valor atual encontrado no spinBox
+        da tab Detectar"""
         self.valorLimite = self.doubleSpinBoxMudarLimite.value()
-
+        """Esse é para armazenar o valor de limite de score para
+        ser utilizado como parâmetro no método do findpeaks com
+        homologia persistente, para adquirir esse valor usa-se 
+        métodos da biblioteca numpy"""
         self.limitePadrao = None
-
+        """
+        Esse é para armazenar o caminho do arquivoXy obtido na tab
+        Detectar
+        """
         self.arquivoXy = None
-
+        """
+        Essas são travas lógicas que permitem saber de qual
+        método verificar foi utilizado e saber quais dados
+        devem ser utilizados sem haver confusão de troca de
+        dados entre as tabs Comparar picos e Comparar poucos picos
+        que tem métodos que fazem coisas bem parecidas
+        """
         self.verificou1=None
 
         self.verificou2=None
-
+        """
+        Mais uma trava lógica, essa para
+        travar o método comparar picos caso 
+        dado dataframe necessário não seja feito
+        (Essa trava substancialmente é para a aba
+        comparar poucos picos)
+        """
         self.travaLogica=None
-
+        """
+        Armazenar o diretório dos CIFs
+        para a tab Comparar poucos picos
+        """
         self.diretorioCIFs2=None
-
+        """
+        Armazenar o diretório do padrão
+        para a tab Comparar poucos picos
+        """
         self.diretorioPadrao2=None
-
+        """
+        Armazenar o diretório dos CIFs
+        para a tab Comparar picos
+        """
         self.diretorioCIFs=None
-
+        """
+        Armazenar o diretório do padrão
+        para a tab Comparar picos
+        """
         self.diretorioPadrao=None
-
+        """
+        Armazenar o dataframe de ângulos escolhidos
+        pelo usuário na tab Comparar poucos picos
+        """
         self.dfPicos=None
-
+        """
+        Armazenar os itens que são os ângulos escolhidos
+        pelo usuário na tab Comparar poucos picos
+        """
         self.arrayPicos=[None, None, None, None,None]
-
+        """
+        Armazenar informação para indicar o número
+        final de certos laços for, preciso na tab
+        comparar Poucos picos
+        """
         self.ultimoIndex=None
         #Comando para deixar a janela não redimensionável
+        #e com largura 800 pixels e altura 800 pixels
         self.setFixedSize(800,800)
+        #Explicado anteriormente
         self.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
         #Criar um gatilho que envolve clicar esse botão
         #Caso clique no botão, o método abrirDirEventCIFs
@@ -156,23 +247,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Comando que ajusta a posição x, a posição y, a largura,
         #a altura, respectivamente na caixa de edição de texto
         self.caminhoCIFsText.setGeometry(0,80,800,100)
-
+        #Já explicado
         self.botaoSelecPadrao.clicked.connect(self.abrirDirEventSeuPadrao)
-
         #A utilização de uma caixa de texto é um recurso, do ponto de vista de design,
         #estranho. Mas foi a maneira proposta para garantir que caso um caminho seja
         #muito grande, ele não ultrapasse o tamanho proposto da janela, pois a primeira
         #ideia foi utilizar um QLabel seguido de adjustSize().
+        #Já explicados
         self.caminhoPadraoText = QTextEdit(self.tabComparar)
         self.caminhoPadraoText.setReadOnly(True)
         self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoPadraoText.setStyleSheet('padding: 10px;')
         self.caminhoPadraoText.setGeometry(0,260,800,100)
         #Comandos para adicionar os dados dos itens da combo
-        #Box de radiação que são
-        #os valores do parâmetro userData=, a string vazia ""
-        #é porque o código .py da interface visual
-        #adiciona como esses dados #aparecerão para o usuário
+        #Box de radiação que são os presentes no laço for
         #Nessa array tem floats que foram tirados como padrão
         #do software Diamond e de um arquivo instrumental utilizado
         #no software GSAS EXPGUI, sendo o terceiro a média aritmética
@@ -191,7 +279,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #itens selecionados
         #A função enumarate permite ter um index
         #associado ao dado do item que foi puxado
-        #evidenciando sua posiçaõ
+        #evidenciando sua posição
         for self.index, self.item in enumerate(self.itens):
             #setItemData insere o dado de um item em dada
             #posição desse item
@@ -209,6 +297,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Uma ação programática para o primeiro item ser escolhido para engatilhar o activated
         No caso a primeira linha de código seleciona o primeiro item
         E a segunda linha emite um sinal de evento activated para o índice 0, disparando o método
+        (Tive que fazer isso pois depois de um tempo somente o activated não estava funcionando
+        como foi descrito nas linhas de comentários anteriores a essa)
         """
         self.caixaRadiacoes.setCurrentIndex(0)
         self.caixaRadiacoes.activated.emit(0)
@@ -222,7 +312,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """self.botaoComparar.clicked.connect(self.testeComboBox)
         self.label = QLabel(self.tabComparar)
         self.label.move(200,650)"""
-    
         self.caminhoArquivoXyText = QTextEdit(self.tabDetectar)
         self.caminhoArquivoXyText.setReadOnly(True)
         self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
@@ -250,14 +339,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comboBoxPico3.activated.connect(self.picoSelecionado3)
         self.comboBoxPico4.activated.connect(self.picoSelecionado4)
         self.comboBoxPico5.activated.connect(self.picoSelecionado5)
+        #Esse método foi criado pois as linhas de comando
+        #necessárias aqui foram repetidas algumas vezes pelo
+        #código
         self.emitirSinaisComboBoxPicos()
-
         #pequeno teste para ver se os itens da
         #comboBox foram corretamente adicionados
         """self.botaoComparar_2.clicked.connect(self.testeComboBox)
         self.label = QLabel(self.tabCompararPoucosPicos)
         self.label.move(200,650)"""
-
         self.botaoSelecCIF_2.clicked.connect(self.abrirDirEventCIFs2)
 
         self.caminhoCIFsText_2 = QTextEdit(self.tabCompararPoucosPicos)
@@ -278,6 +368,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text = self.comboBoxPico1.currentText()
         self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
         self.label.adjustSize()"""
+    #A explicação dessas linhas de comando e a necessidade do método já foram explicados
     def emitirSinaisComboBoxPicos(self):
             self.comboBoxPico1.setCurrentIndex(0)
             self.comboBoxPico1.activated.emit(0)
@@ -289,6 +380,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.comboBoxPico4.activated.emit(0)
             self.comboBoxPico5.setCurrentIndex(0)
             self.comboBoxPico5.activated.emit(0)
+
     def removerItens(self):
         for i in range(self.ultimoIndex,0,-1):
             self.comboBoxPico1.removeItem(i)
@@ -301,23 +393,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for i in range(self.ultimoIndex,0,-1):
             self.comboBoxPico5.removeItem(i)
         self.emitirSinaisComboBoxPicos()
+
     def picoSelecionado1(self,index):
         self.pico1=self.comboBoxPico1.itemData(index)
         self.arrayPicos[0]=self.pico1
         #Somente para testes
         #print(self.arrayPicos)
+
     def picoSelecionado2(self,index):
         self.pico2=self.comboBoxPico2.itemData(index)
         self.arrayPicos[1]=self.pico2
         #print(self.arrayPicos)
+
     def picoSelecionado3(self,index):
         self.pico3=self.comboBoxPico3.itemData(index)
         self.arrayPicos[2]=self.pico3
         #print(self.arrayPicos)
+
     def picoSelecionado4(self,index):
         self.pico4=self.comboBoxPico4.itemData(index)
         self.arrayPicos[3]=self.pico4
         #print(self.arrayPicos)
+        
     def picoSelecionado5(self,index):
         self.pico5=self.comboBoxPico5.itemData(index)
         self.arrayPicos[4]=self.pico5          
