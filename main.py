@@ -791,41 +791,67 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if not self.diretorioPadrao2:
                 #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
                 raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
+    #Esse método é acionado no fim do método compararPicos em que mostra um gráfico com os três melhores CIFs
     def mostrarPlot(self):
+        #Aqui, o atributo antes criado armazena o pop-up do QDialog
         self.dialogo=QDialog()
         self.dialogo.setWindowTitle("Comparação concluída")
         self.dialogo.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
+        #E cria-se um layout para esse pop-up
         layout=QVBoxLayout()
+        #Então uma label com o seguinte texto
         texto=QLabel("Comparação concluída, resultados salvos em:\n"+self.diretorioAtual+"\nGráfico disponível:")
+        # Adiciona-se esse texto ao layout do Pop-up
         layout.addWidget(texto)
+        # Cria-se uma caixa para botões do QDialog
         caixaBotoes=QDialogButtonBox()
+        # Com um botão para criar o gráfico
         botaoMostrarGrafico = QPushButton("Mostrar Gráfico")
+        # E outro para salvar
         botaoSalvarGrafico = QPushButton("Salvar Gráfico (.png)")
+        # Adicionam-se os botões à caixa
         caixaBotoes.addButton(botaoMostrarGrafico, QDialogButtonBox.ActionRole)
         caixaBotoes.addButton(botaoSalvarGrafico, QDialogButtonBox.ActionRole)
-        layout.addWidget(caixaBotoes)       
+        # e então adiciona-se a caixa ao layout
+        layout.addWidget(caixaBotoes)
+        # e então de fato seta esse diálogo para o Pop-up       
         self.dialogo.setLayout(layout)
+        #Aqui cria-se uma variável para alterar a fonte desse pop-up para o tamanho 11
         fonte = QtGui.QFont()
         fonte.setPointSize(11)
         self.dialogo.setFont(fonte)
         botaoMostrarGrafico.clicked.connect(self.mostrarGrafico)
-        botaoSalvarGrafico.clicked.connect(self.salvarGraficoCIFs)   
+        botaoSalvarGrafico.clicked.connect(self.salvarGraficoCIFs)  
+        #A utilização do método .open() ao invés do método .exec()
+        # para permitir que o pop-up fique em segundo plano
         self.dialogo.open()
+    #método para mostrar o gráfico que é engatilhado
     def mostrarGrafico(self):
+        #Pega-se o menor valor de intensidade do dataframe do padrão
         menorValor=self.dataFramePadraoNoTodo['y'].min()
+        #Faz o plot do padrão
         plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
+        #Se o padrão tem como menor valor de intensidade até 500
         if menorValor <= 500:
+            #Aumente as intensidades dos 3 melhores CIFs em 50 vezes
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
+        #Caso até 1000...
         elif menorValor <= 1000:
+            #Aumente em 100 vezes
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
+        # Caso em até 2000...
         elif menorValor <= 2000:
+            # Aumente em 150 vezes...
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150
+        # Então faça um gráfico de barras para cada CIF tendo como label sua colocação e seu nome,
+        # como largura tem-se 0.1 pixels e cor vermelha para o primeiro, verde para o segundo e preto
+        # para o terceiro
         plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
         plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
         plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
@@ -833,6 +859,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         plt.ylabel("Intensidade (Contagens)")
         plt.legend()
         plt.show()
+        # Aproveitando-se do parâmetro que ditou o
+        # o aumento em até 150 vezes da intensidade dos CIFs
+        # utiliza-se o mesmo para diminuir os valores às intensidades
+        # anteriores
         if menorValor <= 500:
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
@@ -845,7 +875,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
+    #Método engatilhado para salvar gráfico no Pop-up
     def salvarGraficoCIFs(self):
+        #A mesma ideia mas agora é para salvar
         menorValor=self.dataFramePadraoNoTodo['y'].min()
         plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
         if menorValor <= 500:
@@ -885,9 +917,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mostrarInicio()
         #Variável responsável por armazenar qual tipo de arquivo deve ser buscado
         extensaoArquivo='*.cif'
+        # Aqui se utiliza os valores das travas lógicas
+        # passadas nos métodos de verificar para saber de
+        # qual comboBox de radiação pegar o valor de com-
+        # primento de onda
         if self.verificou1==True:
             #Variável para saber o comprimento de onda utilizado para montar os padrões de difração dos CIFs
-            comprimentoOndaAngstron=self.valorSelecionado #Utiliza o valor slecionado na caixaRadiacoes
+            comprimentoOndaAngstron=self.valorSelecionado #Utiliza o valor selecionado na caixaRadiacoes
         elif self.verificou2==True:
             comprimentoOndaAngstron=self.valorSelecionado2
         #Arquivo que vai guardar o caminho do arquivo .xy
@@ -941,7 +977,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #essa solução utilizando esse molde -
             #('proposição com variável temporária' for 'variável temporária' in 'Dada array') -
             #está ficando cada vez mais comum e é cada vez mais interessante (Comentário fora de cronologia, desconsidere)
-            
             angulosNoIntervalo=all(primeiroAnguloPadrao <= angulo <= UltimoAnguloPadrao for angulo in xrdPadrao.x)
             #Se verdadeiro
             if angulosNoIntervalo:
@@ -959,10 +994,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Criacao da tabela que armazenara as linhas criadas
         dataFrameResultados=pd.DataFrame(columns=['2theta-Padrão','2theta','Intensidade','Diferença','Corresponde','Classificação','Picos Excedentes','Picos Faltantes','Nota'])
         #Criação do DataFrame modelo vazio com todas as suas colunas correspondentes, tal modelo é que será utilizado em cada aba da planilha de saída
-        
-        arrayDataFramesComparacao=[] #Aqui é o array de DataFrames modelo, tal arranjo é importante para haver uma distinção autônoma de cada dataFrame para cada
-                            #aba construída na planilha de saída
-        
+        arrayDataFramesComparacao=[] #Aqui é o array de DataFrames modelo, tal arranjo é importante para haver uma distinção autônoma de cada dataFrame para cada aba construída na planilha de saída
+
         for numeroAba in range(numeroDeAbas): #A função desse laço é criar cópias do DataFrame modelo e adicionar
                                     #as mesmas ao array
             dataFrameResultadosCopia=dataFrameResultados.copy() #Aqui a cópia é feita
@@ -1135,17 +1168,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Basicamente, ao fim das análises, os DataFrames criados são alojados na array de DataFrames e
         #cada dataFrame é endereçado a sua aba, garanta que cada aba tenha o nome correto da amostra que foi
         #comparada
-
             for numeroAba in range(numeroDeAbas): #Aqui esse for é para garantir que diferentes dataFrames estão sendo
                                         #sendo adicionados em abas diferentes à planilha saída
                 arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
         with pd.ExcelWriter(f"{self.caminhoCIFs}/planilhaCIFs.xlsx") as writer2:
             for numeroAba in range(numeroDeAbas):
                 arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
+        # É aqui onde os atributos recebem valores
+        # para utilizar no método mostrarPlot()
         self.arrayAs3melhores=arrayDfCIFsOrden
         self.dataFramePadraoNoTodo=dataFramePadraoNoTodo
         self.arrayDfNomesOrden=arrayDfNomesOrden
         self.mostrarPlot()
+        #Após o QDialogBox ser fechado, as linhas de comando
+        # continuam e colocam o valor padrão dos atributos para
+        # não haver problemas
         self.arrayAs3melhores=None
         self.dataFramePadraoNoTodo=None
         self.arrayDfNomesOrden=None
@@ -1163,6 +1200,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def mostrarConclusao(self):
         conclusao = QMessageBox()
         conclusao.setIcon(QMessageBox.Information)
+        #Aqui coloca-se o texto demonstrando onde a informação foi guardada
         conclusao.setText("A tarefa foi concluída com sucesso.\nO resultado foi colocado em:\n"+self.diretorioAtual+"\n")
         conclusao.setWindowTitle("Tarefa concluída!")
         conclusao.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
