@@ -315,6 +315,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caixaRadiacoes.activated.emit(0)
         self.caixaRadiacoes_2.setCurrentIndex(0)
         self.caixaRadiacoes_2.activated.emit(0)
+        #Armando gatilho para o botão ajuda direcionar para a aba ajuda
+        self.commandLinkButtonAjuda.clicked.connect(self.mudarParaAbaAjuda)
         #Esse método que será chamado é para verificar se o usuário colocou
         #os caminhos necessários antes de apertar o botão para fazer a comparação
         self.botaoComparar.clicked.connect(self.verificar)
@@ -338,6 +340,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButtonImportar.clicked.connect(self.importarAngulos)
 
         self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadraoAdicionarPicos)
+
+        self.commandLinkButtonAjuda_2.clicked.connect(self.mudarParaAbaAjuda)
         
         self.caminhoPadraoText_2 = QTextEdit(self.tabCompararPoucosPicos)
         self.caminhoPadraoText_2.setReadOnly(True)
@@ -368,6 +372,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoCIFsText_2.setGeometry(0,340,800,100)
 
         self.botaoComparar_2.clicked.connect(self.verificar2)
+
+        self.commandLinkButtonAjuda_3.clicked.connect(self.mudarParaAbaAjuda)
+
+        # Adicionando texto e o link para a label de link na tab ajuda
+        self.labelLinkRepositorio.setText("<a href=https://github.com/Mirovesaram/comparadorPicos.git>Repositório do comparador de picos</a>")
+        # Permitindo que esse link exeterno seja aberto em um navegador quando clicado
+        self.labelLinkRepositorio.setOpenExternalLinks(True)
         #Para fins de teste
         #self.botaoComparar_2.clicked.connect(self.arrayParaDataFrame)
         
@@ -379,6 +390,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text = self.comboBoxPico1.currentText()
         self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
         self.label.adjustSize()"""
+    def mudarParaAbaAjuda(self):
+        self.tabWidget.setCurrentIndex(3)
     #A explicação dessas linhas de comando e a necessidade do método já foram explicados
     def emitirSinaisComboBoxPicos(self):
             self.comboBoxPico1.setCurrentIndex(0)

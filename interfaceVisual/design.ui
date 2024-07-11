@@ -947,17 +947,64 @@
      <attribute name="title">
       <string>Ajuda</string>
      </attribute>
-     <widget class="QScrollBar" name="verticalScrollBar">
+     <widget class="QLabel" name="labelExplicacaoAjuda">
       <property name="geometry">
        <rect>
-        <x>770</x>
+        <x>0</x>
         <y>0</y>
-        <width>30</width>
-        <height>800</height>
+        <width>800</width>
+        <height>100</height>
        </rect>
       </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string>Acesse o repositório do programa no GitHub e descendo a página chegará no &quot;Leia-me&quot; onde haverá instruções e explicações sobre determinadas funções separadas por seções. Acesse pelo link abaixo:</string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelLinkRepositorio">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>100</y>
+        <width>800</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">padding: 10px;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>
