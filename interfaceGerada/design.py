@@ -335,7 +335,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Comparador de Picos"))
         self.botaoComparar.setText(_translate("MainWindow", "Comparar"))
         self.labelSelecCIF.setText(_translate("MainWindow", "Selecione a pasta com os arquivos .cif\'s:"))
         self.botaoSelecCIF.setText(_translate("MainWindow", "Selecionar pasta"))
