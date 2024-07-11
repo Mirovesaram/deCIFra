@@ -23,7 +23,7 @@ import logging #módulo para permitir colocar os erros num arquivo de log
 
 import sys #módulo para controlar o sistema/programa para poder fechar ele, por exemplo (Acho, não entrei em detalhes)
 
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QDialogButtonBox, QDialog, QPushButton, QVBoxLayout, QLabel 
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QMainWindow, QTextEdit, QDialogButtonBox, QDialog, QPushButton, QVBoxLayout, QLabel
 """
 Importandoo os widgets do PyQt5 que serão necessários para adicionar elementos que não estão na interface visual gerada em .py
 que é importada nesse projeto para se colocar os gatilhos e dar vida à interface visual
@@ -38,6 +38,9 @@ from PyQt5 import QtGui
 Aqui é para permitir acesso à mudança de fonte
 em um pop-up específico da tab Comparar
 """
+from PyQt5.QtCore import QEventLoop
+# Esse aqui é para importar o evento de loop para
+# utilizar com o método open()
 from pymatgen.analysis.diffraction.xrd import XRDCalculator #módulo para fazer o padrão de difração dos CIFs selecionados
 
 from pymatgen.io.cif import CifParser #módulo para ler os arquivos CIF e extrair as informações necessárias para fazer
@@ -669,7 +672,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
             # Plotando os resultados
             #plt.switch_backend('Qt5Agg')
-            #Plot se trata da linha comum, com uma label de Dados para ela e a cor azul
+            # Plot se trata da linha comum, com uma label de Dados para ela e a cor azul
             plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
             #Scatter se trata de pontos, com uma label de Picos e a cor vermelha. Utiliza os indexes do 
             # angulosPicos para saber quais pontos específicos pegar das arrays angulos e intensidades
@@ -679,7 +682,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             plt.ylabel("Intensidade (Contagens)")
             #Colocar as labels de fato na figura
             plt.legend()
-            #Ter acesso ao gerenciador da imagem
+            # Ter acesso ao gerenciador da imagem
             gerenciador=plt.get_current_fig_manager()
             # Para poder trocar o título da janela gerada no plt.show()
             gerenciador.set_window_title("Picos detectados com o limite "+str(self.valorLimite))
@@ -700,13 +703,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # software GUI como Kivy, por exemplo, ou fosse 
             # necessário trocar esse software
             #plt.switch_backend('Qt5Agg')
+            # Fecha para não causar problemas com um possível .show() que
+            # não tenha sido fechado pelo usuário (Basicamente enquanto a janela
+            # que foi criada para o plot não for fechada, o .close() que é acionado
+            # quando se fecha essa janela não ativa. Logo, ter um .close() no
+            # começo do método de salvamento ajuda nisso)
+            plt.close()
+            # Aumenta o tamanho da figura para 10 polegadas de largura por
+            # 6 polegadas de altura
+            plt.figure(figsize=(10,6))
             plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
             plt.scatter(self.angulos[angulosPicos], self.intensidades[angulosPicos], color='red', label='Picos')
             plt.xlabel("Ângulo 2theta (°)")
             plt.ylabel("Intensidade (Contagens)")
             plt.legend()
-            #Salvar a figura como uma .png
-            plt.savefig("picosEncontrados.png")
+            # Salvar a figura como uma .png com dpi de 300 (pontos por polegada)
+            plt.savefig("picosEncontrados.png",dpi=300)
             #Fechar a figura para não sobrepor no método de mostrar o gráfico,
             #já que o .close() já está embutido lá
             plt.close()
@@ -821,10 +833,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         fonte.setPointSize(11)
         self.dialogo.setFont(fonte)
         botaoMostrarGrafico.clicked.connect(self.mostrarGrafico)
-        botaoSalvarGrafico.clicked.connect(self.salvarGraficoCIFs)  
+        botaoSalvarGrafico.clicked.connect(self.salvarGraficoCIFs)
+        # Vou colocar essa variável para iniciar um evento de loop
+        # e encerrar a execução de código como estivesse o .exec()
+        # sem a parte ruim de tornar o QDialog em primeiro plano
+        # e sem permitir que as outras janelas sejam executadas
+        loop = QEventLoop()
         #A utilização do método .open() ao invés do método .exec()
         # para permitir que o pop-up fique em segundo plano
         self.dialogo.open()
+        #Iniciar o evento de loop, impedindo o código de continuar
+        loop.exec_()
     #método para mostrar o gráfico que é engatilhado
     def mostrarGrafico(self):
         #Pega-se o menor valor de intensidade do dataframe do padrão
@@ -858,6 +877,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         plt.xlabel("Ângulo 2theta (°)")
         plt.ylabel("Intensidade (Contagens)")
         plt.legend()
+        gerenciador=plt.get_current_fig_manager()
+        gerenciador.set_window_title("Os 3 melhores CIFs para o padrão")
         plt.show()
         # Aproveitando-se do parâmetro que ditou o
         # o aumento em até 150 vezes da intensidade dos CIFs
@@ -879,6 +900,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def salvarGraficoCIFs(self):
         #A mesma ideia mas agora é para salvar
         menorValor=self.dataFramePadraoNoTodo['y'].min()
+        plt.close()
+        plt.figure(figsize=(10,6))
         plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
         if menorValor <= 500:
             for i in range(3):
@@ -898,7 +921,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         plt.xlabel("Ângulo 2theta (°)")
         plt.ylabel("Intensidade (Contagens)")
         plt.legend()
-        plt.savefig('graficoMelhoresCIFs.png')
+        plt.savefig('graficoMelhoresCIFs.png',dpi=300)
         plt.close()
         if menorValor <= 500:
             for i in range(3):
@@ -912,6 +935,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
+        self.mostrarConclusao()
     #Método para comparar picos
     def compararPicos(self):
         self.mostrarInicio()
@@ -1186,6 +1210,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.arrayAs3melhores=None
         self.dataFramePadraoNoTodo=None
         self.arrayDfNomesOrden=None
+        self.verificou1=None
+        self.verificou2=None
     #Os métodos a seguir são pop-ups como o de método de erro.
     #Por isso vou me abster de explicar esses comandos de novo
     #com a ressalva de um que vou citar no primeiro método
