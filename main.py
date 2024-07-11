@@ -921,7 +921,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         plt.xlabel("Ângulo 2theta (°)")
         plt.ylabel("Intensidade (Contagens)")
         plt.legend()
-        plt.savefig('graficoMelhoresCIFs.png',dpi=300)
+        if self.verificou1 == True:
+            plt.savefig('graficoMelhoresCIFs.png',dpi=300)
+        elif self.verificou2 == True:
+            plt.savefig('graficosMelhoresCIFs_PoucosPicos.png',dpi=300)
         plt.close()
         if menorValor <= 500:
             for i in range(3):
