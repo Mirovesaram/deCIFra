@@ -124,17 +124,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #serão utilizados ao longo dos métodos
         #engatilhados ao longo do programa
 
-        #Esse atributo tem como nome uma convenção
-        #da biblioteca findpeaks e virou um atributo 
-        # da classe por ter que ser criado em um 
-        # método e utilizado em outro
-        self.X = None
-        #Esse atributo vai armazenar a array
-        #criada a partir da ordenação de itens
-        #de uma array já criada no método de
-        #comparar picos (No caso, tal)
-        #array será as dos nomes do CIFs
-        self.arrayDfNomesOrden = None
+        # Tais atributos serão classificados também pela aba
+        # que pertecem
+
+        # ATRIBUTOS DA ABA COMPARAR PICOS {
+        #
+        #
         """
         Esse vai armazenar os dataframes
         criados das reflexões de cada cif
@@ -147,6 +142,42 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         .xy
         """
         self.dataFramePadraoNoTodo = None
+        # Esse atributo vai armazenar a array
+        # criada a partir da ordenação de itens
+        # de uma array já criada no método de
+        # comparar picos (No caso, tal)
+        # array será as dos nomes do CIFs
+        self.arrayDfNomesOrden = None
+        # Esse atributo vai armazenar 
+        # a array de dataframes de comparação
+        # ordenadas pela pontuação de cada dataframe
+        # de comparação
+        self.arrayDfCompOrden=None
+        # Esse atributo vai armazenar o número de abas
+        # para as planilhas de CIFs e comparações, tal
+        # número é ditado a partir do número de arquivos
+        # detectados
+        self.numeroDeAbas=None
+        # Esse atributo armazena valores booleanos
+        # que podem informar ao programa se o método principal
+        # compararPicos será utilizado no contexto da aba Com-
+        # parar Picos
+        self.verificou1=None
+        # 
+        #
+        # } ATRIBUTOS DA ABA COMPARAR PICOS
+        
+        self.verificou2=None
+
+
+        #Esse atributo tem como nome uma convenção
+        #da biblioteca findpeaks e virou um atributo 
+        # da classe por ter que ser criado em um 
+        # método e utilizado em outro
+        self.X = None
+        
+        
+        
         """
         Esse atributo é criado para abrigar
         um QDialogBox. O porquê de fazer isso
@@ -335,9 +366,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.pushButtonDetectar.clicked.connect(self.detectarVisualizarPicos)
 
-        self.pushButtonSalvarFigura.clicked.connect(self.salvarGrafico)
-
-        self.pushButtonImportar.clicked.connect(self.importarAngulos)
+        self.pushButtonImportar.clicked.connect(self.popUpPlanilhaAngulos)
 
         self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadraoAdicionarPicos)
 
@@ -392,43 +421,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label.adjustSize()"""
     def mudarParaAbaAjuda(self):
         self.tabWidget.setCurrentIndex(3)
-    #A explicação dessas linhas de comando e a necessidade do método já foram explicados
-    def emitirSinaisComboBoxPicos(self):
-            self.comboBoxPico1.setCurrentIndex(0)
-            self.comboBoxPico1.activated.emit(0)
-            self.comboBoxPico2.setCurrentIndex(0)
-            self.comboBoxPico2.activated.emit(0)
-            self.comboBoxPico3.setCurrentIndex(0)
-            self.comboBoxPico3.activated.emit(0)
-            self.comboBoxPico4.setCurrentIndex(0)
-            self.comboBoxPico4.activated.emit(0)
-            self.comboBoxPico5.setCurrentIndex(0)
-            self.comboBoxPico5.activated.emit(0)
-    #Esse aqui é basicamente para fazer o mesmo que o método anterior, não repetir
-    #um monte de linhas, a explicação vou fazer no método
-    def removerItens(self):
-        #Aqui é utilizado um laço de repetição que 
-        #começa no atributo ultimoIndex (Caso ele
-        #esteja com algum valor diferente de None)
-        #e é para terminar no 0 e decresce 1
-        #unidade a cada repetição. Fazer a remoção 
-        #dos itens começando do último para o pri-
-        # meiro se deve ao fato de que caso 
-        # seja feito o do primeiro para o últi-
-        # mo, constantemente o tamanho das comboBoxes esta-
-        # rão sendo trocados. No fim, só vai sobrar o valor 
-        # Vazio nesse caso
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico1.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico2.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico3.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico4.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico5.removeItem(i)
-        self.emitirSinaisComboBoxPicos()
+    #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
+    def itemSelecionado(self,index):
+        self.valorSelecionado=self.caixaRadiacoes.itemData(index)
+    def itemSelecionado2(self,index):
+        self.valorSelecionado2=self.caixaRadiacoes_2.itemData(index)
     #Métodos engatilhados quando o activated é acionado
     #para selecionar os itens em cada comboBox
     def picoSelecionado1(self,index):
@@ -436,64 +433,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.arrayPicos[0]=self.pico1
         #Somente para testes
         #print(self.arrayPicos)
-
     def picoSelecionado2(self,index):
         self.pico2=self.comboBoxPico2.itemData(index)
         self.arrayPicos[1]=self.pico2
         #print(self.arrayPicos)
-
     def picoSelecionado3(self,index):
         self.pico3=self.comboBoxPico3.itemData(index)
         self.arrayPicos[2]=self.pico3
         #print(self.arrayPicos)
-
     def picoSelecionado4(self,index):
         self.pico4=self.comboBoxPico4.itemData(index)
         self.arrayPicos[3]=self.pico4
-        #print(self.arrayPicos)
-        
+        #print(self.arrayPicos)  
     def picoSelecionado5(self,index):
         self.pico5=self.comboBoxPico5.itemData(index)
         self.arrayPicos[4]=self.pico5          
         """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
         print(self.arrayPicosSemNone)"""
         #print(self.arrayPicos)
-    #Esse método converte uma array para um dataframe
-    def arrayParaDataFrame(self):
-        #Primeiro, é criado uma array que não tem itens None
-        #acho que dá para considerar isso uma compreensão de
-        #lista
-        self.arraySemNone = [item for item in self.arrayPicos if item is not None]
-        #Se array não está vazia
-        if self.arraySemNone != []:
-            #Use o método set para criar uma array com
-            #um conjunto de itens não repetidos e ordenados
-            #(Todos os itens são float)
-            self.arraySNoneSRepet=set(self.arraySemNone)
-            #Transforme essa array em um dataframe de uma única
-            #coluna chamada "Ângulos 2theta (°)"
-            self.dfPicos=pd.DataFrame(self.arraySNoneSRepet, columns=["Ângulos 2theta (°)"])
-            #Para fins de teste e avaliação do valor recebido
-            #print(self.dfPicos)
-            #Não haverá trava lógica para a ação do método comparar picos
-            #sendo utilizado no contexto do tab Comparar Poucos Picos
-            self.travaLogica=False
-        #Caso a array esteja vazia (Todos os comboBox estão com
-        #o dado "Vazio" selecionado)
-        else:
-            #Reinicie o atributo dfPicos para o valor
-            #padrão None
-            self.dfPicos=None
-            #Acione a trava lógica para não haver acionamento
-            #do método comparar picos no contexto da tab Comparar
-            #Poucos Picos
-            self.travaLogica=True
-             
-    #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
-    def itemSelecionado(self,index):
-        self.valorSelecionado=self.caixaRadiacoes.itemData(index)
-    def itemSelecionado2(self,index):
-        self.valorSelecionado2=self.caixaRadiacoes_2.itemData(index)
+    
     #Método para abrir o explorer do computador e selecionar a pasta necessária
     def abrirDirEventCIFs(self):
         """
@@ -616,7 +574,43 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
             if self.ultimoIndex:
                 self.removerItens()
-                
+    #Esse aqui é basicamente para fazer o mesmo que o próximo método, não repetir
+    #um monte de linhas, a explicação vou fazer no método
+    def removerItens(self):
+        #Aqui é utilizado um laço de repetição que 
+        #começa no atributo ultimoIndex (Caso ele
+        #esteja com algum valor diferente de None)
+        #e é para terminar no 0 e decresce 1
+        #unidade a cada repetição. Fazer a remoção 
+        #dos itens começando do último para o pri-
+        # meiro se deve ao fato de que caso 
+        # seja feito o do primeiro para o últi-
+        # mo, constantemente o tamanho das comboBoxes esta-
+        # rão sendo trocados. No fim, só vai sobrar o valor 
+        # Vazio nesse caso
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico1.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico2.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico3.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico4.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico5.removeItem(i)
+        self.emitirSinaisComboBoxPicos()
+    #A explicação dessas linhas de comando e a necessidade do método já foram explicados
+    def emitirSinaisComboBoxPicos(self):
+            self.comboBoxPico1.setCurrentIndex(0)
+            self.comboBoxPico1.activated.emit(0)
+            self.comboBoxPico2.setCurrentIndex(0)
+            self.comboBoxPico2.activated.emit(0)
+            self.comboBoxPico3.setCurrentIndex(0)
+            self.comboBoxPico3.activated.emit(0)
+            self.comboBoxPico4.setCurrentIndex(0)
+            self.comboBoxPico4.activated.emit(0)
+            self.comboBoxPico5.setCurrentIndex(0)
+            self.comboBoxPico5.activated.emit(0)
     def abrirDirEventCIFs2(self):
         self.diretorioCIFs2=None
         opcoes = QFileDialog.Options()
@@ -665,13 +659,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #Coloca o valor como 0
             self.doubleSpinBoxMudarLimite.setValue(0)
             self.valorLimite=None
-            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')  
+            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
+    #Método da label que mostra o limite padrão para aqueles dados
+    def mostrarLimitePadrao(self):
+        if self.limitePadrao:
+            self.labelValorLimite.setText(str(self.limitePadrao))
+        else:
+            self.labelValorLimite.setText('-')
     #Aqui é o método engatilhado do botão de detectar e visualizar o gráfico
     def detectarVisualizarPicos(self):
         #buscaXyPadrao=os.path.join(caminho,'*.xy')
         #ArrayCaminhoXy=glob.glob(buscaXyPadrao)
         #Se o arquivo está preenchido
         if self.arquivoXy:
+            # Tal comando evita que o caso o usuário pressione mais uma vez o
+            # botão de mostrar gráfico, o que estava já aberto seja fechado
+            plt.close()
             #Armazenar o valorLimite com o valor presente no doubleSpinBox
             self.valorLimite=self.doubleSpinBoxMudarLimite.value()
             #Armazenar o método findpeaks com o limit sendo o valorLimite na variável fp   
@@ -703,60 +706,36 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Se não
         else:
             raise ValueError('O arquivo .xy não foi selecionado.')
-    #Método para salvar gráfico 
-    def salvarGrafico(self):
+    
+    def popUpPlanilhaAngulos(self):
         if self.arquivoXy:
-            self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
-            fp = findpeaks(method='topology',limit=self.valorLimite)
-            results = fp.fit(self.X)
-            #fp.plot()
-            angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
-            #Não comentei antes, mas usar o próximo comando seria 
-            # necessário caso tivesse sendo utilizado outro 
-            # software GUI como Kivy, por exemplo, ou fosse 
-            # necessário trocar esse software
-            #plt.switch_backend('Qt5Agg')
-            # Fecha para não causar problemas com um possível .show() que
-            # não tenha sido fechado pelo usuário (Basicamente enquanto a janela
-            # que foi criada para o plot não for fechada, o .close() que é acionado
-            # quando se fecha essa janela não ativa. Logo, ter um .close() no
-            # começo do método de salvamento ajuda nisso)
-            plt.close()
-            # Aumenta o tamanho da figura para 10 polegadas de largura por
-            # 6 polegadas de altura
-            plt.figure(figsize=(10,6))
-            plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
-            plt.scatter(self.angulos[angulosPicos], self.intensidades[angulosPicos], color='red', label='Picos')
-            plt.xlabel("Ângulo 2theta (°)")
-            plt.ylabel("Intensidade (Contagens)")
-            plt.legend()
-            # Salvar a figura como uma .png com dpi de 300 (pontos por polegada)
-            plt.savefig("picosEncontrados.png",dpi=300)
-            #Fechar a figura para não sobrepor no método de mostrar o gráfico,
-            #já que o .close() já está embutido lá
-            plt.close()
-            #Método para mostrar a conclusão
-            self.mostrarConclusao()
+            nomeArquivo=None
+            opcoes=QFileDialog.Options()
+            filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
+            nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilha com ângulos", "", filtroDeArquivo, options=opcoes)
+            if nomeArquivo:
+                if not nomeArquivo.endswith('.xlsx'):
+                    nomeArquivo += '.xlsx'
+                self.salvarPlanilhaAngulos(nomeArquivo)
+            else:
+                mensagem=QMessageBox()
+                mensagem.setIcon(QMessageBox.Information)
+                mensagem.setText("A planilha de ângulos não foi salva")
+                mensagem.setWindowTitle("Arquivo não foi salvo")
+                mensagem.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
+                mensagem.exec_()
         else:
             raise ValueError('O arquivo .xy não foi selecionado.')
-    #Método para importar ângulos 
-    def importarAngulos(self):
-        if self.arquivoXy:
-            self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
-            fp = findpeaks(method='topology',limit=self.valorLimite)
-            results = fp.fit(self.X)
-            angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
-            dataFramePicos=pd.DataFrame(self.angulos[angulosPicos], columns=["Ângulos"])
-            dataFramePicos.to_excel(r'picosEncontrados.xlsx')
-            self.mostrarConclusao()
-        else:
-            raise ValueError('O arquivo .xy não foi selecionado.')
-    #Método da label que mostra o limite padrão para aqueles dados
-    def mostrarLimitePadrao(self):
-        if self.limitePadrao:
-            self.labelValorLimite.setText(str(self.limitePadrao))
-        else:
-            self.labelValorLimite.setText('-')
+
+    def salvarPlanilhaAngulos(self, parametroArquivo):
+        nomeArquivo=parametroArquivo
+        self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
+        fp = findpeaks(method='topology',limit=self.valorLimite)
+        results = fp.fit(self.X)
+        angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
+        dataFramePicos=pd.DataFrame(self.angulos[angulosPicos], columns=["Ângulos"])
+        with pd.ExcelWriter(nomeArquivo) as writer:
+            dataFramePicos.to_excel(writer,sheet_name="Ângulos encontrados",index=False)
     #Método que verifica se os dois últimos atributos do construtor deixaram de ser
     #Nones (vazios)
     def verificar(self):
@@ -816,146 +795,40 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if not self.diretorioPadrao2:
                 #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
                 raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
-    #Esse método é acionado no fim do método compararPicos em que mostra um gráfico com os três melhores CIFs
-    def mostrarPlot(self):
-        #Aqui, o atributo antes criado armazena o pop-up do QDialog
-        self.dialogo=QDialog()
-        self.dialogo.setWindowTitle("Comparação concluída")
-        self.dialogo.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
-        #E cria-se um layout para esse pop-up
-        layout=QVBoxLayout()
-        #Então uma label com o seguinte texto
-        texto=QLabel("Comparação concluída, resultados salvos em:\n"+self.diretorioAtual+"\nGráfico disponível:")
-        # Adiciona-se esse texto ao layout do Pop-up
-        layout.addWidget(texto)
-        # Cria-se uma caixa para botões do QDialog
-        caixaBotoes=QDialogButtonBox()
-        # Com um botão para criar o gráfico
-        botaoMostrarGrafico = QPushButton("Mostrar Gráfico")
-        # E outro para salvar
-        botaoSalvarGrafico = QPushButton("Salvar Gráfico (.png)")
-        # Adicionam-se os botões à caixa
-        caixaBotoes.addButton(botaoMostrarGrafico, QDialogButtonBox.ActionRole)
-        caixaBotoes.addButton(botaoSalvarGrafico, QDialogButtonBox.ActionRole)
-        # e então adiciona-se a caixa ao layout
-        layout.addWidget(caixaBotoes)
-        # e então de fato seta esse diálogo para o Pop-up       
-        self.dialogo.setLayout(layout)
-        #Aqui cria-se uma variável para alterar a fonte desse pop-up para o tamanho 11
-        fonte = QtGui.QFont()
-        fonte.setPointSize(11)
-        self.dialogo.setFont(fonte)
-        botaoMostrarGrafico.clicked.connect(self.mostrarGrafico)
-        botaoSalvarGrafico.clicked.connect(self.salvarGraficoCIFs)
-        # Vou colocar essa variável para iniciar um evento de loop
-        # e encerrar a execução de código como estivesse o .exec()
-        # sem a parte ruim de tornar o QDialog em primeiro plano
-        # e sem permitir que as outras janelas sejam executadas
-        loop = QEventLoop()
-        #A utilização do método .open() ao invés do método .exec()
-        # para permitir que o pop-up fique em segundo plano
-        self.dialogo.open()
-        #Iniciar o evento de loop, impedindo o código de continuar
-        loop.exec_()
-    #método para mostrar o gráfico que é engatilhado
-    def mostrarGrafico(self):
-        #Pega-se o menor valor de intensidade do dataframe do padrão
-        menorValor=self.dataFramePadraoNoTodo['y'].min()
-        #Faz o plot do padrão
-        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
-        #Se o padrão tem como menor valor de intensidade até 500
-        if menorValor <= 500:
-            #Aumente as intensidades dos 3 melhores CIFs em 50 vezes
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
-        #Caso até 1000...
-        elif menorValor <= 1000:
-            #Aumente em 100 vezes
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
-        # Caso em até 2000...
-        elif menorValor <= 2000:
-            # Aumente em 150 vezes...
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150
-        # Então faça um gráfico de barras para cada CIF tendo como label sua colocação e seu nome,
-        # como largura tem-se 0.1 pixels e cor vermelha para o primeiro, verde para o segundo e preto
-        # para o terceiro
-        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
-        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
-        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
-        plt.xlabel("Ângulo 2theta (°)")
-        plt.ylabel("Intensidade (Contagens)")
-        plt.legend()
-        gerenciador=plt.get_current_fig_manager()
-        gerenciador.set_window_title("Os 3 melhores CIFs para o padrão")
-        plt.show()
-        # Aproveitando-se do parâmetro que ditou o
-        # o aumento em até 150 vezes da intensidade dos CIFs
-        # utiliza-se o mesmo para diminuir os valores às intensidades
-        # anteriores
-        if menorValor <= 500:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/50
-        elif menorValor <= 1000:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/100
-        elif menorValor <= 2000:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
-    #Método engatilhado para salvar gráfico no Pop-up
-    def salvarGraficoCIFs(self):
-        #A mesma ideia mas agora é para salvar
-        menorValor=self.dataFramePadraoNoTodo['y'].min()
-        plt.close()
-        plt.figure(figsize=(10,6))
-        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
-        if menorValor <= 500:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
-        elif menorValor <= 1000:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
-        elif menorValor <= 2000:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150
-        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
-        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
-        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
-        plt.xlabel("Ângulo 2theta (°)")
-        plt.ylabel("Intensidade (Contagens)")
-        plt.legend()
-        if self.verificou1 == True:
-            plt.savefig('graficoMelhoresCIFs.png',dpi=300)
-        elif self.verificou2 == True:
-            plt.savefig('graficosMelhoresCIFs_PoucosPicos.png',dpi=300)
-        plt.close()
-        if menorValor <= 500:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/50
-        elif menorValor <= 1000:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/100
-        elif menorValor <= 2000:
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
-        self.mostrarConclusao()
+    #Esse método converte uma array para um dataframe
+    def arrayParaDataFrame(self):
+        #Primeiro, é criado uma array que não tem itens None
+        #acho que dá para considerar isso uma compreensão de
+        #lista
+        self.arraySemNone = [item for item in self.arrayPicos if item is not None]
+        #Se array não está vazia
+        if self.arraySemNone != []:
+            #Use o método set para criar uma array com
+            #um conjunto de itens não repetidos e ordenados
+            #(Todos os itens são float)
+            self.arraySNoneSRepet=set(self.arraySemNone)
+            #Transforme essa array em um dataframe de uma única
+            #coluna chamada "Ângulos 2theta (°)"
+            self.dfPicos=pd.DataFrame(self.arraySNoneSRepet, columns=["Ângulos 2theta (°)"])
+            #Para fins de teste e avaliação do valor recebido
+            #print(self.dfPicos)
+            #Não haverá trava lógica para a ação do método comparar picos
+            #sendo utilizado no contexto do tab Comparar Poucos Picos
+            self.travaLogica=False
+        #Caso a array esteja vazia (Todos os comboBox estão com
+        #o dado "Vazio" selecionado)
+        else:
+            #Reinicie o atributo dfPicos para o valor
+            #padrão None
+            self.dfPicos=None
+            #Acione a trava lógica para não haver acionamento
+            #do método comparar picos no contexto da tab Comparar
+            #Poucos Picos
+            self.travaLogica=True 
     #Método para comparar picos
     def compararPicos(self):
         self.mostrarInicio()
-        #Variável responsável por armazenar qual tipo de arquivo deve ser buscado
+        # Variável responsável por armazenar qual tipo de arquivo deve ser buscado
         extensaoArquivo='*.cif'
         # Aqui se utiliza os valores das travas lógicas
         # passadas nos métodos de verificar para saber de
@@ -1203,29 +1076,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Agora vamos garantir que os arrays que dizem respeito à planilha de CIFs seguem a mesma linha
         arrayDfCIFsOrden = [itemCIF for itemMedia, itemComparacao, itemCIF, itemNome in array_ordenada_com_medias]
         arrayDfNomesOrden = [itemNome for itemMedia,itemComparacao,itemCIF,itemNome in array_ordenada_com_medias]
-        with pd.ExcelWriter(f"{self.caminhoCIFs}/comparacao.xlsx") as writer1: #Cria-se um objeto para a planilha saída
-        
-        #Basicamente, ao fim das análises, os DataFrames criados são alojados na array de DataFrames e
-        #cada dataFrame é endereçado a sua aba, garanta que cada aba tenha o nome correto da amostra que foi
-        #comparada
-            for numeroAba in range(numeroDeAbas): #Aqui esse for é para garantir que diferentes dataFrames estão sendo
-                                        #sendo adicionados em abas diferentes à planilha saída
-                arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
-        with pd.ExcelWriter(f"{self.caminhoCIFs}/planilhaCIFs.xlsx") as writer2:
-            for numeroAba in range(numeroDeAbas):
-                arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=arrayDfNomesOrden[numeroAba],index=False)
         # É aqui onde os atributos recebem valores
         # para utilizar no método mostrarPlot()
         self.arrayAs3melhores=arrayDfCIFsOrden
         self.dataFramePadraoNoTodo=dataFramePadraoNoTodo
         self.arrayDfNomesOrden=arrayDfNomesOrden
-        self.mostrarPlot()
+        self.arrayDfCompOrden=arrayDfCompOrden
+        self.numeroDeAbas=numeroDeAbas
+        self.mostrarResultados()
         #Após o QDialogBox ser fechado, as linhas de comando
         # continuam e colocam o valor padrão dos atributos para
         # não haver problemas
         self.arrayAs3melhores=None
         self.dataFramePadraoNoTodo=None
         self.arrayDfNomesOrden=None
+        self.arrayDfCompOrden=None
+        self.numeroDeAbas=None
         self.verificou1=None
         self.verificou2=None
     #Os métodos a seguir são pop-ups como o de método de erro.
@@ -1238,15 +1104,158 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         inicio.setWindowTitle("Processo de comparação iniciada")
         inicio.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
         inicio.exec_()
+    #Esse método é acionado no fim do método compararPicos em que mostra um gráfico com os três melhores CIFs
+    def mostrarResultados(self):
+        #Aqui, o atributo antes criado armazena o pop-up do QDialog
+        self.dialogo=QDialog()
+        self.dialogo.setWindowTitle("Comparação concluída")
+        self.dialogo.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
+        #E cria-se um layout para esse pop-up
+        layout=QVBoxLayout()
+        #Então uma label com o seguinte texto
+        texto=QLabel("Comparação concluída, resultados salvos em:\n"+self.diretorioAtual+"\nGráfico disponível:")
+        # Adiciona-se esse texto ao layout do Pop-up
+        layout.addWidget(texto)
+        # Cria-se uma caixa para botões do QDialog
+        caixaBotoes=QDialogButtonBox()
+        # Com um botão para criar o gráfico
+        botaoMostrarGrafico = QPushButton("Mostrar Gráfico")
+        # Um botão para salvar as planilhas de CIFs
+        botaoSalvarPlanilhaCIF = QPushButton("Salvar planilha de CIFs")
+        # Um botão para salvar as planilhas de comparação
+        botaoSalvarPlanilhaComp = QPushButton("Salvar planinhas de comparação")
+        # Adicionam-se os botões à caixa
+        caixaBotoes.addButton(botaoMostrarGrafico, QDialogButtonBox.ActionRole)
+        caixaBotoes.addButton(botaoSalvarPlanilhaCIF, QDialogButtonBox.ActionRole)
+        caixaBotoes.addButton(botaoSalvarPlanilhaComp, QDialogButtonBox.ActionRole)
+        # e então adiciona-se a caixa ao layout
+        layout.addWidget(caixaBotoes)
+        # e então de fato seta esse diálogo para o Pop-up       
+        self.dialogo.setLayout(layout)
+        #Aqui cria-se uma variável para alterar a fonte desse pop-up para o tamanho 11
+        fonte = QtGui.QFont()
+        fonte.setPointSize(11)
+        self.dialogo.setFont(fonte)
+        botaoMostrarGrafico.clicked.connect(self.mostrarGrafico)
+        botaoSalvarPlanilhaCIF.clicked.connect(self.popUpPlanilhaCIF)
+        botaoSalvarPlanilhaComp.clicked.connect(self.popUpPlanilhaComparacao)
+        # Vou colocar essa variável para iniciar um evento de loop
+        # e encerrar a execução de código como estivesse o .exec()
+        # sem a parte ruim de tornar o QDialog em primeiro plano
+        # e sem permitir que as outras janelas sejam executadas
+        loop = QEventLoop()
+        #A utilização do método .open() ao invés do método .exec()
+        # para permitir que o pop-up fique em segundo plano
+        self.dialogo.open()
+        #Iniciar o evento de loop, impedindo o código de continuar
+        loop.exec_()
+    #método para mostrar o gráfico que é engatilhado
+    def mostrarGrafico(self):
+        # Tal comando evita que o caso o usuário pressione mais uma vez o
+        # botão de mostrar gráfico, o que estava já aberto seja fechado e também
+        # permite que a correção das intensidades dos CIFs seja efetuada corretamente
+        # sem causar uma segundo multiplicação
+        plt.close()
+        # Pega-se o menor valor de intensidade do dataframe do padrão
+        menorValor=self.dataFramePadraoNoTodo['y'].min()
+        # Faz o plot do padrão
+        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
+        #Se o padrão tem como menor valor de intensidade até 500
+        if menorValor <= 500:
+            #Aumente as intensidades dos 3 melhores CIFs em 50 vezes
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
+        #Caso até 1000...
+        elif menorValor <= 1000:
+            #Aumente em 100 vezes
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
+        # Caso em até 2000...
+        elif menorValor <= 2000:
+            # Aumente em 150 vezes...
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150
+        # Então faça um gráfico de barras para cada CIF tendo como label sua colocação e seu nome,
+        # como largura tem-se 0.1 pixels e cor vermelha para o primeiro, verde para o segundo e preto
+        # para o terceiro
+        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
+        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
+        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
+        plt.xlabel("Ângulo 2theta (°)")
+        plt.ylabel("Intensidade (Contagens)")
+        plt.legend()
+        gerenciador=plt.get_current_fig_manager()
+        gerenciador.set_window_title("Os 3 melhores CIFs para o padrão")
+        plt.show()
+        # Aproveitando-se do parâmetro que ditou o
+        # o aumento em até 150 vezes da intensidade dos CIFs
+        # utiliza-se o mesmo para diminuir os valores às intensidades
+        # anteriores
+        if menorValor <= 500:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/50
+        elif menorValor <= 1000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/100
+        elif menorValor <= 2000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
+    # Esse método é para escolha de um diretório para salvar
+    # os arquivos que foram criados seja com o compararPicos no
+    # contexto do de comparar com todos picos
+    # ou com alguns picos e para salvamento de ângulos
+    def popUpPlanilhaCIF(self):
+        nomeArquivo=None
+        opcoes=QFileDialog.Options()
+        filtroDeArquivo="Arquivos .xlsx (*.xlsx);;Todos os arquivos (*)"
+        nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilha dos CIFs", "", filtroDeArquivo, options=opcoes)
+        if nomeArquivo:
+            self.salvarPlanilhaCIF(nomeArquivo)
+        else:
+            mensagem=QMessageBox()
+            mensagem.setIcon(QMessageBox.Information)
+            mensagem.setText("A planilha dos CIFs não foi salva")
+            mensagem.setWindowTitle("Arquivo não foi salvo")
+            mensagem.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
+            mensagem.exec_()
 
-    def mostrarConclusao(self):
-        conclusao = QMessageBox()
-        conclusao.setIcon(QMessageBox.Information)
-        #Aqui coloca-se o texto demonstrando onde a informação foi guardada
-        conclusao.setText("A tarefa foi concluída com sucesso.\nO resultado foi colocado em:\n"+self.diretorioAtual+"\n")
-        conclusao.setWindowTitle("Tarefa concluída!")
-        conclusao.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
-        conclusao.exec_()
+    def popUpPlanilhaComparacao(self):
+        nomeArquivo=None
+        opcoes=QFileDialog.Options()
+        filtroDeArquivo="Arquivos .xlsx (*.xlsx);;Todos os arquivos (*)"
+        nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilhas de comparação", "", filtroDeArquivo, options=opcoes)
+        if nomeArquivo:
+            self.salvarPlanilhaComparacao(nomeArquivo)
+        else:
+            mensagem=QMessageBox()
+            mensagem.setIcon(QMessageBox.Information)
+            mensagem.setText("A planilha de comparação não foi salva")
+            mensagem.setWindowTitle("Arquivo não foi salvo")
+            mensagem.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
+            mensagem.exec_()
+
+    def salvarPlanilhaCIF(self,parametroNomeArquivo):
+        nomeArquivo=parametroNomeArquivo
+        with pd.ExcelWriter(nomeArquivo) as writer2:
+            for numeroAba in range(self.numeroDeAbas):
+                self.arrayDfCIFsOrden[numeroAba].to_excel(writer2,sheet_name=self.arrayDfNomesOrden[numeroAba],index=False)
+
+    def salvarPlanilhaComparacao(self,parametroNomeArquivo):
+        nomeArquivo=parametroNomeArquivo
+        with pd.ExcelWriter(nomeArquivo) as writer1: #Cria-se um objeto para a planilha saída
+        
+        #Basicamente, ao fim das análises, os DataFrames criados são alojados na array de DataFrames e
+        #cada dataFrame é endereçado a sua aba, garanta que cada aba tenha o nome correto da amostra que foi
+        #comparada
+            for numeroAba in range(self.numeroDeAbas): #Aqui esse for é para garantir que diferentes dataFrames estão sendo
+                                        #sendo adicionados em abas diferentes à planilha saída
+                self.arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=self.arrayDfNomesOrden[numeroAba],index=False)
 #Caso o código seja inicializado? Esse arranjo do if (Ainda mais
 #por ser considerado um bom comportamento na escrita de códigos python)
 # e o operador |= parecem ser conhecimentos importantes de se ter em

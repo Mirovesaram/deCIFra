@@ -401,24 +401,6 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButtonSalvarFigura">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>200</y>
-        <width>170</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Salvar figura (.png)</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="pushButtonImportar">
       <property name="geometry">
        <rect>
