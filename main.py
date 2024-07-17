@@ -1057,7 +1057,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     elif 0.4 < diferenca <= 0.5:
                         menosBom+=1
                         nota=0.2
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,diferenca,'Sim','Menos bom','Não','Não',nota]
+                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,diferenca,'Sim','Ruim','Não','Não',nota]
                     #Cada loc tem como indície de linha a variável contador que sempre vai somando 1 ao fim de cada linha padrão comparada
                     #com a linha amostra, utilizar o contador como indície de linha no DataFrame é importante pois assim toda vez que um
                     #dos condicionais forem satisfeitos, o índicie utilizado será um indície indisponível no DataFrame o que faz a função
@@ -1107,7 +1107,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #Cada tabela deve ter uma linha com informações no final:
             arrayDataFramesComparacao[numeroAba].loc[contador]=[f'Quantidade\nde Muito bom(s):\n{muitoBom}',f'Quantidade\nde Bom(s):\n{bom}',
                                                         f'Quantidade\nde Médio(s):\n{medio}',f'Quantidade\nde Pouco bom(s):\n{poucoBom}',
-                                                        f'Quantidade\nde Menos bom(s):\n{menosBom}','------',
+                                                        f'Quantidade\nde Ruim(s):\n{menosBom}','------',
                                                         f'Quantidade\nde picos\nexcedentes:\n{picoExcedente}',
                                                         f'Quantidade\nde picos\nfaltantes:\n{picoFaltante}',f'Nota\nfinal\né:{mediaColunaNotas}']
         #ipdb.set_trace() #Um comando para
