@@ -127,9 +127,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Tais atributos serão classificados também pela aba
         # que pertecem
 
+        #
         # ATRIBUTOS DA ABA COMPARAR PICOS {
         #
-        #
+        """
+        Armazenar o diretório do padrão
+        para a tab Comparar picos
+        """
+        self.diretorioPadrao=None
+        """
+        Armazenar o diretório dos CIFs
+        para a tab Comparar picos
+        """
+        self.diretorioCIFs=None
         """
         Esse vai armazenar os dataframes
         criados das reflexões de cada cif
@@ -158,26 +168,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # número é ditado a partir do número de arquivos
         # detectados
         self.numeroDeAbas=None
+        # Esse atributo é para armazenar a array de dataframes
+        # dos CIFs que estão ordenados pela nota
+        self.arrayDfCIFsOrden=None
         # Esse atributo armazena valores booleanos
         # que podem informar ao programa se o método principal
         # compararPicos será utilizado no contexto da aba Com-
         # parar Picos
         self.verificou1=None
-        # 
-        #
-        # } ATRIBUTOS DA ABA COMPARAR PICOS
-        
-        self.verificou2=None
-
-
-        #Esse atributo tem como nome uma convenção
-        #da biblioteca findpeaks e virou um atributo 
-        # da classe por ter que ser criado em um 
-        # método e utilizado em outro
-        self.X = None
-        
-        
-        
+        # Esse atributo armazena a radiação escolhida na caixa de
+        # radiações
+        self.valorSelecionado=None
+        # Esse atributo armazena o caminho da pasta de CIFs.
+        # É usado tanto no contexto do comparar poucos picos
+        # quanto no contexto do comparar picos
+        self.caminhoCIFs=None
+        # Esse atributo armazena o caminho do padrão
+        # É usado tanto no contexto do comparar poucos picos
+        # quanto no contexto do comparar picos
+        self.caminhoPadrao=None
         """
         Esse atributo é criado para abrigar
         um QDialogBox. O porquê de fazer isso
@@ -191,12 +200,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         num método à parte da classe principal
         """
         self.dialogo=None
-        """
-        Esse atributo foi feito para acessar o diretório
-        em que o script está sendo executado, tal informação
-        é utilizada nos pop-ups QMessageBox e QDialogBox
-        """
-        self.diretorioAtual=os.path.dirname(os.path.abspath(__file__))
+        #
+        # } 
+        #
+
+        #
+        # ATRIBUTOS DA ABA DETECTAR PICOS {
+        #
+
+        # Esse atributo tem como nome uma convenção
+        # da biblioteca findpeaks e virou um atributo 
+        # da classe por ter que ser criado em um 
+        # método e utilizado em outro
+        self.X = None
         """Esse inicializa o valor atual encontrado no spinBox
         da tab Detectar"""
         self.valorLimite = self.doubleSpinBoxMudarLimite.value()
@@ -210,27 +226,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Detectar
         """
         self.arquivoXy = None
+        #
+        # }
+        #
+
+        #
+        # ATRIBUTOS DA ABA COMPARAR POUCOS PICOS {
+        #
+
+        # Atributo que armazena o valor da radiação escolhida
+        # na caixa
+        self.valorSelecionado2=None
         """
-        Essas são travas lógicas que permitem saber de qual
-        método verificar foi utilizado e saber quais dados
+        Essa também é uma trava lógica que permite saber de qual
+        método verificar (Como o verificou1) foi utilizado e saber quais dados
         devem ser utilizados sem haver confusão de troca de
         dados entre as tabs Comparar picos e Comparar poucos picos
         que tem métodos que fazem coisas bem parecidas
         """
-        self.verificou1=None
-
         self.verificou2=None
-        """
-        Mais uma trava lógica, essa para
-        travar o método comparar picos caso 
-        dado dataframe necessário não seja feito
-        (Essa trava substancialmente é para a aba
-        comparar poucos picos). Ela teve que ser
-        utilzada pois não existia uma boa condi-
-        ção para ser utilizada com o dataFrame
-        estar vazio ou não
-        """
-        self.travaLogica=None
         """
         Armazenar o diretório dos CIFs
         para a tab Comparar poucos picos
@@ -242,15 +256,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.diretorioPadrao2=None
         """
-        Armazenar o diretório dos CIFs
-        para a tab Comparar picos
+        Mais uma trava lógica, essa para
+        travar o método comparar picos caso 
+        dado dataframe necessário não seja feito
+        (Essa trava substancialmente é para a aba
+        comparar poucos picos). Ela teve que ser
+        utilzada pois não existia uma boa condi-
+        ção para ser utilizada com o dataFrame
+        estar vazio ou não
         """
-        self.diretorioCIFs=None
-        """
-        Armazenar o diretório do padrão
-        para a tab Comparar picos
-        """
-        self.diretorioPadrao=None
+        self.travaLogica=None
         """
         Armazenar o dataframe de ângulos escolhidos
         pelo usuário na tab Comparar poucos picos
@@ -267,6 +282,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         comparar Poucos picos
         """
         self.ultimoIndex=None
+        #
+        # }
+        #
+
         #Comando para deixar a janela não redimensionável
         #e com largura 800 pixels e altura 800 pixels
         self.setFixedSize(800,800)
@@ -362,7 +381,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoArquivoXyText.setStyleSheet("padding: 10px;")
         self.caminhoArquivoXyText.setGeometry(0,40,800,100)
 
-        self.botaoSelecionarArquivoXy.clicked.connect(self.abrirDirEventXy)
+        self.botaoSelecionarArquivoXy.clicked.connect(self.abrirArquivoEventXy)
 
         self.pushButtonDetectar.clicked.connect(self.detectarVisualizarPicos)
 
@@ -419,86 +438,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text = self.comboBoxPico1.currentText()
         self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
         self.label.adjustSize()"""
+    #
+    # MÉTODOS DA ABA AJUDAR {
+    #
     def mudarParaAbaAjuda(self):
         self.tabWidget.setCurrentIndex(3)
-    #O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
-    def itemSelecionado(self,index):
-        self.valorSelecionado=self.caixaRadiacoes.itemData(index)
-    def itemSelecionado2(self,index):
-        self.valorSelecionado2=self.caixaRadiacoes_2.itemData(index)
-    #Métodos engatilhados quando o activated é acionado
-    #para selecionar os itens em cada comboBox
-    def picoSelecionado1(self,index):
-        self.pico1=self.comboBoxPico1.itemData(index)
-        self.arrayPicos[0]=self.pico1
-        #Somente para testes
-        #print(self.arrayPicos)
-    def picoSelecionado2(self,index):
-        self.pico2=self.comboBoxPico2.itemData(index)
-        self.arrayPicos[1]=self.pico2
-        #print(self.arrayPicos)
-    def picoSelecionado3(self,index):
-        self.pico3=self.comboBoxPico3.itemData(index)
-        self.arrayPicos[2]=self.pico3
-        #print(self.arrayPicos)
-    def picoSelecionado4(self,index):
-        self.pico4=self.comboBoxPico4.itemData(index)
-        self.arrayPicos[3]=self.pico4
-        #print(self.arrayPicos)  
-    def picoSelecionado5(self,index):
-        self.pico5=self.comboBoxPico5.itemData(index)
-        self.arrayPicos[4]=self.pico5          
-        """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
-        print(self.arrayPicosSemNone)"""
-        #print(self.arrayPicos)
-    
-    #Método para abrir o explorer do computador e selecionar a pasta necessária
-    def abrirDirEventCIFs(self):
-        """
-        Essa primeira linha de código garante que toda vez que o botão seja aberto
-        e o diálogo de diretório seja iniciado o valor volte novamente a ser None não importa
-        quantas vezes o usuário faz isso. Não sei se pode causar um erro no futuro, caso ocorra
-        retirarei essa linha por ela não ser exatamente tão necessária. Essas medidas vão ser colocados no
-        outro método de abrir diretórios também
-        """
-        self.diretorioCIFs=None      
-        #Essa variável aloca a classe Options, não sei exatamente o que faz (Não entrei em detalhes)
-        opcoes = QFileDialog.Options()
-        #Não sei que operador é esse, mas essa função também dá a variável inicializada na linha anterior
-        #a função de somente mostrar diretórios (pastas), nada de arquivos
-        opcoes |= QFileDialog.ShowDirsOnly
-        #Esse é o comando da caixinha que apresenta o explorer para o usuário selecionar a pasta
-        #bem como essa variável aloca a string obtida (string do caminho da pasta) quando o usuário 
-        #seleciona a pasta nessa caixinha criada (Entenda caixinha como a janela que abre do explorer)
-        diretorioCIFs = QFileDialog.getExistingDirectory(self,'Selecionar Pasta dos CIFs','',options=opcoes)
-        #Atualiza o atributo antigamente inicializado para receber como valor a string do caminho
-        #da pasta
-        self.diretorioCIFs=diretorioCIFs
-        #laço condicional para mudar o texto da caixa de texto antes feita
-        #Se diretorioCIFs não está vazio...
-        if diretorioCIFs:
-            #...mude o texto da caixa de texto para o valor
-            #do diretorioCIFs
-            self.caminhoCIFsText.setText(diretorioCIFs)
-        #Essa segunda linha de código garante que caso o usuário não selecione nada no
-        #diálogo de diretórios ele seja informado disso mostrando que não há caminho selecionado
-        #Setar None é interessante pois no momento que o diálogo é iniciado, não importa se já
-        #tivesse um caminho selecionado, novamente ele voltaria à mensagem padrão imediatamente
-        #demonstrando que a informação do caminho já foi sobrescrita
-        else:
-            self.caminhoCIFsText.setText('O caminho aparecerá aqui quando selecionado')
-    #Não vou me estender, basicamente o mesmo do anterior
-    def abrirDirEventSeuPadrao(self):
-        self.diretorioPadrao=None
-        opcoes = QFileDialog.Options()
-        opcoes |= QFileDialog.ShowDirsOnly
-        diretorioPadrao = QFileDialog.getExistingDirectory(self,'Selecionar Pasta do seu Padrão','',options=opcoes)
-        self.diretorioPadrao=diretorioPadrao
-        if diretorioPadrao:
-            self.caminhoPadraoText.setText(diretorioPadrao)
-        else:
-            self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
-    #Aqui a ideia é parecida mas existe certas mudanças
+    #
+    # }
+    #
+
+    #
+    # MÉTODOS DA ABA COMPARAR POUCOS PICOS {
+    #
+
+    # Aqui a ideia é parecida com os métodos de busca de diretório
+    # da aba comparar picos mas existe certas mudanças
     def abrirDirEventSeuPadraoAdicionarPicos(self):
         self.diretorioPadrao2=None
         opcoes = QFileDialog.Options()
@@ -611,6 +565,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.comboBoxPico4.activated.emit(0)
             self.comboBoxPico5.setCurrentIndex(0)
             self.comboBoxPico5.activated.emit(0)
+    #Métodos engatilhados quando o activated é acionado
+    #para selecionar os itens em cada comboBox
+    def picoSelecionado1(self,index):
+        pico1=self.comboBoxPico1.itemData(index)
+        self.arrayPicos[0]=pico1
+        #Somente para testes
+        #print(self.arrayPicos)
+    def picoSelecionado2(self,index):
+        pico2=self.comboBoxPico2.itemData(index)
+        self.arrayPicos[1]=pico2
+        #print(self.arrayPicos)
+    def picoSelecionado3(self,index):
+        pico3=self.comboBoxPico3.itemData(index)
+        self.arrayPicos[2]=pico3
+        #print(self.arrayPicos)
+    def picoSelecionado4(self,index):
+        pico4=self.comboBoxPico4.itemData(index)
+        self.arrayPicos[3]=pico4
+        #print(self.arrayPicos)  
+    def picoSelecionado5(self,index):
+        pico5=self.comboBoxPico5.itemData(index)
+        self.arrayPicos[4]=pico5          
+        """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
+        print(self.arrayPicosSemNone)"""
+        #print(self.arrayPicos)
+    # Esse é igualzinho ao método de procura
+    # do diretório de CIFs da aba comparar
+    # picos
     def abrirDirEventCIFs2(self):
         self.diretorioCIFs2=None
         opcoes = QFileDialog.Options()
@@ -621,148 +603,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.caminhoCIFsText_2.setText(diretorioCIFs)
         else:
             self.caminhoCIFsText_2.setText('O caminho aparecerá aqui quando selecionado')
-    #Esse método também é um pouco diferente do comum
-    def abrirDirEventXy(self):
-        self.arquivoXy=None
-        opcoes = QFileDialog.Options()
-        #Aqui muda um pouco para procurar arquivos .xy, não entendi 
-        # bem como ele faz a busca especificamente por .xy, 
-        # não ficou muito claro nas linhas de código
-        arquivoXy, _ = QFileDialog.getOpenFileName(self, 'Selecionar arquivo .xy', '', 'Arquivos XY (*.xy);;Todos os arquivos (*)', options=opcoes)
-        #Se o atributo do arquivo não está vazio
-        if arquivoXy:
-            self.arquivoXy=arquivoXy
-            self.caminhoArquivoXyText.setText(arquivoXy)
-            #Ler o arquivo .xy e forma o dataframe com ângulos e intensidades do padrão
-            dataFramePadrao = pd.read_csv(self.arquivoXy, delim_whitespace=True, header=None, names=['x','y'])
-            #Pega os ângulos (Dados da coluna 'x') e coloca em uma array
-            self.angulos=dataFramePadrao.x.values
-            #Pega os ângulos (Dados da coluna 'y') e coloca em uma array
-            self.intensidades=dataFramePadrao.y.values
-            #Endereça a uma nova array
-            self.X = self.intensidades
-            #Aqui o atibuto armazena o valor do score padrão 
-            # para o método com homologia persistente 
-            # do findpeaks
-            self.limitePadrao=np.min(np.min(self.X))-1
-            #Coloca o valor apresentado no doubleSpin como sendo o
-            #valor do score padrão
-            self.doubleSpinBoxMudarLimite.setValue(self.limitePadrao)
-            #Inicia o método para mostrar o padrão numa label
-            #enquanto os dados do padrão estiverem carregados
-            self.mostrarLimitePadrao()
-        else:
-            self.X=None
-            self.arquivoXy=None
-            self.limitePadrao=None
-            self.mostrarLimitePadrao()
-            #Coloca o valor como 0
-            self.doubleSpinBoxMudarLimite.setValue(0)
-            self.valorLimite=None
-            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
-    #Método da label que mostra o limite padrão para aqueles dados
-    def mostrarLimitePadrao(self):
-        if self.limitePadrao:
-            self.labelValorLimite.setText(str(self.limitePadrao))
-        else:
-            self.labelValorLimite.setText('-')
-    #Aqui é o método engatilhado do botão de detectar e visualizar o gráfico
-    def detectarVisualizarPicos(self):
-        #buscaXyPadrao=os.path.join(caminho,'*.xy')
-        #ArrayCaminhoXy=glob.glob(buscaXyPadrao)
-        #Se o arquivo está preenchido
-        if self.arquivoXy:
-            # Tal comando evita que o caso o usuário pressione mais uma vez o
-            # botão de mostrar gráfico, o que estava já aberto seja fechado
-            plt.close()
-            #Armazenar o valorLimite com o valor presente no doubleSpinBox
-            self.valorLimite=self.doubleSpinBoxMudarLimite.value()
-            #Armazenar o método findpeaks com o limit sendo o valorLimite na variável fp   
-            fp = findpeaks(method='topology',limit=self.valorLimite)
-            #E armazenar o ajuste desse método para a array X na variável results
-            results = fp.fit(self.X)
-            #fp.plot()
-            # Extrair os indexes dos ângulos dos picos do dataframe criado pelo results.
-            # Como pegar a coluna peak do df do results e ver quais tem valor
-            # igual a True e utilizar o método .tolist() do numpy para colocar em uma array/lista
-            angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
-            # Plotando os resultados
-            #plt.switch_backend('Qt5Agg')
-            # Plot se trata da linha comum, com uma label de Dados para ela e a cor azul
-            plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
-            #Scatter se trata de pontos, com uma label de Picos e a cor vermelha. Utiliza os indexes do 
-            # angulosPicos para saber quais pontos específicos pegar das arrays angulos e intensidades
-            plt.scatter(self.angulos[angulosPicos], self.intensidades[angulosPicos], color='red', label='Picos')
-            #Setar as labels dos eixos x e y
-            plt.xlabel("Ângulo 2theta (°)")
-            plt.ylabel("Intensidade (Contagens)")
-            #Colocar as labels de fato na figura
-            plt.legend()
-            # Ter acesso ao gerenciador da imagem
-            gerenciador=plt.get_current_fig_manager()
-            # Para poder trocar o título da janela gerada no plt.show()
-            gerenciador.set_window_title("Picos detectados com o limite "+str(self.valorLimite))
-            plt.show()
-        #Se não
-        else:
-            raise ValueError('O arquivo .xy não foi selecionado.')
-    
-    def popUpPlanilhaAngulos(self):
-        if self.arquivoXy:
-            nomeArquivo=None
-            opcoes=QFileDialog.Options()
-            filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
-            nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilha com ângulos", "", filtroDeArquivo, options=opcoes)
-            if nomeArquivo:
-                if not nomeArquivo.endswith('.xlsx'):
-                    nomeArquivo += '.xlsx'
-                self.salvarPlanilhaAngulos(nomeArquivo)
-            else:
-                mensagem=QMessageBox()
-                mensagem.setIcon(QMessageBox.Information)
-                mensagem.setText("A planilha de ângulos não foi salva")
-                mensagem.setWindowTitle("Arquivo não foi salvo")
-                mensagem.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
-                mensagem.exec_()
-        else:
-            raise ValueError('O arquivo .xy não foi selecionado.')
-
-    def salvarPlanilhaAngulos(self, parametroArquivo):
-        nomeArquivo=parametroArquivo
-        self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
-        fp = findpeaks(method='topology',limit=self.valorLimite)
-        results = fp.fit(self.X)
-        angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
-        dataFramePicos=pd.DataFrame(self.angulos[angulosPicos], columns=["Ângulos"])
-        with pd.ExcelWriter(nomeArquivo) as writer:
-            dataFramePicos.to_excel(writer,sheet_name="Ângulos encontrados",index=False)
-    #Método que verifica se os dois últimos atributos do construtor deixaram de ser
-    #Nones (vazios)
-    def verificar(self):
-        #Se os dois atributos estão preenchidos simultaneamente
-        #(Não são mais vazios)
-        if self.diretorioCIFs and self.diretorioPadrao:
-            #Atributos que vão receber e adicionar os caminhos em string para utilizar mais na frente
-            self.caminhoCIFs=self.diretorioCIFs
-            self.caminhoPadrao=self.diretorioPadrao
-            #Mudamos a trava para permitir a entrada de dados
-            # no contexto da tab Comparar Picos
-            self.verificou2=False
-            self.verificou1=True
-            #Inicia a comparação
-            self.compararPicos()
-        #Se não
-        else:
-            self.verificou2=None
-            self.verificou1=None
-            #Se esse atributo ainda está vazio
-            if not self.diretorioCIFs:
-                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
-                raise ValueError("A pasta dos CIFs não foi selecionado.")
-            #Se esse atributo ainda está vazio
-            if not self.diretorioPadrao:
-                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
-                raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
+    # Método ativado quando um item na caixa de radiações
+    # é selecionado
+    def itemSelecionado2(self,index):
+        self.valorSelecionado2=self.caixaRadiacoes_2.itemData(index)
+    # Método idêntico ao verificar utilizado na aba comparar picos
     def verificar2(self):
         #Se os dois atributos estão preenchidos simultaneamente
         #(Não são mais vazios)
@@ -824,7 +669,226 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #Acione a trava lógica para não haver acionamento
             #do método comparar picos no contexto da tab Comparar
             #Poucos Picos
-            self.travaLogica=True 
+            self.travaLogica=True
+    # A partir daqui o método utilizado também é o compararPicos()
+    # que foi colocado na parte da aba de comparar picos
+
+    #
+    # }
+    #
+
+    #
+    # MÉTODOS DA ABA DETECTAR PICOS {
+    #
+    #Esse método também é um pouco diferente do comum
+    def abrirArquivoEventXy(self):
+        self.arquivoXy=None
+        opcoes = QFileDialog.Options()
+        #Aqui muda um pouco para procurar arquivos .xy, não entendi 
+        # bem como ele faz a busca especificamente por .xy, 
+        # não ficou muito claro nas linhas de código
+        arquivoXy, _ = QFileDialog.getOpenFileName(self, 'Selecionar arquivo .xy', '', 'Arquivos XY (*.xy);;Todos os arquivos (*)', options=opcoes)
+        #Se o atributo do arquivo não está vazio
+        if arquivoXy:
+            self.arquivoXy=arquivoXy
+            self.caminhoArquivoXyText.setText(arquivoXy)
+            #Ler o arquivo .xy e forma o dataframe com ângulos e intensidades do padrão
+            dataFramePadrao = pd.read_csv(self.arquivoXy, delim_whitespace=True, header=None, names=['x','y'])
+            #Pega os ângulos (Dados da coluna 'x') e coloca em uma array
+            self.angulos=dataFramePadrao.x.values
+            #Pega os ângulos (Dados da coluna 'y') e coloca em uma array
+            self.intensidades=dataFramePadrao.y.values
+            #Endereça a uma nova array
+            self.X = self.intensidades
+            #Aqui o atibuto armazena o valor do score padrão 
+            # para o método com homologia persistente 
+            # do findpeaks
+            self.limitePadrao=np.min(np.min(self.X))-1
+            #Coloca o valor apresentado no doubleSpin como sendo o
+            #valor do score padrão
+            self.doubleSpinBoxMudarLimite.setValue(self.limitePadrao)
+            #Inicia o método para mostrar o padrão numa label
+            #enquanto os dados do padrão estiverem carregados
+            self.mostrarLimitePadrao()
+        else:
+            self.X=None
+            self.arquivoXy=None
+            self.limitePadrao=None
+            self.mostrarLimitePadrao()
+            #Coloca o valor como 0
+            self.doubleSpinBoxMudarLimite.setValue(0)
+            self.valorLimite=None
+            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
+    #Método da label que mostra o limite padrão para aqueles dados
+    def mostrarLimitePadrao(self):
+        if self.limitePadrao:
+            self.labelValorLimite.setText(str(self.limitePadrao))
+        else:
+            self.labelValorLimite.setText('-')
+     #Aqui é o método engatilhado do botão de detectar e visualizar o gráfico
+    def detectarVisualizarPicos(self):
+        #buscaXyPadrao=os.path.join(caminho,'*.xy')
+        #ArrayCaminhoXy=glob.glob(buscaXyPadrao)
+        #Se o arquivo está preenchido
+        if self.arquivoXy:
+            # Tal comando evita que o caso o usuário pressione mais uma vez o
+            # botão de mostrar gráfico, o que estava já aberto seja fechado
+            plt.close()
+            #Armazenar o valorLimite com o valor presente no doubleSpinBox
+            self.valorLimite=self.doubleSpinBoxMudarLimite.value()
+            #Armazenar o método findpeaks com o limit sendo o valorLimite na variável fp   
+            fp = findpeaks(method='topology',limit=self.valorLimite)
+            #E armazenar o ajuste desse método para a array X na variável results
+            results = fp.fit(self.X)
+            #fp.plot()
+            # Extrair os indexes dos ângulos dos picos do dataframe criado pelo results.
+            # Como pegar a coluna peak do df do results e ver quais tem valor
+            # igual a True e utilizar o método .tolist() do numpy para colocar em uma array/lista
+            angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
+            # Plotando os resultados
+            #plt.switch_backend('Qt5Agg')
+            # Plot se trata da linha comum, com uma label de Dados para ela e a cor azul
+            plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
+            #Scatter se trata de pontos, com uma label de Picos e a cor vermelha. Utiliza os indexes do 
+            # angulosPicos para saber quais pontos específicos pegar das arrays angulos e intensidades
+            plt.scatter(self.angulos[angulosPicos], self.intensidades[angulosPicos], color='red', label='Picos')
+            #Setar as labels dos eixos x e y
+            plt.xlabel("Ângulo 2theta (°)")
+            plt.ylabel("Intensidade (Contagens)")
+            #Colocar as labels de fato na figura
+            plt.legend()
+            # Ter acesso ao gerenciador da imagem
+            gerenciador=plt.get_current_fig_manager()
+            # Para poder trocar o título da janela gerada no plt.show()
+            gerenciador.set_window_title("Picos detectados com o limite "+str(self.valorLimite))
+            plt.show()
+        #Se não
+        else:
+            raise ValueError('O arquivo .xy não foi selecionado.')
+    # Abre um pop-up para escolha do diretório onde irá ser salvo a planilha com ângulos
+    def popUpPlanilhaAngulos(self):
+        if self.arquivoXy:
+            nomeArquivo=None
+            opcoes=QFileDialog.Options()
+            filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
+            nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilha com ângulos", "", filtroDeArquivo, options=opcoes)
+            if nomeArquivo:
+                # Se o o nome do arquivo não terminar com .xlsx
+                if not nomeArquivo.endswith('.xlsx'):
+                    #Adicione .xlsx
+                    nomeArquivo += '.xlsx'
+                # Mande o nome do arquivo com o diretório 
+                # escolhido para o método que salvará
+                # a planilha no diretório escolhido com
+                # o nome escolhido
+                self.salvarPlanilhaAngulos(nomeArquivo)
+            else:
+                # Caso o usuário desista de salvar emita um pop-up
+                # informando que não foi salvo
+                mensagem=QMessageBox()
+                mensagem.setIcon(QMessageBox.Information)
+                mensagem.setText("A planilha de ângulos não foi salva")
+                mensagem.setWindowTitle("Arquivo não foi salvo")
+                mensagem.setWindowIcon(QIcon(r'C:\Users\aojor\Downloads\CodigosPython\vsCode\projetos\pacoteComparadorPicos\comparadorPicos\icones\icone.ico'))
+                mensagem.exec_()
+        else:
+            raise ValueError('O arquivo .xy não foi selecionado.')
+    # O método que vai receber o caminho e salvar no mesmo
+    def salvarPlanilhaAngulos(self, parametroArquivo):
+        nomeArquivo=parametroArquivo
+        self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
+        fp = findpeaks(method='topology',limit=self.valorLimite)
+        results = fp.fit(self.X)
+        angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
+        # Transforma em dataframe
+        dataFramePicos=pd.DataFrame(self.angulos[angulosPicos], columns=["Ângulos"])
+        # Salva com o caminho e nome indicados
+        with pd.ExcelWriter(nomeArquivo) as writer:
+            dataFramePicos.to_excel(writer,sheet_name="Ângulos encontrados",index=True)
+    #
+    # }
+    #
+
+    #
+    # MÉTODOS DA ABA COMPARAR PICOS {
+    #
+
+    # Método para abrir o explorer do computador e selecionar a pasta necessária
+    def abrirDirEventCIFs(self):
+        """
+        Essa primeira linha de código garante que toda vez que o botão seja aberto
+        e o diálogo de diretório seja iniciado o valor volte novamente a ser None não importa
+        quantas vezes o usuário faz isso. Não sei se pode causar um erro no futuro, caso ocorra
+        retirarei essa linha por ela não ser exatamente tão necessária. Essas medidas vão ser colocados no
+        outro método de abrir diretórios também
+        """
+        self.diretorioCIFs=None      
+        #Essa variável aloca a classe Options, não sei exatamente o que faz (Não entrei em detalhes)
+        opcoes = QFileDialog.Options()
+        #Não sei que operador é esse, mas essa função também dá a variável inicializada na linha anterior
+        #a função de somente mostrar diretórios (pastas), nada de arquivos
+        opcoes |= QFileDialog.ShowDirsOnly
+        #Esse é o comando da caixinha que apresenta o explorer para o usuário selecionar a pasta
+        #bem como essa variável aloca a string obtida (string do caminho da pasta) quando o usuário 
+        #seleciona a pasta nessa caixinha criada (Entenda caixinha como a janela que abre do explorer)
+        diretorioCIFs = QFileDialog.getExistingDirectory(self,'Selecionar Pasta dos CIFs','',options=opcoes)
+        #Atualiza o atributo antigamente inicializado para receber como valor a string do caminho
+        #da pasta
+        self.diretorioCIFs=diretorioCIFs
+        #laço condicional para mudar o texto da caixa de texto antes feita
+        #Se diretorioCIFs não está vazio...
+        if diretorioCIFs:
+            #...mude o texto da caixa de texto para o valor
+            #do diretorioCIFs
+            self.caminhoCIFsText.setText(diretorioCIFs)
+        #Essa segunda linha de código garante que caso o usuário não selecione nada no
+        #diálogo de diretórios ele seja informado disso mostrando que não há caminho selecionado
+        #Setar None é interessante pois no momento que o diálogo é iniciado, não importa se já
+        #tivesse um caminho selecionado, novamente ele voltaria à mensagem padrão imediatamente
+        #demonstrando que a informação do caminho já foi sobrescrita
+        else:
+            self.caminhoCIFsText.setText('O caminho aparecerá aqui quando selecionado')
+    #Não vou me estender, basicamente o mesmo do anterior
+    def abrirDirEventSeuPadrao(self):
+        self.diretorioPadrao=None
+        opcoes = QFileDialog.Options()
+        opcoes |= QFileDialog.ShowDirsOnly
+        diretorioPadrao = QFileDialog.getExistingDirectory(self,'Selecionar Pasta do seu Padrão','',options=opcoes)
+        self.diretorioPadrao=diretorioPadrao
+        if diretorioPadrao:
+            self.caminhoPadraoText.setText(diretorioPadrao)
+        else:
+            self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
+    # O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
+    def itemSelecionado(self,index):
+        self.valorSelecionado=self.caixaRadiacoes.itemData(index)
+    # Método que verifica se os atributos do construtor de diretório dessa aba  
+    # deixaram de ser Nones (vazios)
+    def verificar(self):
+        #Se os dois atributos estão preenchidos simultaneamente
+        #(Não são mais vazios)
+        if self.diretorioCIFs and self.diretorioPadrao:
+            #Atributos que vão receber e adicionar os caminhos em string para utilizar mais na frente
+            self.caminhoCIFs=self.diretorioCIFs
+            self.caminhoPadrao=self.diretorioPadrao
+            #Mudamos a trava para permitir a entrada de dados
+            # no contexto da tab Comparar Picos
+            self.verificou2=False
+            self.verificou1=True
+            #Inicia a comparação
+            self.compararPicos()
+        #Se não
+        else:
+            self.verificou2=None
+            self.verificou1=None
+            #Se esse atributo ainda está vazio
+            if not self.diretorioCIFs:
+                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
+                raise ValueError("A pasta dos CIFs não foi selecionado.")
+            #Se esse atributo ainda está vazio
+            if not self.diretorioPadrao:
+                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
+                raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
     #Método para comparar picos
     def compararPicos(self):
         self.mostrarInicio()
@@ -1083,6 +1147,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.arrayDfNomesOrden=arrayDfNomesOrden
         self.arrayDfCompOrden=arrayDfCompOrden
         self.numeroDeAbas=numeroDeAbas
+        self.arrayDfCIFsOrden=arrayDfCIFsOrden
         self.mostrarResultados()
         #Após o QDialogBox ser fechado, as linhas de comando
         # continuam e colocam o valor padrão dos atributos para
@@ -1092,6 +1157,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.arrayDfNomesOrden=None
         self.arrayDfCompOrden=None
         self.numeroDeAbas=None
+        self.arrayDfCIFsOrden=None
+        self.caminhoCIFs=None
+        self.caminhoPadrao=None
         self.verificou1=None
         self.verificou2=None
     #Os métodos a seguir são pop-ups como o de método de erro.
@@ -1113,7 +1181,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #E cria-se um layout para esse pop-up
         layout=QVBoxLayout()
         #Então uma label com o seguinte texto
-        texto=QLabel("Comparação concluída, resultados salvos em:\n"+self.diretorioAtual+"\nGráfico disponível:")
+        texto=QLabel("Comparação concluída. Resultados disponíveis para salvamento:")
         # Adiciona-se esse texto ao layout do Pop-up
         layout.addWidget(texto)
         # Cria-se uma caixa para botões do QDialog
@@ -1158,17 +1226,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         plt.close()
         # Pega-se o menor valor de intensidade do dataframe do padrão
         menorValor=self.dataFramePadraoNoTodo['y'].min()
-        # Faz o plot do padrão
-        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
-        #Se o padrão tem como menor valor de intensidade até 500
+        # Se o padrão tem como menor valor de intensidade até 500
         if menorValor <= 500:
-            #Aumente as intensidades dos 3 melhores CIFs em 50 vezes
+            # Aumente as intensidades dos 3 melhores CIFs em 50 vezes
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
-        #Caso até 1000...
+        # Caso até 1000...
         elif menorValor <= 1000:
-            #Aumente em 100 vezes
+            # Aumente em 100 vezes
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
@@ -1184,6 +1250,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
         plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
         plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
+        # Faz o plot do padrão, é importante que ele seja por
+        # último para a curva do gráfico não ficar por cima
+        # de nehuma barra de CIFs
+        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
         plt.xlabel("Ângulo 2theta (°)")
         plt.ylabel("Intensidade (Contagens)")
         plt.legend()
@@ -1209,13 +1279,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Esse método é para escolha de um diretório para salvar
     # os arquivos que foram criados seja com o compararPicos no
     # contexto do de comparar com todos picos
-    # ou com alguns picos e para salvamento de ângulos
+    # ou com alguns picos e para salvamento de ângulos.
+    # Funciona como o método de salvar planilha de ângulos
+    # na aba de detectar picos. Isso vale para os outros 
+    # métodos à frente também
     def popUpPlanilhaCIF(self):
         nomeArquivo=None
         opcoes=QFileDialog.Options()
-        filtroDeArquivo="Arquivos .xlsx (*.xlsx);;Todos os arquivos (*)"
+        filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
         nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilha dos CIFs", "", filtroDeArquivo, options=opcoes)
         if nomeArquivo:
+            if not nomeArquivo.endswith('.xlsx'):
+                    nomeArquivo += '.xlsx'
             self.salvarPlanilhaCIF(nomeArquivo)
         else:
             mensagem=QMessageBox()
@@ -1228,9 +1303,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def popUpPlanilhaComparacao(self):
         nomeArquivo=None
         opcoes=QFileDialog.Options()
-        filtroDeArquivo="Arquivos .xlsx (*.xlsx);;Todos os arquivos (*)"
+        filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
         nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilhas de comparação", "", filtroDeArquivo, options=opcoes)
         if nomeArquivo:
+            if not nomeArquivo.endswith('.xlsx'):
+                    nomeArquivo += '.xlsx'
             self.salvarPlanilhaComparacao(nomeArquivo)
         else:
             mensagem=QMessageBox()
@@ -1256,6 +1333,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for numeroAba in range(self.numeroDeAbas): #Aqui esse for é para garantir que diferentes dataFrames estão sendo
                                         #sendo adicionados em abas diferentes à planilha saída
                 self.arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=self.arrayDfNomesOrden[numeroAba],index=False)
+    #
+    # }
+    #
+
 #Caso o código seja inicializado? Esse arranjo do if (Ainda mais
 #por ser considerado um bom comportamento na escrita de códigos python)
 # e o operador |= parecem ser conhecimentos importantes de se ter em
