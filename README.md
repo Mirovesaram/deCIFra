@@ -28,9 +28,9 @@ Após a escolha, o caminho será exposto como uma nota de que o diretório foi d
 ### Selecione a pasta com seu padrão de difração (.txt e .xy)
 Essa pasta tem que ter **somente dois** arquivos:
 
-> Um arquivo .txt que tem os ângulos dos picos do seu padrão de difração, coloque somente eles sem qualquer "label" de coluna no começo tampouco espaços vazios no fim
+> Um **arquivo .txt** que tem os ângulos dos picos do seu padrão de difração, coloque somente eles sem qualquer "label" de coluna no começo tampouco espaços vazios no fim
 
-> Um arquivo .xy com os ângulos e intensidades do seu padrão de difração no todo. Esse tipo de arquivo é comum carregar os dados de um padrão de difração, por isso a escolha de um arquivo .xy
+> Um **arquivo .xy** com os ângulos e intensidades do seu padrão de difração no todo. Esse tipo de arquivo é comum carregar os dados de um padrão de difração, por isso a escolha de um arquivo .xy
 
 Exemplo:
 
