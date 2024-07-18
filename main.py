@@ -69,6 +69,17 @@ picos com homologia persistente
 import matplotlib.pyplot as plt # Utilizado para fazer os plots e
 #importar os gráficos feitos
 
+# Tentar resolver problema dos ícones que não estão aparecendo nas janelas, solução
+# retirada de:
+# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
+def resource_path(caminho_relativo):
+    try:
+        caminho_base = sys._MEIPASS
+    except Exception:
+        caminho_base = os.path.abspath(".")
+
+    return os.path.join(caminho_base, caminho_relativo)
+
 #Configuração do arquivo .log de erro
 logging.basicConfig(
     #Nome do arquivo
@@ -105,7 +116,7 @@ def capturarExcecao(exctype,value,tb):
     erro.setWindowTitle("Erro")
     #Comando para adicionar um ícone ao canto superior
     #esquerdo da janela
-    erro.setWindowIcon(QIcon(r'icones\icone.ico'))
+    erro.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
     #E os detalhes do erro, como onde
     #ocorreu nas linhas de código
     erro.setDetailedText(mensagemErro)
@@ -290,7 +301,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #e com largura 800 pixels e altura 800 pixels
         self.setFixedSize(800,800)
         #Explicado anteriormente
-        self.setWindowIcon(QIcon(r'icones\icone.ico'))
+        self.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
         #Criar um gatilho que envolve clicar esse botão
         #Caso clique no botão, o método abrirDirEventCIFs
         #será chamado e iniciado
@@ -789,7 +800,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 mensagem.setIcon(QMessageBox.Information)
                 mensagem.setText("A planilha de ângulos não foi salva")
                 mensagem.setWindowTitle("Arquivo não foi salvo")
-                mensagem.setWindowIcon(QIcon(r'icones\icone.ico'))
+                mensagem.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
                 mensagem.exec_()
         else:
             raise ValueError('O arquivo .xy não foi selecionado.')
@@ -1170,14 +1181,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         inicio.setIcon(QMessageBox.Information) #O ícone que aparece dentro do pop-up é de informação
         inicio.setText('A comparação vai começar. Isso normalmente demora alguns segundos, mas pode demorar minutos. Clique em OK para continuar.')
         inicio.setWindowTitle("Processo de comparação iniciada")
-        inicio.setWindowIcon(QIcon(r'icones\icone.ico'))
+        inicio.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
         inicio.exec_()
     #Esse método é acionado no fim do método compararPicos em que mostra um gráfico com os três melhores CIFs
     def mostrarResultados(self):
         #Aqui, o atributo antes criado armazena o pop-up do QDialog
         self.dialogo=QDialog()
         self.dialogo.setWindowTitle("Comparação concluída")
-        self.dialogo.setWindowIcon(QIcon(r'icones\icone.ico'))
+        self.dialogo.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
         #E cria-se um layout para esse pop-up
         layout=QVBoxLayout()
         #Então uma label com o seguinte texto
@@ -1297,7 +1308,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             mensagem.setIcon(QMessageBox.Information)
             mensagem.setText("A planilha dos CIFs não foi salva")
             mensagem.setWindowTitle("Arquivo não foi salvo")
-            mensagem.setWindowIcon(QIcon(r'icones\icone.ico'))
+            mensagem.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
             mensagem.exec_()
 
     def popUpPlanilhaComparacao(self):
@@ -1314,7 +1325,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             mensagem.setIcon(QMessageBox.Information)
             mensagem.setText("A planilha de comparação não foi salva")
             mensagem.setWindowTitle("Arquivo não foi salvo")
-            mensagem.setWindowIcon(QIcon(r'icones\icone.ico'))
+            mensagem.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
             mensagem.exec_()
 
     def salvarPlanilhaCIF(self,parametroNomeArquivo):
