@@ -475,11 +475,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #Variaveis que vão receber e adicionar os caminhos em string para utilizar mais na frente
             caminhoPadrao=diretorioPadrao
             #Arquivo que vai guardar o caminho do arquivo .xlsx
-            buscaPlanilhaPadrao = os.path.join(caminhoPadrao,'*.xlsx')
+            buscaTabelaPadrao = os.path.join(caminhoPadrao,'*.txt')
             #Array que vai guardar os caminhos dos arquivos .xlsx
-            ArrayCaminhoPlanilhaPadrao = glob.glob(buscaPlanilhaPadrao)
+            ArrayCaminhoTabelaPadrao = glob.glob(buscaTabelaPadrao)
             #Se a array não está vazia
-            if ArrayCaminhoPlanilhaPadrao:
+            if ArrayCaminhoTabelaPadrao:
                 #Só se o caminho houver pelo menos uma pasta,
                 #ou seja, ArrayCaminhoPlanilhaPadrao != None,
                 #será adiconado caminho à caixa de texto editável
@@ -493,11 +493,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if self.ultimoIndex:
                     self.removerItens()
                 #Coleta-se o único item dessa array criada na linha anterior
-                caminhoPadrao=ArrayCaminhoPlanilhaPadrao[0]
-                tabelaPadrao = pd.read_excel(caminhoPadrao)#data-
-                #Frame criado para armazenar os ângulos da 
-                # planilha encontrada
+                caminhoPadrao=ArrayCaminhoTabelaPadrao[0]
+                tabelaPadrao = pd.read_csv(caminhoPadrao,delim_whitespace=True,names=["angulos"],header=None)# data-
+                # rame criado para armazenar os ângulos do
+                # arquivo de texto encontrado (Alguns lugares pode estar
+                # planilhas mas essa funcionalidade foi alterada a fim de 
+                # trabalhar com os arquivos mais comuns para leitura de dados,
+                # deixou-se de trabalhar com .xlsx e sim com .txt para entrada
+                # de dados)
                 
+                #
+                # TESTE
+                #
+
+                #print(tabelaPadrao)
+
                 #Armazenar o número de linhas ao todo
                 numeroLinhasPadrao=tabelaPadrao.iloc[:,0].count()
                 for numeroLinha in range(numeroLinhasPadrao):
@@ -665,9 +675,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.arraySNoneSRepet=set(self.arraySemNone)
             #Transforme essa array em um dataframe de uma única
             #coluna chamada "Ângulos 2theta (°)"
-            self.dfPicos=pd.DataFrame(self.arraySNoneSRepet, columns=["Ângulos 2theta (°)"])
-            #Para fins de teste e avaliação do valor recebido
+            self.dfPicos=pd.DataFrame(self.arraySNoneSRepet, columns=["Ângulos"])
+            # Para fins de teste e avaliação do valor recebido
+
             #print(self.dfPicos)
+
             #Não haverá trava lógica para a ação do método comparar picos
             #sendo utilizado no contexto do tab Comparar Poucos Picos
             self.travaLogica=False
@@ -919,10 +931,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Transforma numa array de strings caminho
         ArrayCaminhoXy=glob.glob(buscaXyPadrao)
         #Arquivo que vai guardar o caminho do arquivo .xlsx
-        buscaPlanilhaPadrao = os.path.join(self.caminhoPadrao,'*.xlsx')
-        ArrayCaminhoPlanilhaPadrao = glob.glob(buscaPlanilhaPadrao)
+        buscaTabelaPadrao = os.path.join(self.caminhoPadrao,'*.txt')
+        ArrayCaminhoTabelaPadrao = glob.glob(buscaTabelaPadrao)
         #Coleta-se o único item dessa array criada na linha anterior
-        caminhoPadrao=ArrayCaminhoPlanilhaPadrao[0]
+        caminhoPadrao=ArrayCaminhoTabelaPadrao[0]
         #DataFrame criado com os dados do arquivo .xy
         dataFramePadraoNoTodo = pd.read_csv(ArrayCaminhoXy[0], delim_whitespace=True,header=None, names=['x','y'])
         #Contagem de linhas para determinar qual é a última linha do padrão
@@ -996,12 +1008,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #passou e então chega no while que seleciona a linha da amostra que você quer comparar com o
         #seu padrão de difração e por fim o segundo while fica selecionando cada linha do padrão e com-
         #para todas elas com a linha escolhida no primeiro while
+
+        #Criando variável que lerá os dados de pico na coluna 2theta da planilha do seu padrão designado
+        if self.verificou1 == True:
+            tabelaPadrao = pd.read_csv(caminhoPadrao,delim_whitespace=True,header=None,names=["angulos"])
+        elif self.verificou2 == True:
+            tabelaPadrao = self.dfPicos
+        #
+        # TESTE
+        #
+
+        #print(tabelaPadrao)
         for numeroAba in range(numeroDeAbas):
-            #Criando variável que lerá os dados de pico na coluna 2theta da planilha do seu padrão designado
-            if self.verificou1 == True:
-                tabelaPadrao = pd.read_excel(caminhoPadrao)
-            elif self.verificou2 == True:
-                tabelaPadrao = self.dfPicos
             #Trazendo o item da lista de dataframes do cif para comparacao
             tabelaAmostra = arrayDeDataFramesCIFs[numeroAba]
             #Criando variável para endereço da linha da amostra que vai ser comparada
