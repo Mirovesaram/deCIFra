@@ -81,5 +81,19 @@ Agora, vamos à explicação de cada coluna:
 > [!Note]
 > Caso não apareça nenhum ângulo em uma dada linha, é porque não houve nenhum ângulo do CIF que correspondeu com a comparação com o respectivo ângulo do seu padrão nessa linha, logo esse pico para esse CIF falta no padrão, um pico faltante
 
+## Aba Detectar picos
+
+### Selecione o arquivo .xy
+
+### Ajuste de limite, visualização dos picos, exportação dos picos e visualização de informações sobre os picos detectados e o limite utilizado
+
+## Aba Comparar poucos picos
+
+### Selecione os picos do seu padrão de difração com filtragem de picos
+
+### Selecione a pasta com os arquivos .cif's
+
+### Selecione a radiação característica (Em angstrons)
+
 
 

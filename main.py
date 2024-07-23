@@ -139,6 +139,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # que pertecem
 
         #
+        # ATRIBUTOS DA ABA DETECTAR PICOS {
+        #
+
+        # Esse atributo tem como nome uma convenção
+        # da biblioteca findpeaks e virou um atributo 
+        # da classe por ter que ser criado em um 
+        # método e utilizado em outro
+        self.X = None
+        """Esse inicializa o valor atual encontrado no spinBox
+        da tab Detectar"""
+        self.valorLimite = self.doubleSpinBoxMudarLimite.value()
+        """Esse é para armazenar o valor de limite de score para
+        ser utilizado como parâmetro no método do findpeaks com
+        homologia persistente, para adquirir esse valor usa-se 
+        métodos da biblioteca numpy"""
+        self.limitePadrao = None
+        """
+        Esse é para armazenar o caminho do arquivoXy obtido na tab
+        Detectar
+        """
+        self.arquivoXy = None
+        #
+        # }
+        #
+
+        #
         # ATRIBUTOS DA ABA COMPARAR PICOS {
         #
         """
@@ -216,32 +242,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #
 
         #
-        # ATRIBUTOS DA ABA DETECTAR PICOS {
-        #
-
-        # Esse atributo tem como nome uma convenção
-        # da biblioteca findpeaks e virou um atributo 
-        # da classe por ter que ser criado em um 
-        # método e utilizado em outro
-        self.X = None
-        """Esse inicializa o valor atual encontrado no spinBox
-        da tab Detectar"""
-        self.valorLimite = self.doubleSpinBoxMudarLimite.value()
-        """Esse é para armazenar o valor de limite de score para
-        ser utilizado como parâmetro no método do findpeaks com
-        homologia persistente, para adquirir esse valor usa-se 
-        métodos da biblioteca numpy"""
-        self.limitePadrao = None
-        """
-        Esse é para armazenar o caminho do arquivoXy obtido na tab
-        Detectar
-        """
-        self.arquivoXy = None
-        #
-        # }
-        #
-
-        #
         # ATRIBUTOS DA ABA COMPARAR POUCOS PICOS {
         #
 
@@ -302,14 +302,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setFixedSize(800,800)
         #Explicado anteriormente
         self.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
+
+        self.caminhoXYtextEdit.setText('O caminho aparecerá aqui quando selecionado')
+
+        self.doubleSpinBoxMudarLimite.setEnabled(False)
+
+        self.pushButtonDetectar.setEnabled(False)
+
+        self.pushButtonExportar.setEnabled(False)
+        
+        self.informacoesPicostextEdit.setText('Aguardando a detecção dos picos...')
+
+        
+
+        
+
+        
+
+    
+
         #Criar um gatilho que envolve clicar esse botão
         #Caso clique no botão, o método abrirDirEventCIFs
         #será chamado e iniciado
         self.botaoSelecCIF.clicked.connect(self.abrirDirEventCIFs)
         #Criação de uma caixa de texto que permite scrollar para 
         #textos maiores
-        self.caminhoCIFsText = QTextEdit(self.tabComparar)
-        #Comando para permitir somente leitura, sem alteração
+        #self.caminhoCIFsText = QTextEdit(self.tabComparar)
+        """#Comando para permitir somente leitura, sem alteração
         #do texto pelo usuário
         self.caminhoCIFsText.setReadOnly(True)
         #Inserir o texto padrão presente nessa caixa de texto
@@ -318,7 +337,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoCIFsText.setStyleSheet("padding: 10px;")
         #Comando que ajusta a posição x, a posição y, a largura,
         #a altura, respectivamente na caixa de edição de texto
-        self.caminhoCIFsText.setGeometry(0,80,800,100)
+        self.caminhoCIFsText.setGeometry(0,80,800,100)"""
         #Já explicado
         self.botaoSelecPadrao.clicked.connect(self.abrirDirEventSeuPadrao)
         #A utilização de uma caixa de texto é um recurso, do ponto de vista de design,
@@ -326,11 +345,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #muito grande, ele não ultrapasse o tamanho proposto da janela, pois a primeira
         #ideia foi utilizar um QLabel seguido de adjustSize().
         #Já explicados
-        self.caminhoPadraoText = QTextEdit(self.tabComparar)
-        self.caminhoPadraoText.setReadOnly(True)
+        #self.caminhoPadraoText = QTextEdit(self.tabComparar)
+        """self.caminhoPadraoText.setReadOnly(True)
         self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoPadraoText.setStyleSheet('padding: 10px;')
-        self.caminhoPadraoText.setGeometry(0,260,800,100)
+        self.caminhoPadraoText.setGeometry(0,260,800,100)"""
         #Comandos para adicionar os dados dos itens da combo
         #Box de radiação que são os presentes no laço for
         #Nessa array tem floats que foram tirados como padrão
@@ -377,7 +396,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caixaRadiacoes_2.setCurrentIndex(0)
         self.caixaRadiacoes_2.activated.emit(0)
         #Armando gatilho para o botão ajuda direcionar para a aba ajuda
-        self.commandLinkButtonAjuda.clicked.connect(self.mudarParaAbaAjuda)
+        #self.commandLinkButtonAjuda.clicked.connect(self.mudarParaAbaAjuda)
         #Esse método que será chamado é para verificar se o usuário colocou
         #os caminhos necessários antes de apertar o botão para fazer a comparação
         self.botaoComparar.clicked.connect(self.verificar)
@@ -386,11 +405,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """self.botaoComparar.clicked.connect(self.testeComboBox)
         self.label = QLabel(self.tabComparar)
         self.label.move(200,650)"""
-        self.caminhoArquivoXyText = QTextEdit(self.tabDetectar)
-        self.caminhoArquivoXyText.setReadOnly(True)
+        #self.caminhoArquivoXyText = QTextEdit(self.tabDetectar)
+        """self.caminhoArquivoXyText.setReadOnly(True)
         self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoArquivoXyText.setStyleSheet("padding: 10px;")
-        self.caminhoArquivoXyText.setGeometry(0,40,800,100)
+        self.caminhoArquivoXyText.setGeometry(0,40,800,100)"""
 
         self.botaoSelecionarArquivoXy.clicked.connect(self.abrirArquivoEventXy)
 
@@ -400,13 +419,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadraoAdicionarPicos)
 
-        self.commandLinkButtonAjuda_2.clicked.connect(self.mudarParaAbaAjuda)
+        #self.commandLinkButtonAjuda_2.clicked.connect(self.mudarParaAbaAjuda)
         
-        self.caminhoPadraoText_2 = QTextEdit(self.tabCompararPoucosPicos)
-        self.caminhoPadraoText_2.setReadOnly(True)
+        #self.caminhoPadraoText_2 = QTextEdit(self.tabCompararPoucosPicos)
+        """self.caminhoPadraoText_2.setReadOnly(True)
         self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoPadraoText_2.setStyleSheet("padding: 10px;")
-        self.caminhoPadraoText_2.setGeometry(0,80,800,100)
+        self.caminhoPadraoText_2.setGeometry(0,80,800,100)"""
 
         self.comboBoxPico1.activated.connect(self.picoSelecionado1)
         self.comboBoxPico2.activated.connect(self.picoSelecionado2)
@@ -424,15 +443,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label.move(200,650)"""
         self.botaoSelecCIF_2.clicked.connect(self.abrirDirEventCIFs2)
 
-        self.caminhoCIFsText_2 = QTextEdit(self.tabCompararPoucosPicos)
+        #self.caminhoCIFsText_2 = QTextEdit(self.tabCompararPoucosPicos)
+        """
         self.caminhoCIFsText_2.setReadOnly(True)
         self.caminhoCIFsText_2.setText('O caminho aparecerá aqui quando selecionado')
         self.caminhoCIFsText_2.setStyleSheet("padding: 10px;")
         self.caminhoCIFsText_2.setGeometry(0,340,800,100)
-
+        """
         self.botaoComparar_2.clicked.connect(self.verificar2)
 
-        self.commandLinkButtonAjuda_3.clicked.connect(self.mudarParaAbaAjuda)
+        #self.commandLinkButtonAjuda_3.clicked.connect(self.mudarParaAbaAjuda)
 
         # Adicionando texto e o link para a label de link na tab ajuda
         self.labelLinkRepositorio.setText("<a href=https://github.com/Mirovesaram/comparadorPicos.git>Repositório do comparador de picos</a>")
