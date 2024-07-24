@@ -303,6 +303,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Explicado anteriormente
         self.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
 
+        self.commandLinkButtonAjudaSelecionarXY
+
         self.caminhoXYtextEdit.setText('O caminho aparecerá aqui quando selecionado')
 
         self.doubleSpinBoxMudarLimite.setEnabled(False)
@@ -313,13 +315,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         self.informacoesPicostextEdit.setText('Aguardando a detecção dos picos...')
 
-        
 
-        
-
-        
-
-    
 
         #Criar um gatilho que envolve clicar esse botão
         #Caso clique no botão, o método abrirDirEventCIFs
