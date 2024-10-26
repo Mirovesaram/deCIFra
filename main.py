@@ -160,6 +160,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Detectar
         """
         self.arquivoXy = None
+
+        self.intensidades = None
+
+        self.angulos = None
         #
         # }
         #
@@ -188,7 +192,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         de difração no todo entregue pelo arquivo
         .xy
         """
-        self.dataFramePadraoNoTodo = None
+        #self.dataFramePadraoNoTodo = None
         # Esse atributo vai armazenar a array
         # criada a partir da ordenação de itens
         # de uma array já criada no método de
@@ -237,6 +241,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         num método à parte da classe principal
         """
         self.dialogo=None
+
+        self.dataFrameAngulos=None
+
+        self.UtilizouPicos1=None
         #
         # } 
         #
@@ -245,6 +253,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # ATRIBUTOS DA ABA COMPARAR POUCOS PICOS {
         #
 
+
+        # Atributo que armazena os dataframes obtidos a partir 
+        # de picos importados ou picos detectados
+        self.tabelaPadrao=None
         # Atributo que armazena o valor da radiação escolhida
         # na caixa
         self.valorSelecionado2=None
@@ -293,67 +305,65 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         comparar Poucos picos
         """
         self.ultimoIndex=None
+
+        self.UtilizouPicos2=None
+
         #
         # }
         #
 
-        #Comando para deixar a janela não redimensionável
-        #e com largura 800 pixels e altura 800 pixels
+        # Comando para deixar a janela não redimensionável
+        # e com largura 800 pixels e altura 800 pixels
         self.setFixedSize(800,800)
-        #Explicado anteriormente
+        # Explicado anteriormente
         self.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
 
-        self.commandLinkButtonAjudaSelecionarXY
+        ### ABA DETECTAR PICOS ###
+
+        self.botaoSelecionarArquivoXy.clicked.connect(self.abrirArquivoEventXy)
 
         self.caminhoXYtextEdit.setText('O caminho aparecerá aqui quando selecionado')
 
         self.doubleSpinBoxMudarLimite.setEnabled(False)
 
-        self.pushButtonDetectar.setEnabled(False)
+        self.pushButtonVisualizar.setEnabled(False)
+
+        self.pushButtonVisualizar.clicked.connect(self.visualizarPicos)
+
+        self.pushButtonExportar.clicked.connect(self.popUpExportAngulos)
 
         self.pushButtonExportar.setEnabled(False)
-        
-        self.informacoesPicostextEdit.setText('Aguardando a detecção dos picos...')
 
+        ### ABA COMPARAR COM CIFS ###
 
+        self.botaoSelecPadrao.setEnabled(False)
 
-        #Criar um gatilho que envolve clicar esse botão
-        #Caso clique no botão, o método abrirDirEventCIFs
-        #será chamado e iniciado
-        self.botaoSelecCIF.clicked.connect(self.abrirDirEventCIFs)
-        #Criação de uma caixa de texto que permite scrollar para 
-        #textos maiores
-        #self.caminhoCIFsText = QTextEdit(self.tabComparar)
-        """#Comando para permitir somente leitura, sem alteração
-        #do texto pelo usuário
-        self.caminhoCIFsText.setReadOnly(True)
-        #Inserir o texto padrão presente nessa caixa de texto
-        self.caminhoCIFsText.setText('O caminho aparecerá aqui quando selecionado')
-        #Padding cria uma margem interna de 10 px
-        self.caminhoCIFsText.setStyleSheet("padding: 10px;")
-        #Comando que ajusta a posição x, a posição y, a largura,
-        #a altura, respectivamente na caixa de edição de texto
-        self.caminhoCIFsText.setGeometry(0,80,800,100)"""
-        #Já explicado
         self.botaoSelecPadrao.clicked.connect(self.abrirDirEventSeuPadrao)
-        #A utilização de uma caixa de texto é um recurso, do ponto de vista de design,
-        #estranho. Mas foi a maneira proposta para garantir que caso um caminho seja
-        #muito grande, ele não ultrapasse o tamanho proposto da janela, pois a primeira
-        #ideia foi utilizar um QLabel seguido de adjustSize().
-        #Já explicados
-        #self.caminhoPadraoText = QTextEdit(self.tabComparar)
-        """self.caminhoPadraoText.setReadOnly(True)
-        self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
-        self.caminhoPadraoText.setStyleSheet('padding: 10px;')
-        self.caminhoPadraoText.setGeometry(0,260,800,100)"""
-        #Comandos para adicionar os dados dos itens da combo
-        #Box de radiação que são os presentes no laço for
-        #Nessa array tem floats que foram tirados como padrão
-        #do software Diamond e de um arquivo instrumental utilizado
-        #no software GSAS EXPGUI, sendo o terceiro a média aritmética
-        #dos dois primeiros
-        #e as strings pertencem à documentação do
-        #pymatgen para radiação característica
+
+        self.botaoUtilizarPicos.setEnabled(False)
+
+        self.botaoUtilizarPicos.clicked.connect(self.utilizarPicosDetectados)
+
+        self.caminhoPadraotextEdit.setText('Aguardando a detecção dos picos...')
+
+        self.botaoSelecCIF.setEnabled(False)
+
+        # Criar um gatilho que envolve clicar esse botão
+        # Caso clique no botão, o método abrirDirEventCIFs
+        # será chamado e iniciado
+        self.botaoSelecCIF.clicked.connect(self.abrirDirEventCIFs)
+
+        self.caminhoCIFstextEdit.setText('Aguardando a detecção dos picos...')
+
+        self.caixaRadiacoes.setEnabled(False)
+        # Comandos para adicionar os dados dos itens da combo
+        # Box de radiação que são os presentes no laço for
+        # Nessa array tem floats que foram tirados como padrão
+        # do software Diamond e de um arquivo instrumental utilizado
+        # no software GSAS EXPGUI, sendo o terceiro a média aritmética
+        # dos dois primeiros
+        # e as strings pertencem à documentação do
+        # pymatgen para radiação característica
         self.itens = [
             1.540598, 1.544426, 1.542512, "CuKa", "CuKa1", "CuKa2", "CuKb1",
             "CoKb1", "CoKa1", "CoKa2", "CoKa",
@@ -362,22 +372,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "MoKa", "MoKa1", "MoKa2", "MoKb1",
             "AgKa", "AgKa1", "AgKa2", "AgKb1"
         ]
-        #comando simples para adicionar os valores dos
-        #itens selecionados
-        #A função enumarate permite ter um index
-        #associado ao dado do item que foi puxado
-        #evidenciando sua posição
+        # comando simples para adicionar os valores dos
+        # itens selecionados
+        # A função enumarate permite ter um index
+        # associado ao dado do item que foi puxado
+        # evidenciando sua posição
         for self.index, self.item in enumerate(self.itens):
-            #setItemData insere o dado de um item em dada
-            #posição desse item
+            # setItemData insere o dado de um item em dada
+            # posição desse item
             self.caixaRadiacoes.setItemData(self.index,self.item)
             self.caixaRadiacoes_2.setItemData(self.index,self.item)
-        #gatilho que usa o sinal activated, que basicamente indica
-        #se o checkbox está com algum valor selecionado (Isso significa
-        #ele estar ativado) e por padrão, ele está. Com isso, ativa uma função
-        #que tem como parâmetro index e resgata a partir desse sinal qual valor
-        #é equivalente para o index e aloca o dado desse item numa variável
-        #para ser usado na função compararPicos(). Creio que seja assim que funciona
+        # gatilho que usa o sinal activated, que basicamente indica
+        # se o checkbox está com algum valor selecionado (Isso significa
+        # ele estar ativado) e por padrão, ele está. Com isso, ativa uma função
+        # que tem como parâmetro index e resgata a partir desse sinal qual valor
+        # é equivalente para o index e aloca o dado desse item numa variável
+        # para ser usado na função compararPicos(). Creio que seja assim que funciona
         self.caixaRadiacoes.activated.connect(self.itemSelecionado)
         self.caixaRadiacoes_2.activated.connect(self.itemSelecionado2)
         """
@@ -391,70 +401,69 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caixaRadiacoes.activated.emit(0)
         self.caixaRadiacoes_2.setCurrentIndex(0)
         self.caixaRadiacoes_2.activated.emit(0)
-        #Armando gatilho para o botão ajuda direcionar para a aba ajuda
-        #self.commandLinkButtonAjuda.clicked.connect(self.mudarParaAbaAjuda)
-        #Esse método que será chamado é para verificar se o usuário colocou
-        #os caminhos necessários antes de apertar o botão para fazer a comparação
+
+        self.botaoComparar.setEnabled(False)
+        # Esse método que será chamado é para verificar se o usuário colocou
+        # os caminhos necessários antes de apertar o botão para fazer a comparação
         self.botaoComparar.clicked.connect(self.verificar)
-        #pequeno teste para ver se os itens da
-        #comboBox foram corretamente adicionados
-        """self.botaoComparar.clicked.connect(self.testeComboBox)
-        self.label = QLabel(self.tabComparar)
-        self.label.move(200,650)"""
-        #self.caminhoArquivoXyText = QTextEdit(self.tabDetectar)
-        """self.caminhoArquivoXyText.setReadOnly(True)
-        self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
-        self.caminhoArquivoXyText.setStyleSheet("padding: 10px;")
-        self.caminhoArquivoXyText.setGeometry(0,40,800,100)"""
 
-        self.botaoSelecionarArquivoXy.clicked.connect(self.abrirArquivoEventXy)
+        ### ABA COMPARAR POUCOS PICOS ###
 
-        self.pushButtonDetectar.clicked.connect(self.detectarVisualizarPicos)
-
-        self.pushButtonImportar.clicked.connect(self.popUpPlanilhaAngulos)
+        self.botaoSelecPadrao_2.setEnabled(False)
 
         self.botaoSelecPadrao_2.clicked.connect(self.abrirDirEventSeuPadraoAdicionarPicos)
 
-        #self.commandLinkButtonAjuda_2.clicked.connect(self.mudarParaAbaAjuda)
+        self.botaoUtilizarPicos_2.setEnabled(False)
+
+        self.botaoUtilizarPicos_2.clicked.connect(self.utilizarPicosDetectados2)
+
+        self.caminhoPadraotextEdit_2.setText('Aguardando a detecção dos picos...')
+
+        self.comboBoxPico1.setEnabled(False)
         
-        #self.caminhoPadraoText_2 = QTextEdit(self.tabCompararPoucosPicos)
-        """self.caminhoPadraoText_2.setReadOnly(True)
-        self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
-        self.caminhoPadraoText_2.setStyleSheet("padding: 10px;")
-        self.caminhoPadraoText_2.setGeometry(0,80,800,100)"""
+        self.comboBoxPico2.setEnabled(False)
+
+        self.comboBoxPico3.setEnabled(False)
+
+        self.comboBoxPico4.setEnabled(False)
+
+        self.comboBoxPico5.setEnabled(False)
 
         self.comboBoxPico1.activated.connect(self.picoSelecionado1)
         self.comboBoxPico2.activated.connect(self.picoSelecionado2)
         self.comboBoxPico3.activated.connect(self.picoSelecionado3)
         self.comboBoxPico4.activated.connect(self.picoSelecionado4)
         self.comboBoxPico5.activated.connect(self.picoSelecionado5)
-        #Esse método foi criado pois as linhas de comando
-        #necessárias aqui foram repetidas algumas vezes pelo
-        #código
+        # Esse método foi criado pois as linhas de comando
+        # necessárias aqui foram repetidas algumas vezes pelo
+        # código
         self.emitirSinaisComboBoxPicos()
+
+        self.botaoSelecCIF_2.setEnabled(False)
+
+        self.botaoSelecCIF_2.clicked.connect(self.abrirDirEventCIFs2)
+
+        self.caminhoCIFstextEdit_2.setText('Aguardando a detecção dos picos...')
+
+        self.caixaRadiacoes_2.setEnabled(False)
+
+        self.botaoComparar_2.setEnabled(False)
+        
+        self.botaoComparar_2.clicked.connect(self.verificar2)
+
         #pequeno teste para ver se os itens da
         #comboBox foram corretamente adicionados
+        """self.botaoComparar.clicked.connect(self.testeComboBox)
+        self.label = QLabel(self.tabComparar)
+        self.label.move(200,650)"""
+
+        # pequeno teste para ver se os itens da
+        # comboBox foram corretamente adicionados
         """self.botaoComparar_2.clicked.connect(self.testeComboBox)
         self.label = QLabel(self.tabCompararPoucosPicos)
         self.label.move(200,650)"""
-        self.botaoSelecCIF_2.clicked.connect(self.abrirDirEventCIFs2)
 
-        #self.caminhoCIFsText_2 = QTextEdit(self.tabCompararPoucosPicos)
-        """
-        self.caminhoCIFsText_2.setReadOnly(True)
-        self.caminhoCIFsText_2.setText('O caminho aparecerá aqui quando selecionado')
-        self.caminhoCIFsText_2.setStyleSheet("padding: 10px;")
-        self.caminhoCIFsText_2.setGeometry(0,340,800,100)
-        """
-        self.botaoComparar_2.clicked.connect(self.verificar2)
-
-        #self.commandLinkButtonAjuda_3.clicked.connect(self.mudarParaAbaAjuda)
-
-        # Adicionando texto e o link para a label de link na tab ajuda
-        self.labelLinkRepositorio.setText("<a href=https://github.com/Mirovesaram/comparadorPicos.git>Repositório do comparador de picos</a>")
-        # Permitindo que esse link exeterno seja aberto em um navegador quando clicado
-        self.labelLinkRepositorio.setOpenExternalLinks(True)
-        #Para fins de teste
+        # Para fins de teste
         #self.botaoComparar_2.clicked.connect(self.arrayParaDataFrame)
         
     #pequeno teste para ver se os itens da
@@ -466,252 +475,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label.setText(f"Índice: {self.index}, Dado: {self.data}, Texto: {self.text}")
         self.label.adjustSize()"""
     #
-    # MÉTODOS DA ABA AJUDAR {
+    # MÉTODOS CORINGA {
     #
-    def mudarParaAbaAjuda(self):
-        self.tabWidget.setCurrentIndex(3)
-    #
-    # }
-    #
-
-    #
-    # MÉTODOS DA ABA COMPARAR POUCOS PICOS {
-    #
-
-    # Aqui a ideia é parecida com os métodos de busca de diretório
-    # da aba comparar picos mas existe certas mudanças
-    def abrirDirEventSeuPadraoAdicionarPicos(self):
-        self.diretorioPadrao2=None
-        opcoes = QFileDialog.Options()
-        opcoes |= QFileDialog.ShowDirsOnly
-        diretorioPadrao = QFileDialog.getExistingDirectory(self,'Selecionar Pasta do seu Padrão','',options=opcoes)
-        self.diretorioPadrao2=diretorioPadrao
-        #Se diretorioPadrao tem um caminho
-        if diretorioPadrao:
-            #Variaveis que vão receber e adicionar os caminhos em string para utilizar mais na frente
-            caminhoPadrao=diretorioPadrao
-            #Arquivo que vai guardar o caminho do arquivo .xlsx
-            buscaTabelaPadrao = os.path.join(caminhoPadrao,'*.txt')
-            #Array que vai guardar os caminhos dos arquivos .xlsx
-            ArrayCaminhoTabelaPadrao = glob.glob(buscaTabelaPadrao)
-            #Se a array não está vazia
-            if ArrayCaminhoTabelaPadrao:
-                #Só se o caminho houver pelo menos uma pasta,
-                #ou seja, ArrayCaminhoPlanilhaPadrao != None,
-                #será adiconado caminho à caixa de texto editável
-                self.caminhoPadraoText_2.setText(diretorioPadrao)
-                #Aqui entra aquele atributo do ultimoIndex
-                #Caso haja algo guardado nela, indica que já existem
-                #itens nos comboBoxes, portando o método é utilizado
-                #para remover esses itens e ter ideia do ultimoIndex
-                #é importante para determinar o limite do laço de
-                #repetição
-                if self.ultimoIndex:
-                    self.removerItens()
-                #Coleta-se o único item dessa array criada na linha anterior
-                caminhoPadrao=ArrayCaminhoTabelaPadrao[0]
-                tabelaPadrao = pd.read_csv(caminhoPadrao,delim_whitespace=True,names=["angulos"],header=None)# data-
-                # rame criado para armazenar os ângulos do
-                # arquivo de texto encontrado (Alguns lugares pode estar
-                # planilhas mas essa funcionalidade foi alterada a fim de 
-                # trabalhar com os arquivos mais comuns para leitura de dados,
-                # deixou-se de trabalhar com .xlsx e sim com .txt para entrada
-                # de dados)
-                
-                #
-                # TESTE
-                #
-
-                #print(tabelaPadrao)
-
-                #Armazenar o número de linhas ao todo
-                numeroLinhasPadrao=tabelaPadrao.iloc[:,0].count()
-                for numeroLinha in range(numeroLinhasPadrao):
-                    #Ver qual o ângulo de 0 até numeroLinhasPadrao
-                    pico=tabelaPadrao.iloc[numeroLinha,0]
-                    #Adiciona a string do ângulo ao comboBox
-                    self.comboBoxPico1.addItem(str(pico))
-                    #Adiciona a informação relacionada
-                    # ao string deesse dado item, 
-                    # tem que ser +1 pois já exiiste o item 0 
-                    # que é o Vazio
-                    self.comboBoxPico1.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(numeroLinhasPadrao):
-                    pico=tabelaPadrao.iloc[numeroLinha,0]
-                    self.comboBoxPico2.addItem(str(pico))
-                    self.comboBoxPico2.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(numeroLinhasPadrao):
-                    pico=tabelaPadrao.iloc[numeroLinha,0]
-                    self.comboBoxPico3.addItem(str(pico))
-                    self.comboBoxPico3.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(numeroLinhasPadrao):
-                    pico=tabelaPadrao.iloc[numeroLinha,0]
-                    self.comboBoxPico4.addItem(str(pico))
-                    self.comboBoxPico4.setItemData(numeroLinha+1,pico)
-                for numeroLinha in range(numeroLinhasPadrao):
-                    pico=tabelaPadrao.iloc[numeroLinha,0]
-                    self.comboBoxPico5.addItem(str(pico))
-                    self.comboBoxPico5.setItemData(numeroLinha+1,pico)
-                #Aqui é onde de fato o atributo self.ultimoIndex deixa de ser None
-                self.ultimoIndex=self.comboBoxPico1.count()-1
-            #Se está vazia
-            else:
-                self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
-                if self.ultimoIndex:
-                    self.removerItens()
-                raise ValueError("A pasta não tem um arquivo .xlsx.")
-        #Se o atributo de caminhos está vazio                 
-        else:
-            self.caminhoPadraoText_2.setText('O caminho aparecerá aqui quando selecionado')
-            if self.ultimoIndex:
-                self.removerItens()
-    #Esse aqui é basicamente para fazer o mesmo que o próximo método, não repetir
-    #um monte de linhas, a explicação vou fazer no método
-    def removerItens(self):
-        #Aqui é utilizado um laço de repetição que 
-        #começa no atributo ultimoIndex (Caso ele
-        #esteja com algum valor diferente de None)
-        #e é para terminar no 0 e decresce 1
-        #unidade a cada repetição. Fazer a remoção 
-        #dos itens começando do último para o pri-
-        # meiro se deve ao fato de que caso 
-        # seja feito o do primeiro para o últi-
-        # mo, constantemente o tamanho das comboBoxes esta-
-        # rão sendo trocados. No fim, só vai sobrar o valor 
-        # Vazio nesse caso
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico1.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico2.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico3.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico4.removeItem(i)
-        for i in range(self.ultimoIndex,0,-1):
-            self.comboBoxPico5.removeItem(i)
-        self.emitirSinaisComboBoxPicos()
-    #A explicação dessas linhas de comando e a necessidade do método já foram explicados
-    def emitirSinaisComboBoxPicos(self):
-            self.comboBoxPico1.setCurrentIndex(0)
-            self.comboBoxPico1.activated.emit(0)
-            self.comboBoxPico2.setCurrentIndex(0)
-            self.comboBoxPico2.activated.emit(0)
-            self.comboBoxPico3.setCurrentIndex(0)
-            self.comboBoxPico3.activated.emit(0)
-            self.comboBoxPico4.setCurrentIndex(0)
-            self.comboBoxPico4.activated.emit(0)
-            self.comboBoxPico5.setCurrentIndex(0)
-            self.comboBoxPico5.activated.emit(0)
-    #Métodos engatilhados quando o activated é acionado
-    #para selecionar os itens em cada comboBox
-    def picoSelecionado1(self,index):
-        pico1=self.comboBoxPico1.itemData(index)
-        self.arrayPicos[0]=pico1
-        #Somente para testes
-        #print(self.arrayPicos)
-    def picoSelecionado2(self,index):
-        pico2=self.comboBoxPico2.itemData(index)
-        self.arrayPicos[1]=pico2
-        #print(self.arrayPicos)
-    def picoSelecionado3(self,index):
-        pico3=self.comboBoxPico3.itemData(index)
-        self.arrayPicos[2]=pico3
-        #print(self.arrayPicos)
-    def picoSelecionado4(self,index):
-        pico4=self.comboBoxPico4.itemData(index)
-        self.arrayPicos[3]=pico4
-        #print(self.arrayPicos)  
-    def picoSelecionado5(self,index):
-        pico5=self.comboBoxPico5.itemData(index)
-        self.arrayPicos[4]=pico5          
-        """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
-        print(self.arrayPicosSemNone)"""
-        #print(self.arrayPicos)
-    # Esse é igualzinho ao método de procura
-    # do diretório de CIFs da aba comparar
-    # picos
-    def abrirDirEventCIFs2(self):
-        self.diretorioCIFs2=None
-        opcoes = QFileDialog.Options()
-        opcoes |= QFileDialog.ShowDirsOnly
-        diretorioCIFs = QFileDialog.getExistingDirectory(self,'Selecionar Pasta dos CIFs','',options=opcoes)
-        self.diretorioCIFs2=diretorioCIFs
-        if diretorioCIFs:
-            self.caminhoCIFsText_2.setText(diretorioCIFs)
-        else:
-            self.caminhoCIFsText_2.setText('O caminho aparecerá aqui quando selecionado')
-    # Método ativado quando um item na caixa de radiações
-    # é selecionado
-    def itemSelecionado2(self,index):
-        self.valorSelecionado2=self.caixaRadiacoes_2.itemData(index)
-    # Método idêntico ao verificar utilizado na aba comparar picos
-    def verificar2(self):
-        #Se os dois atributos estão preenchidos simultaneamente
-        #(Não são mais vazios)
-        if self.diretorioCIFs2 and self.diretorioPadrao2:
-            self.arrayParaDataFrame()
-            #Se a trava lógica está desativada
-            if self.travaLogica == False:
-                self.caminhoCIFs=self.diretorioCIFs2
-                self.caminhoPadrao=self.diretorioPadrao2
-                # Seta as travas para permitirem a entrada de
-                # dados no contexto da tab Comparar Poucos
-                # Picos 
-                self.verificou2=True
-                self.verificou1=False
-                #Inicia a comparação
-                self.compararPicos()
-            else:
-                self.verificou2=None
-                self.verificou1=None
-                raise ValueError("Nenhum pico foi selecionado.")
-        #Se não
-        else:
-            self.verificou2=None
-            self.verificou1=None
-            #Se esse atributo ainda está vazio
-            if not self.diretorioCIFs2:
-                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
-                raise ValueError("A pasta dos CIFs não foi selecionado.")
-            #Se esse atributo ainda está vazio
-            if not self.diretorioPadrao2:
-                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
-                raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
-    #Esse método converte uma array para um dataframe
-    def arrayParaDataFrame(self):
-        #Primeiro, é criado uma array que não tem itens None
-        #acho que dá para considerar isso uma compreensão de
-        #lista
-        self.arraySemNone = [item for item in self.arrayPicos if item is not None]
-        #Se array não está vazia
-        if self.arraySemNone != []:
-            #Use o método set para criar uma array com
-            #um conjunto de itens não repetidos e ordenados
-            #(Todos os itens são float)
-            self.arraySNoneSRepet=set(self.arraySemNone)
-            #Transforme essa array em um dataframe de uma única
-            #coluna chamada "Ângulos 2theta (°)"
-            self.dfPicos=pd.DataFrame(self.arraySNoneSRepet, columns=["Ângulos"])
-            # Para fins de teste e avaliação do valor recebido
-
-            #print(self.dfPicos)
-
-            #Não haverá trava lógica para a ação do método comparar picos
-            #sendo utilizado no contexto do tab Comparar Poucos Picos
-            self.travaLogica=False
-        #Caso a array esteja vazia (Todos os comboBox estão com
-        #o dado "Vazio" selecionado)
-        else:
-            #Reinicie o atributo dfPicos para o valor
-            #padrão None
-            self.dfPicos=None
-            #Acione a trava lógica para não haver acionamento
-            #do método comparar picos no contexto da tab Comparar
-            #Poucos Picos
-            self.travaLogica=True
-    # A partir daqui o método utilizado também é o compararPicos()
-    # que foi colocado na parte da aba de comparar picos
-
+    def mostrarPopUpNaoSalvouArquivo(self):
+        mensagem=QMessageBox()
+        mensagem.setIcon(QMessageBox.Information)
+        mensagem.setText("O arquivo não foi salvo")
+        mensagem.setWindowTitle("Arquivo não foi salvo")
+        mensagem.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
+        mensagem.exec_()
     #
     # }
     #
@@ -719,6 +491,86 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     #
     # MÉTODOS DA ABA DETECTAR PICOS {
     #
+    def inicializacao(self):
+        self.X = None
+        self.valorLimite = self.doubleSpinBoxMudarLimite.value()
+        self.limitePadrao = None
+        self.arquivoXy = None
+        self.intensidades = None
+        self.angulos = None
+
+        self.diretorioPadrao=None
+        self.diretorioCIFs=None
+        self.arrayAs3melhores = None
+        self.dataFramePadraoNoTodo = None
+        self.arrayDfNomesOrden = None
+        self.arrayDfCompOrden=None
+        self.numeroDeAbas=None
+        self.arrayDfCIFsOrden=None
+        self.verificou1=None
+        self.valorSelecionado=None
+        self.caminhoCIFs=None
+        self.caminhoPadrao=None
+        self.dialogo=None
+        
+        self.valorSelecionado2=None
+        self.verificou2=None
+        self.diretorioCIFs2=None
+        self.diretorioPadrao2=None
+        self.travaLogica=None
+        self.dfPicos=None
+        self.arrayPicos=[None, None, None, None,None]
+        if self.ultimoIndex:
+            self.removerItens()
+        self.ultimoIndex=None
+
+    def desativarQuaseTudo(self):
+        self.doubleSpinBoxMudarLimite.setEnabled(False)
+        self.pushButtonVisualizar.setEnabled(False)
+        self.pushButtonExportar.setEnabled(False)
+        self.botaoSelecPadrao.setEnabled(False)
+        self.botaoUtilizarPicos.setEnabled(False)
+        self.caminhoPadraotextEdit.setText('Aguardando a detecção dos picos...')
+        self.botaoSelecCIF.setEnabled(False)
+        self.caminhoCIFstextEdit.setText('Aguardando a detecção dos picos...')
+        self.caixaRadiacoes.setEnabled(False)
+        self.botaoComparar.setEnabled(False)
+        self.botaoSelecPadrao_2.setEnabled(False)
+        self.botaoUtilizarPicos_2.setEnabled(False)
+        self.caminhoPadraotextEdit_2.setText('Aguardando a detecção dos picos...')
+        self.comboBoxPico1.setEnabled(False)
+        self.comboBoxPico2.setEnabled(False)
+        self.comboBoxPico3.setEnabled(False)
+        self.comboBoxPico4.setEnabled(False)
+        self.comboBoxPico5.setEnabled(False)
+        self.botaoSelecCIF_2.setEnabled(False)
+        self.caminhoCIFstextEdit_2.setText('Aguardando a detecção dos picos...')
+        self.caixaRadiacoes_2.setEnabled(False)
+        self.botaoComparar_2.setEnabled(False)
+
+    def ativarTudo(self):
+        self.doubleSpinBoxMudarLimite.setEnabled(True)
+        self.pushButtonVisualizar.setEnabled(True)
+        self.pushButtonExportar.setEnabled(True)
+        self.botaoSelecPadrao.setEnabled(True)
+        self.botaoUtilizarPicos.setEnabled(True)
+        self.caminhoPadraotextEdit.setText('O caminho aparecerá aqui quando selecionado')
+        self.botaoSelecCIF.setEnabled(True)
+        self.caminhoCIFstextEdit.setText('O caminho aparecerá aqui quando selecionado')
+        self.caixaRadiacoes.setEnabled(True)
+        self.botaoComparar.setEnabled(True)
+        self.botaoSelecPadrao_2.setEnabled(True)
+        self.botaoUtilizarPicos_2.setEnabled(True)
+        self.caminhoPadraotextEdit_2.setText('O caminho aparecerá aqui quando selecionado')
+        self.comboBoxPico1.setEnabled(True)
+        self.comboBoxPico2.setEnabled(True)
+        self.comboBoxPico3.setEnabled(True)
+        self.comboBoxPico4.setEnabled(True)
+        self.comboBoxPico5.setEnabled(True)
+        self.botaoSelecCIF_2.setEnabled(True)
+        self.caminhoCIFstextEdit_2.setText('O caminho aparecerá aqui quando selecionado')
+        self.caixaRadiacoes_2.setEnabled(True)
+        self.botaoComparar_2.setEnabled(True)
     #Esse método também é um pouco diferente do comum
     def abrirArquivoEventXy(self):
         self.arquivoXy=None
@@ -730,120 +582,123 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Se o atributo do arquivo não está vazio
         if arquivoXy:
             self.arquivoXy=arquivoXy
-            self.caminhoArquivoXyText.setText(arquivoXy)
-            #Ler o arquivo .xy e forma o dataframe com ângulos e intensidades do padrão
+            self.ativarTudo()
+            self.caminhoXYtextEdit.setText(arquivoXy)
+            # Ler o arquivo .xy e forma o dataframe com ângulos e intensidades do padrão
             dataFramePadrao = pd.read_csv(self.arquivoXy, delim_whitespace=True, header=None, names=['x','y'])
-            #Pega os ângulos (Dados da coluna 'x') e coloca em uma array
+            # Pega os ângulos (Dados da coluna 'x') e coloca em uma array
             self.angulos=dataFramePadrao.x.values
-            #Pega os ângulos (Dados da coluna 'y') e coloca em uma array
+            # Pega os ângulos (Dados da coluna 'y') e coloca em uma array
             self.intensidades=dataFramePadrao.y.values
             #Endereça a uma nova array
             self.X = self.intensidades
-            #Aqui o atibuto armazena o valor do score padrão 
+            # Aqui o atibuto armazena o valor do score padrão 
             # para o método com homologia persistente 
             # do findpeaks
             self.limitePadrao=np.min(np.min(self.X))-1
-            #Coloca o valor apresentado no doubleSpin como sendo o
-            #valor do score padrão
+            #self.doubleSpinBoxMudarLimite.setEnabled(True)
+            # Coloca o valor apresentado no doubleSpin como sendo o
+            # valor do score padrão
             self.doubleSpinBoxMudarLimite.setValue(self.limitePadrao)
-            #Inicia o método para mostrar o padrão numa label
-            #enquanto os dados do padrão estiverem carregados
+            #self.pushButtonVisualizar.setEnabled(True)
+            #self.pushButtonExportar.setEnabled(True)
+            # Inicia o método para mostrar o padrão numa label
+            # enquanto os dados do padrão estiverem carregados
             self.mostrarLimitePadrao()
         else:
             self.X=None
+            self.intensidades=None
+            self.angulos=None
             self.arquivoXy=None
             self.limitePadrao=None
             self.mostrarLimitePadrao()
-            #Coloca o valor como 0
+            # Coloca o valor como 0
             self.doubleSpinBoxMudarLimite.setValue(0)
             self.valorLimite=None
-            self.caminhoArquivoXyText.setText('O caminho aparecerá aqui quando selecionado')
-    #Método da label que mostra o limite padrão para aqueles dados
+            self.caminhoXYtextEdit.setText('O caminho aparecerá aqui quando selecionado')
+            self.desativarQuaseTudo()
+            self.inicializacao()
+    # Método da label que mostra o limite padrão para aqueles dados
     def mostrarLimitePadrao(self):
         if self.limitePadrao:
             self.labelValorLimite.setText(str(self.limitePadrao))
         else:
             self.labelValorLimite.setText('-')
-     #Aqui é o método engatilhado do botão de detectar e visualizar o gráfico
-    def detectarVisualizarPicos(self):
-        #buscaXyPadrao=os.path.join(caminho,'*.xy')
-        #ArrayCaminhoXy=glob.glob(buscaXyPadrao)
-        #Se o arquivo está preenchido
+    # Aqui é o método engatilhado do botão de detectar e visualizar o gráfico
+    def visualizarPicos(self):
+        # Se o arquivo está preenchido
         if self.arquivoXy:
             # Tal comando evita que o caso o usuário pressione mais uma vez o
             # botão de mostrar gráfico, o que estava já aberto seja fechado
             plt.close()
-            #Armazenar o valorLimite com o valor presente no doubleSpinBox
+            # Armazenar o valorLimite com o valor presente no doubleSpinBox
             self.valorLimite=self.doubleSpinBoxMudarLimite.value()
-            #Armazenar o método findpeaks com o limit sendo o valorLimite na variável fp   
+            # Armazenar o método findpeaks com o limit sendo o valorLimite na variável fp   
             fp = findpeaks(method='topology',limit=self.valorLimite)
-            #E armazenar o ajuste desse método para a array X na variável results
+            # E armazenar o ajuste desse método para a array X na variável results
             results = fp.fit(self.X)
-            #fp.plot()
             # Extrair os indexes dos ângulos dos picos do dataframe criado pelo results.
             # Como pegar a coluna peak do df do results e ver quais tem valor
             # igual a True e utilizar o método .tolist() do numpy para colocar em uma array/lista
             angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
             # Plotando os resultados
-            #plt.switch_backend('Qt5Agg')
+
             # Plot se trata da linha comum, com uma label de Dados para ela e a cor azul
             plt.plot(self.angulos, self.intensidades, label='Dados', color='blue')
-            #Scatter se trata de pontos, com uma label de Picos e a cor vermelha. Utiliza os indexes do 
+            # Scatter se trata de pontos, com uma label de Picos e a cor vermelha. Utiliza os indexes do 
             # angulosPicos para saber quais pontos específicos pegar das arrays angulos e intensidades
             plt.scatter(self.angulos[angulosPicos], self.intensidades[angulosPicos], color='red', label='Picos')
-            #Setar as labels dos eixos x e y
+            # Setar as labels dos eixos x e y
             plt.xlabel("Ângulo 2theta (°)")
             plt.ylabel("Intensidade (Contagens)")
-            #Colocar as labels de fato na figura
+            # Colocar as labels de fato na figura
             plt.legend()
             # Ter acesso ao gerenciador da imagem
             gerenciador=plt.get_current_fig_manager()
             # Para poder trocar o título da janela gerada no plt.show()
             gerenciador.set_window_title("Picos detectados com o limite "+str(self.valorLimite))
             plt.show()
-        #Se não
+        # Se não
         else:
             raise ValueError('O arquivo .xy não foi selecionado.')
     # Abre um pop-up para escolha do diretório onde irá ser salvo a planilha com ângulos
-    def popUpPlanilhaAngulos(self):
+    def popUpExportAngulos(self):
         if self.arquivoXy:
             nomeArquivo=None
             opcoes=QFileDialog.Options()
-            filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
-            nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilha com ângulos", "", filtroDeArquivo, options=opcoes)
+            filtroDeArquivo = "Arquivos de texto (*.txt);;Todos os arquivos (*)"
+            self.valorLimite=self.doubleSpinBoxMudarLimite.value()
+            valorLimite=self.valorLimite
+            tituloPopUp=f"Exportar picos encontrados com o limite {self.valorLimite}"
+            nomeArquivo, _ = QFileDialog.getSaveFileName(self, tituloPopUp, "", filtroDeArquivo, options=opcoes)
             if nomeArquivo:
-                # Se o o nome do arquivo não terminar com .xlsx
-                if not nomeArquivo.endswith('.xlsx'):
-                    #Adicione .xlsx
-                    nomeArquivo += '.xlsx'
+                # Se o o nome do arquivo não terminar com .txt
+                if not nomeArquivo.endswith('.txt'):
+                    # Adicione .txt
+                    nomeArquivo += '.txt'
                 # Mande o nome do arquivo com o diretório 
                 # escolhido para o método que salvará
                 # a planilha no diretório escolhido com
                 # o nome escolhido
-                self.salvarPlanilhaAngulos(nomeArquivo)
+                self.salvarPlanilhaAngulos(nomeArquivo,valorLimite)
             else:
                 # Caso o usuário desista de salvar emita um pop-up
                 # informando que não foi salvo
-                mensagem=QMessageBox()
-                mensagem.setIcon(QMessageBox.Information)
-                mensagem.setText("A planilha de ângulos não foi salva")
-                mensagem.setWindowTitle("Arquivo não foi salvo")
-                mensagem.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
-                mensagem.exec_()
+                self.mostrarPopUpNaoSalvouArquivo
         else:
             raise ValueError('O arquivo .xy não foi selecionado.')
     # O método que vai receber o caminho e salvar no mesmo
-    def salvarPlanilhaAngulos(self, parametroArquivo):
+    def salvarPlanilhaAngulos(self, parametroArquivo, paramentoValorLimite):
         nomeArquivo=parametroArquivo
-        self.valorLimite=self.doubleSpinBoxMudarLimite.value()   
+        self.valorLimite=paramentoValorLimite 
         fp = findpeaks(method='topology',limit=self.valorLimite)
         results = fp.fit(self.X)
         angulosPicos = results['df'].index[results['df']['peak'] == True].tolist()
         # Transforma em dataframe
-        dataFramePicos=pd.DataFrame(self.angulos[angulosPicos], columns=["Ângulos"])
+        dataFramePicos=pd.DataFrame({'Ângulos': self.angulos[angulosPicos],'Intensidades': self.intensidades[angulosPicos]})
         # Salva com o caminho e nome indicados
-        with pd.ExcelWriter(nomeArquivo) as writer:
-            dataFramePicos.to_excel(writer,sheet_name="Ângulos encontrados",index=True)
+        with open(nomeArquivo, "w") as file:
+            file.write(dataFramePicos.to_string(header=False, index=False))
     #
     # }
     #
@@ -862,73 +717,134 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         outro método de abrir diretórios também
         """
         self.diretorioCIFs=None      
-        #Essa variável aloca a classe Options, não sei exatamente o que faz (Não entrei em detalhes)
+        # Essa variável aloca a classe Options, não sei exatamente o que faz (Não entrei em detalhes)
         opcoes = QFileDialog.Options()
-        #Não sei que operador é esse, mas essa função também dá a variável inicializada na linha anterior
-        #a função de somente mostrar diretórios (pastas), nada de arquivos
+        # Não sei que operador é esse, mas essa função também dá a variável inicializada na linha anterior
+        # a função de somente mostrar diretórios (pastas), nada de arquivos
         opcoes |= QFileDialog.ShowDirsOnly
-        #Esse é o comando da caixinha que apresenta o explorer para o usuário selecionar a pasta
-        #bem como essa variável aloca a string obtida (string do caminho da pasta) quando o usuário 
-        #seleciona a pasta nessa caixinha criada (Entenda caixinha como a janela que abre do explorer)
+        # Esse é o comando da caixinha que apresenta o explorer para o usuário selecionar a pasta
+        # bem como essa variável aloca a string obtida (string do caminho da pasta) quando o usuário 
+        # seleciona a pasta nessa caixinha criada (Entenda caixinha como a janela que abre do explorer)
         diretorioCIFs = QFileDialog.getExistingDirectory(self,'Selecionar Pasta dos CIFs','',options=opcoes)
-        #Atualiza o atributo antigamente inicializado para receber como valor a string do caminho
-        #da pasta
+        # Atualiza o atributo antigamente inicializado para receber como valor a string do caminho
+        # da pasta
         self.diretorioCIFs=diretorioCIFs
-        #laço condicional para mudar o texto da caixa de texto antes feita
-        #Se diretorioCIFs não está vazio...
+        # laço condicional para mudar o texto da caixa de texto antes feita
+        # Se diretorioCIFs não está vazio...
         if diretorioCIFs:
-            #...mude o texto da caixa de texto para o valor
-            #do diretorioCIFs
-            self.caminhoCIFsText.setText(diretorioCIFs)
-        #Essa segunda linha de código garante que caso o usuário não selecione nada no
-        #diálogo de diretórios ele seja informado disso mostrando que não há caminho selecionado
-        #Setar None é interessante pois no momento que o diálogo é iniciado, não importa se já
-        #tivesse um caminho selecionado, novamente ele voltaria à mensagem padrão imediatamente
-        #demonstrando que a informação do caminho já foi sobrescrita
+            # ...mude o texto da caixa de texto para o valor
+            # do diretorioCIFs
+            self.caminhoCIFstextEdit.setText(diretorioCIFs)
+        # Essa segunda linha de código garante que caso o usuário não selecione nada no
+        # diálogo de diretórios ele seja informado disso mostrando que não há caminho selecionado
+        # Setar None é interessante pois no momento que o diálogo é iniciado, não importa se já
+        # tivesse um caminho selecionado, novamente ele voltaria à mensagem padrão imediatamente
+        # demonstrando que a informação do caminho já foi sobrescrita
         else:
-            self.caminhoCIFsText.setText('O caminho aparecerá aqui quando selecionado')
-    #Não vou me estender, basicamente o mesmo do anterior
+            self.caminhoCIFstextEdit.setText('O caminho aparecerá aqui quando selecionado')
+    # Não vou me estender, basicamente o mesmo do anterior
     def abrirDirEventSeuPadrao(self):
+        self.dataFrameAngulos=None
         self.diretorioPadrao=None
         opcoes = QFileDialog.Options()
-        opcoes |= QFileDialog.ShowDirsOnly
-        diretorioPadrao = QFileDialog.getExistingDirectory(self,'Selecionar Pasta do seu Padrão','',options=opcoes)
-        self.diretorioPadrao=diretorioPadrao
-        if diretorioPadrao:
-            self.caminhoPadraoText.setText(diretorioPadrao)
+        filtroDeArquivo = "Arquivos de texto (*.txt);;Todos os arquivos (*)"
+        tituloPopUp='Selecionar o arquivo do seu padrão de difração'
+        arquivoPadrao, _ = QFileDialog.getOpenFileName(self,tituloPopUp,'', filtroDeArquivo, options=opcoes)
+        self.diretorioPadrao=arquivoPadrao
+        if arquivoPadrao:
+            self.caminhoPadraotextEdit.setText(arquivoPadrao)
+            self.UtilizouPicos1=False
         else:
-            self.caminhoPadraoText.setText('O caminho aparecerá aqui quando selecionado')
+            self.caminhoPadraotextEdit.setText('O caminho aparecerá aqui quando selecionado')
+    def utilizarPicosDetectados(self):
+        self.valorLimite=self.doubleSpinBoxMudarLimite.value()
+        fp=findpeaks(method='topology',limit=self.valorLimite)
+        results=fp.fit(self.X)
+        angulosPicos=results['df'].index[results['df']['peak']==True].tolist()
+        quantidadePicos=len(angulosPicos)
+        self.caminhoPadraotextEdit.setText(f'Utilizando os {quantidadePicos} picos encontrados com o limite {self.valorLimite}')
+        self.dataFrameAngulos=pd.DataFrame({'Ângulos':self.angulos[angulosPicos], 'Intensidades': self.intensidades[angulosPicos]})
+        self.UtilizouPicos1=True
+        #print(self.dataFrameAngulos)
+        
     # O método que tinha sido citado anteriormente que age junto ao caixaRadiacoes
     def itemSelecionado(self,index):
         self.valorSelecionado=self.caixaRadiacoes.itemData(index)
     # Método que verifica se os atributos do construtor de diretório dessa aba  
     # deixaram de ser Nones (vazios)
     def verificar(self):
-        #Se os dois atributos estão preenchidos simultaneamente
-        #(Não são mais vazios)
-        if self.diretorioCIFs and self.diretorioPadrao:
-            #Atributos que vão receber e adicionar os caminhos em string para utilizar mais na frente
+        # Se os dois atributos estão preenchidos simultaneamente
+        #( Não são mais vazios)
+        if self.diretorioCIFs and (self.diretorioPadrao or self.UtilizouPicos1==True):
+            # Atributos que vão receber e adicionar os caminhos em string para utilizar mais na frente
             self.caminhoCIFs=self.diretorioCIFs
             self.caminhoPadrao=self.diretorioPadrao
-            #Mudamos a trava para permitir a entrada de dados
+            # Mudamos a trava para permitir a entrada de dados
             # no contexto da tab Comparar Picos
             self.verificou2=False
             self.verificou1=True
-            #Inicia a comparação
+            # Inicia a comparação
             self.compararPicos()
-        #Se não
+        # Se não
         else:
             self.verificou2=None
             self.verificou1=None
-            #Se esse atributo ainda está vazio
+            # Se esse atributo ainda está vazio
             if not self.diretorioCIFs:
                 #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
                 raise ValueError("A pasta dos CIFs não foi selecionado.")
-            #Se esse atributo ainda está vazio
+            # Se esse atributo ainda está vazio
             if not self.diretorioPadrao:
-                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
-                raise ValueError("A pasta dos arquivos do seu padrão de difração não foi selecionado.")
-    #Método para comparar picos
+                # Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
+                raise ValueError("O arquivo do seu padrão de difração não foi selecionado e os picos detectados não foram utilizados.")
+    
+    # Essa função será necessária para otimizar o número de 
+    # linhas nos laços condicionais na hora de calcular as 
+    # distâncias e o desnível do pico escolhido e ela será 
+    # usada na função compararPicos
+
+    def calcularDesnivelEntrePicos(self,intensidadePicoPadrao,notaDistancia,arrayDataFramesComparacao,numeroAba,contador,linhaPico,picoDaVez,intensidadePicoAmostra,distancia):
+        desnivel=abs(intensidadePicoPadrao-intensidadePicoAmostra)
+        if desnivel <= 0.01:
+            notaDesnivel = 1
+        elif 0.01 < desnivel <= 0.02:
+            notaDesnivel = 0.8
+        elif 0.02 < desnivel <= 0.03:
+            notaDesnivel = 0.6
+        elif 0.03 < desnivel <= 0.04:
+            notaDesnivel = 0.4
+        elif 0.04 < desnivel <= 0.05:
+            notaDesnivel = 0.2
+        elif 0.05 < desnivel <= 0.1:
+            notaDesnivel = 0
+        elif 0.1 < desnivel <= 0.2:
+            notaDesnivel = -1
+        elif 0.2 < desnivel <= 0.3:
+            notaDesnivel = -2
+        elif 0.3 < desnivel <= 0.4:
+            notaDesnivel = -3
+        elif 0.4 < desnivel <= 0.5:
+            notaDesnivel = -4
+        elif desnivel > 0.5:
+            notaDesnivel = -5
+        nota = (notaDistancia+notaDesnivel)/2
+        if 0.8 < nota <= 1:
+            arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,distancia,desnivel,'Sim','Muito boa','Não','Não',nota]
+            return 5
+        elif 0.6 < nota <= 0.8:
+            arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,distancia,desnivel,'Sim','Boa','Não','Não',nota]
+            return 4
+        elif 0.4 < nota <= 0.6:
+            arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,distancia,desnivel,'Sim','Média','Não','Não',nota]
+            return 3
+        elif 0.2 < nota <= 0.4:
+            arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,distancia,desnivel,'Sim','Ruim','Não','Não',nota]
+            return 2
+        elif nota <= 0.2:
+            arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,distancia,desnivel,'Sim','Muito ruim','Não','Não',nota]
+            return 1
+
+    # Método para comparar picos
     def compararPicos(self):
         self.mostrarInicio()
         # Variável responsável por armazenar qual tipo de arquivo deve ser buscado
@@ -942,29 +858,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             comprimentoOndaAngstron=self.valorSelecionado #Utiliza o valor selecionado na caixaRadiacoes
         elif self.verificou2==True:
             comprimentoOndaAngstron=self.valorSelecionado2
-        #Arquivo que vai guardar o caminho do arquivo .xy
-        buscaXyPadrao = os.path.join(self.caminhoPadrao,'*.xy')
-        #Transforma numa array de strings caminho
-        ArrayCaminhoXy=glob.glob(buscaXyPadrao)
-        #Arquivo que vai guardar o caminho do arquivo .xlsx
-        buscaTabelaPadrao = os.path.join(self.caminhoPadrao,'*.txt')
-        ArrayCaminhoTabelaPadrao = glob.glob(buscaTabelaPadrao)
-        #Coleta-se o único item dessa array criada na linha anterior
-        caminhoPadrao=ArrayCaminhoTabelaPadrao[0]
-        #DataFrame criado com os dados do arquivo .xy
-        dataFramePadraoNoTodo = pd.read_csv(ArrayCaminhoXy[0], delim_whitespace=True,header=None, names=['x','y'])
-        #Contagem de linhas para determinar qual é a última linha do padrão
-        quantLinhasPadraoNoTodo = dataFramePadraoNoTodo['x'].count()
+        # Arquivo que vai guardar o caminho do arquivo .xy
+        #buscaXyPadrao = os.path.join(self.caminhoPadrao,'*.xy')
+        # Transforma numa array de strings caminho
+        #ArrayCaminhoXy=glob.glob(buscaXyPadrao)
+        # Arquivo que vai guardar o caminho do arquivo .xlsx
+        #buscaTabelaPadrao = os.path.join(self.caminhoPadrao,'*.txt')
+        #ArrayCaminhoTabelaPadrao = glob.glob(buscaTabelaPadrao)
+        # Coleta-se o único item dessa array criada na linha anterior
+        caminhoPadrao=self.caminhoPadrao
+        # DataFrame criado com os dados do arquivo .xy
+        #dataFramePadraoNoTodo = pd.read_csv(ArrayCaminhoXy[0], delim_whitespace=True,header=None, names=['x','y'])
+        # Contagem de linhas para determinar qual é a última linha do padrão
+        #quantLinhasPadraoNoTodo = dataFramePadraoNoTodo['x'].count()
+        quantLinhasPadraoNoTodo = len(self.angulos)
         ultimaLinha=quantLinhasPadraoNoTodo-1
-        #Variável para ter o primeiro ângulo do nosso padrão de difração
-        primeiroAnguloPadrao=dataFramePadraoNoTodo.iloc[0,0]
-        #Variável para ter o último ângulo do nosso padrão de difração
-        UltimoAnguloPadrao=dataFramePadraoNoTodo.iloc[ultimaLinha,0]
-        #Se trata do comando para buscar os arquivos CIF no caminho especificado de maneira responsiva
+        # Variável para ter o primeiro ângulo do nosso padrão de difração
+        #primeiroAnguloPadrao=dataFramePadraoNoTodo.iloc[0,0]
+        primeiroAnguloPadrao=self.angulos[0]
+        # Variável para ter o último ângulo do nosso padrão de difração
+        #UltimoAnguloPadrao=dataFramePadraoNoTodo.iloc[ultimaLinha,0]
+        UltimoAnguloPadrao=self.angulos[ultimaLinha]
+        # Se trata do comando para buscar os arquivos CIF no caminho especificado de maneira responsiva
         buscaDosCIFs=os.path.join(self.caminhoCIFs,extensaoArquivo)
-        #Array com os caminhos de cada arquivo
+        # Array com os caminhos de cada arquivo
         arrayCaminhosCIF=glob.glob(buscaDosCIFs)
-        #Quantidade de arquivos e portanto de abas presentes na planilha dos CIFs e de comparação
+        # Quantidade de arquivos e portanto de abas presentes na planilha dos CIFs e de comparação
         numeroDeAbas=len(arrayCaminhosCIF)
         #Array com os nomes dos arquivos feita utilizando uma sacada interessante do chamado "Compreensão de lista"
         #É uma maneira bem simples e rápida de criar uma array
@@ -985,7 +904,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #Variável que guarda a configuração do calculador de difração de raio x ou x-ray diffraction (xrd)
             xrdCalculador = XRDCalculator(wavelength=comprimentoOndaAngstron)
             #Variável que guarda o padrão de difração com os valores de ângulo e intendidade do arquivo CIF
-            xrdPadrao = xrdCalculador.get_pattern(estrutura)
+            xrdCIF = xrdCalculador.get_pattern(estrutura)
             #Aqui vamos criar uma variável que vai alocar um valor lógico, verdadeiro ou falso. No caso,
             #se o padrão calculado está dentro do intervalo pensado para o nosso padrão de difração.
             #Ângulo é uma variável temporária
@@ -993,22 +912,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             #essa solução utilizando esse molde -
             #('proposição com variável temporária' for 'variável temporária' in 'Dada array') -
             #está ficando cada vez mais comum e é cada vez mais interessante (Comentário fora de cronologia, desconsidere)
-            angulosNoIntervalo=all(primeiroAnguloPadrao <= angulo <= UltimoAnguloPadrao for angulo in xrdPadrao.x)
+            angulosNoIntervalo=all(primeiroAnguloPadrao <= angulo <= UltimoAnguloPadrao for angulo in xrdCIF.x)
             #Se verdadeiro
             if angulosNoIntervalo:
                 #Variável para alocar o dataFrame recém criado
-                df = pd.DataFrame({"Ângulo-2theta": xrdPadrao.x, "Intensidade": xrdPadrao.y})
+                df = pd.DataFrame({"Ângulo-2theta": xrdCIF.x, "Intensidade": xrdCIF.y})
                 #Por fim, esses dados devem ser transpostos em uma array
                 arrayDeDataFramesCIFs.append(df)
             else:
                 #Aqui ocorre uma filtragem para as únicas linhas que podem estar no dataframe
                 #são linhas dentro do intervalo
-                df = pd.DataFrame({"Ângulo-2theta": xrdPadrao.x, "Intensidade": xrdPadrao.y})
+                df = pd.DataFrame({"Ângulo-2theta": xrdCIF.x, "Intensidade": xrdCIF.y})
                 linhasFiltradas= df.loc[(df["Ângulo-2theta"]>=primeiroAnguloPadrao) & (df["Ângulo-2theta"]<=UltimoAnguloPadrao)]
                 df = linhasFiltradas
                 arrayDeDataFramesCIFs.append(df)
         #Criacao da tabela que armazenara as linhas criadas
-        dataFrameResultados=pd.DataFrame(columns=['2theta-Padrão','2theta','Intensidade','Diferença','Corresponde','Classificação','Picos Excedentes','Picos Faltantes','Nota'])
+        dataFrameResultados=pd.DataFrame(columns=['Ângulos 2theta do seu padrão','Ângulos 2theta do CIF','Intensidade do CIF','Distância entre os picos','Intensidade relativa entre os picos','O pico corresponde?','Classificação do pico','Picos Excedentes','Picos Faltantes','Nota'])
         #Criação do DataFrame modelo vazio com todas as suas colunas correspondentes, tal modelo é que será utilizado em cada aba da planilha de saída
         arrayDataFramesComparacao=[] #Aqui é o array de DataFrames modelo, tal arranjo é importante para haver uma distinção autônoma de cada dataFrame para cada aba construída na planilha de saída
 
@@ -1027,26 +946,49 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         #Criando variável que lerá os dados de pico na coluna 2theta da planilha do seu padrão designado
         if self.verificou1 == True:
-            tabelaPadrao = pd.read_csv(caminhoPadrao,delim_whitespace=True,header=None,names=["angulos"])
+            if self.UtilizouPicos1 == True:
+                tabelaPadrao=self.dataFrameAngulos
+                print(tabelaPadrao)
+                # LEMBRE-SE: ESSE É O CASO EM QUE OS PICOS DETECTADOS SÃO UTILIZADOS
+            else:
+                tabelaPadrao = pd.read_csv(caminhoPadrao,delim_whitespace=True,header=None,names=["Ângulos","Intensidades"])
+                print(tabelaPadrao)
+                # AQUI OS PICOS QUE FORAM IMPORTADOS
         elif self.verificou2 == True:
             tabelaPadrao = self.dfPicos
+            print(tabelaPadrao)
         #
         # TESTE
         #
 
         #print(tabelaPadrao)
+        intensidadesTabelaPadrao=tabelaPadrao.Intensidades.values
+        # Coletando a intensidade com maior pico para posterior uso
+        maiorPicoPadrao = intensidadesTabelaPadrao.max()
+        
+        # Normalizando as intensidades para valores entre 0 e 1
+        intensidadesPadraoNormalizadasPara1 = (intensidadesTabelaPadrao)/maiorPicoPadrao
+        menorPicoPadrao =  intensidadesPadraoNormalizadasPara1.min()
+        intensidadesPadraoNormalizadasPara1SemBackground = intensidadesPadraoNormalizadasPara1 - menorPicoPadrao
         for numeroAba in range(numeroDeAbas):
-            #Trazendo o item da lista de dataframes do cif para comparacao
+            # Trazendo o item da lista de dataframes do cif para comparacao
             tabelaAmostra = arrayDeDataFramesCIFs[numeroAba]
-            #Criando variável para endereço da linha da amostra que vai ser comparada
+            #print(tabelaAmostra)
+            # Trazendo o pico com maior intensidade desse CIF:
+            # Primeiro, coletando a array de intensidades
+            picosDoCIFemQuestao = tabelaAmostra.Intensidade.values
+            #print(picosDoCIFemQuestao)
+            maiorPicoCIF = picosDoCIFemQuestao.max()
+            intensidadesCIFNormalizadasPara1 = picosDoCIFemQuestao/maiorPicoCIF
+            # Criando variável para endereço da linha da amostra que vai ser comparada
             indexLinhaAmostra=0
-            #Variável para o número máximo de iterações
-            numeroLinhas=tabelaAmostra.iloc[:,0].count() #A função .iloc localiza linhas e colunas pelo seu índice
-                                        #numérico que começa no 0, o : é para indicar que todas as linhas devem ser contadas
-                                        #e o 0 é para indicar o índice da coluna (Que se espera ser a dos ângulos) a qual deve 
-                                        #ser contada todas as linhas que não estão vazias, assim [linha,coluna]
-                                        #e a função .count() é responsável pela tarefa de
-                                        #contar essas linhas que não estão vazias
+            # Variável para o número máximo de iterações
+            numeroLinhas=tabelaAmostra.iloc[:,0].count() # A função .iloc localiza linhas e colunas pelo seu índice
+                                        # numérico que começa no 0, o : é para indicar que todas as linhas devem ser contadas
+                                        # e o 0 é para indicar o índice da coluna (Que se espera ser a dos ângulos) a qual deve 
+                                        # ser contada todas as linhas que não estão vazias, assim [linha,coluna]
+                                        # e a função .count() é responsável pela tarefa de
+                                        # contar essas linhas que não estão vazias
         
             #Variável para o indíce da linha que ajudará na adição de linhas para a tabela que foi criada
             contador=0
@@ -1067,42 +1009,87 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 picoDaVez=tabelaAmostra.iloc[indexLinhaAmostra,0] #<--Mudei de 0 para 1 para corresponder a um capricho meu
                 #Variável que vai guardar a intensidade do pico que será analisado. Antes era um capricho, mas após mudanças de fato é bom manter
                 #esse índice
-                intensidadePicoAmostra=tabelaAmostra.iloc[indexLinhaAmostra,1] #<--Mudei de 1 para 3 para corresponder a um capricho meu
-                #Antes era um capricho, mas após mudanças de fato é bom manter esse índice
-                
-                #Criando variável para saber quantas linhas há na coluna em questão para servir de quantidade final ao while
+                intensidadePicoAmostra = intensidadesCIFNormalizadasPara1[indexLinhaAmostra]
+                # Criando variável para saber quantas linhas há na coluna em questão para servir de quantidade final ao while
                 numeroLinhasPadrao=tabelaPadrao.iloc[:,0].count()
                 #Criando variável para o endereço de linha do seu padrão de difração que vai variar no laço while
                 indexLinhaPadrao=0
                 #Variável que vai guardar o número de rejeições a um dado pico da amostra
                 numeroRejeicoes=0
+
                 while indexLinhaPadrao < numeroLinhasPadrao:
                     #Criando variável para selecionar a linha do seu padrão que será comparado com a linha da amostra da vez
                     linhaPico=tabelaPadrao.iloc[indexLinhaPadrao,0]
+                    intensidadePicoPadrao = intensidadesPadraoNormalizadasPara1SemBackground[indexLinhaPadrao]
                     #Criando a variável que vai analisar o quão distante estão os ângulos
                     
-                    diferenca=abs(linhaPico-picoDaVez) #A função abs() retorna o valor absoluto de um certo valor, logo mesmo que
+                    distancia=abs(linhaPico-picoDaVez) #A função abs() retorna o valor absoluto de um certo valor, logo mesmo que
                                                     #essa subtração dê um valor negativo, virá o valor absoluto dela
-                    if diferenca <= 0.1:
-                        muitoBom+=1
-                        nota=1
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,diferenca,'Sim','Muito bom','Não','Não',nota]
-                    elif 0.1 < diferenca <= 0.2:
-                        bom+=1
-                        nota=0.8
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,diferenca,'Sim','Bom','Não','Não',nota]
-                    elif 0.2 < diferenca <= 0.3:
-                        medio+=1
-                        nota=0.6
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,diferenca,'Sim','Médio','Não','Não',nota]
-                    elif 0.3 < diferenca <= 0.4:
-                        poucoBom+=1
-                        nota=0.4
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,diferenca,'Sim','Pouco bom','Não','Não',nota]
-                    elif 0.4 < diferenca <= 0.5:
-                        menosBom+=1
-                        nota=0.2
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,diferenca,'Sim','Ruim','Não','Não',nota]
+                    if distancia <= 0.1:
+                        notaDistancia=1
+                        qualidade=self.calcularDesnivelEntrePicos(intensidadePicoPadrao,notaDistancia,arrayDataFramesComparacao,numeroAba,contador,linhaPico,picoDaVez,intensidadePicoAmostra,distancia)
+                        if qualidade == 5:
+                            muitoBom+=1
+                        elif qualidade == 4:
+                            bom+=1
+                        elif qualidade == 3:
+                            medio+=1
+                        elif qualidade == 2:
+                            poucoBom+=1
+                        elif qualidade == 1:
+                            menosBom+=1
+                    elif 0.1 < distancia <= 0.2:
+                        notaDistancia = 0.8
+                        qualidade=self.calcularDesnivelEntrePicos(intensidadePicoPadrao,notaDistancia,arrayDataFramesComparacao,numeroAba,contador,linhaPico,picoDaVez,intensidadePicoAmostra,distancia)
+                        if qualidade == 5:
+                            muitoBom+=1
+                        elif qualidade == 4:
+                            bom+=1
+                        elif qualidade == 3:
+                            medio+=1
+                        elif qualidade == 2:
+                            poucoBom+=1
+                        elif qualidade == 1:
+                            menosBom+=1
+                    elif 0.2 < distancia <= 0.3:
+                        notaDistancia = 0.6
+                        qualidade=self.calcularDesnivelEntrePicos(intensidadePicoPadrao,notaDistancia,arrayDataFramesComparacao,numeroAba,contador,linhaPico,picoDaVez,intensidadePicoAmostra,distancia)
+                        if qualidade == 5:
+                            muitoBom+=1
+                        elif qualidade == 4:
+                            bom+=1
+                        elif qualidade == 3:
+                            medio+=1
+                        elif qualidade == 2:
+                            poucoBom+=1
+                        elif qualidade == 1:
+                            menosBom+=1
+                    elif 0.3 < distancia <= 0.4:
+                        notaDistancia = 0.4
+                        qualidade=self.calcularDesnivelEntrePicos(intensidadePicoPadrao,notaDistancia,arrayDataFramesComparacao,numeroAba,contador,linhaPico,picoDaVez,intensidadePicoAmostra,distancia)
+                        if qualidade == 5:
+                            muitoBom+=1
+                        elif qualidade == 4:
+                            bom+=1
+                        elif qualidade == 3:
+                            medio+=1
+                        elif qualidade == 2:
+                            poucoBom+=1
+                        elif qualidade == 1:
+                            menosBom+=1
+                    elif 0.4 < distancia <= 0.5:
+                        notaDistancia = 0.2
+                        qualidade=self.calcularDesnivelEntrePicos(intensidadePicoPadrao,notaDistancia,arrayDataFramesComparacao,numeroAba,contador,linhaPico,picoDaVez,intensidadePicoAmostra,distancia)
+                        if qualidade == 5:
+                            muitoBom+=1
+                        elif qualidade == 4:
+                            bom+=1
+                        elif qualidade == 3:
+                            medio+=1
+                        elif qualidade == 2:
+                            poucoBom+=1
+                        elif qualidade == 1:
+                            menosBom+=1
                     #Cada loc tem como indície de linha a variável contador que sempre vai somando 1 ao fim de cada linha padrão comparada
                     #com a linha amostra, utilizar o contador como indície de linha no DataFrame é importante pois assim toda vez que um
                     #dos condicionais forem satisfeitos, o índicie utilizado será um indície indisponível no DataFrame o que faz a função
@@ -1117,13 +1104,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         picoExcedente+=1
                         nota=0
                     #Por fim, esse ângulo é exposto com uma linha só para ele
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=['-',picoDaVez,intensidadePicoAmostra,'-','Não','-','Sim','Não',nota]
+                        arrayDataFramesComparacao[numeroAba].loc[contador]=['-',picoDaVez,intensidadePicoAmostra,'-','-','Não','-','Sim','Não',nota]
+                    # Cada loc tem como indície de linha a variável contador que sempre vai somando 1 ao fim de cada linha padrão comparada
+                    # com a linha amostra, utilizar o contador como indície de linha no DataFrame é importante pois assim toda vez que um
+                    # dos condicionais forem satisfeitos, o índicie utilizado será um indície indisponível no DataFrame o que faz a função
+                    # .loc[] adicionar essa linha
+                    
                     contador+=1
                     indexLinhaPadrao+=1
                 indexLinhaAmostra += 1
-            #Agora inverte-se a ordem da escolha de picos para poder analisar o quanto de picos faltantes tem:
-            #A lógica é: Escolha um pico do padrão, então o compare aos picos do CIF, caso nenhum pico corresponda,
-            #isso mostra que que esse pico do padrão falta quando se trata em corresponder aos picos do CIF.
+            # Agora inverte-se a ordem da escolha de picos para poder analisar o quanto de picos faltantes tem:
+            # A lógica é: Escolha um pico do padrão, então o compare aos picos do CIF, caso nenhum pico corresponda,
+            # isso mostra que que esse pico do padrão falta quando se trata em corresponder aos picos do CIF.
             contador += 1
             indexLinhaPadrao=0
             numeroLinhasPadrao=tabelaPadrao.iloc[:,0].count()
@@ -1134,42 +1126,42 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 numeroRejeicoes=0
                 while indexLinhaAmostra < numeroLinhas:
                     picoDaVez=tabelaAmostra.iloc[indexLinhaAmostra,0]
-                    diferenca=abs(linhaPico-picoDaVez) 
-                    if diferenca > 0.5:
+                    distancia=abs(linhaPico-picoDaVez) 
+                    if distancia > 0.5:
                         numeroRejeicoes+=1
                     if numeroRejeicoes == numeroLinhas:
                         picoFaltante+=1
                         nota=0
-                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,'-','-','-','Não','-','Não','Sim',nota]
+                        arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,'-','-','-','-','Não','-','Não','Sim',nota]
                     contador+=1
                     indexLinhaAmostra += 1
                 indexLinhaPadrao += 1
-            #Variável que armazena a média das notas
-            mediaColunaNotas=arrayDataFramesComparacao[numeroAba].iloc[:,8].mean()
-            #Comando para adicionar essa média na array de médias
+            # Variável que armazena a média das notas
+            mediaColunaNotas=arrayDataFramesComparacao[numeroAba].iloc[:,9].mean()
+            # Comando para adicionar essa média na array de médias
             arrayMedias.append(mediaColunaNotas)
             contador+=1
-            #Cada tabela deve ter uma linha com informações no final:
+            # Cada tabela deve ter uma linha com informações no final:
             arrayDataFramesComparacao[numeroAba].loc[contador]=[f'Quantidade\nde Muito bom(s):\n{muitoBom}',f'Quantidade\nde Bom(s):\n{bom}',
                                                         f'Quantidade\nde Médio(s):\n{medio}',f'Quantidade\nde Pouco bom(s):\n{poucoBom}',
                                                         f'Quantidade\nde Ruim(s):\n{menosBom}','------',
                                                         f'Quantidade\nde picos\nexcedentes:\n{picoExcedente}',
-                                                        f'Quantidade\nde picos\nfaltantes:\n{picoFaltante}',f'Nota\nfinal\né:{mediaColunaNotas}']
-        #ipdb.set_trace() #Um comando para
-                            #aquele módulo 
-                            #de debug, basicamente um breakpoint,
-                            #ponto de parada para analisar o
-                            #código e seu comportamento
-                            #bem como os valores das variáveis naquele
-                            #momento em que o breakpoint se encontra
+                                                        f'Quantidade\nde picos\nfaltantes:\n{picoFaltante}',f'Nota\nfinal\né:{mediaColunaNotas}','']
+        #ipdb.set_trace() # Um comando para
+                            # aquele módulo 
+                            # de debug, basicamente um breakpoint,
+                            # ponto de parada para analisar o
+                            # código e seu comportamento
+                            # bem como os valores das variáveis naquele
+                            # momento em que o breakpoint se encontra
         
-        #Agora vou ordenar todas as arrays criadas usando como critério de ordenação a média aritmética dos dataframes da arrayDataFramesComparacao
-        #Para isso vou criar uma array que tem como item tuplas que guardam um conjunto de itens por vez das arrays selecionadas
-        arrayMedCompCIFNomes=list(zip(arrayMedias,arrayDataFramesComparacao,arrayDeDataFramesCIFs,arrayNomesCIF)) #O zip() se responsabiliza por criar um iterável (Não pesquisei
-        #ao certo o que isso significa, mas por intuição creio que seja uma variável que para acessar seus valores tem que se usar laços de iteração
-        #como arrays (listas) ou tuplas) em que cada item é um conjunto de valores, um valor de um item da arrayMedias, um valor de um item da 
-        #arrayDataFramesComparacao, um valor de um item da arrayDeDataFramesCIFs e um valor de um item da arrayNomesCIF, 
-        #por sua vez o list() transforma isso numa array no todo.
+        # Agora vou ordenar todas as arrays criadas usando como critério de ordenação a média aritmética dos dataframes da arrayDataFramesComparacao
+        # Para isso vou criar uma array que tem como item tuplas que guardam um conjunto de itens por vez das arrays selecionadas
+        arrayMedCompCIFNomes=list(zip(arrayMedias,arrayDataFramesComparacao,arrayDeDataFramesCIFs,arrayNomesCIF)) # O zip() se responsabiliza por criar um iterável (Não pesquisei
+        # ao certo o que isso significa, mas por intuição creio que seja uma variável que para acessar seus valores tem que se usar laços de iteração
+        # como arrays (listas) ou tuplas) em que cada item é um conjunto de valores, um valor de um item da arrayMedias, um valor de um item da 
+        # arrayDataFramesComparacao, um valor de um item da arrayDeDataFramesCIFs e um valor de um item da arrayNomesCIF, 
+        # por sua vez o list() transforma isso numa array no todo.
 
         #Essa array criada é ordenada e alocada para a array seguinte, a ordenação é feita em função do item de arrayMedias da tupla
         array_ordenada_com_medias=sorted(arrayMedCompCIFNomes, key=lambda itemMedia: itemMedia[0], reverse=True)
@@ -1188,17 +1180,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # É aqui onde os atributos recebem valores
         # para utilizar no método mostrarPlot()
         self.arrayAs3melhores=arrayDfCIFsOrden
-        self.dataFramePadraoNoTodo=dataFramePadraoNoTodo
+        #self.dataFramePadraoNoTodo=dataFramePadraoNoTodo
         self.arrayDfNomesOrden=arrayDfNomesOrden
         self.arrayDfCompOrden=arrayDfCompOrden
         self.numeroDeAbas=numeroDeAbas
         self.arrayDfCIFsOrden=arrayDfCIFsOrden
         self.mostrarResultados()
-        #Após o QDialogBox ser fechado, as linhas de comando
+        # Após o QDialogBox ser fechado, as linhas de comando
         # continuam e colocam o valor padrão dos atributos para
         # não haver problemas
         self.arrayAs3melhores=None
-        self.dataFramePadraoNoTodo=None
+        #self.dataFramePadraoNoTodo=None
         self.arrayDfNomesOrden=None
         self.arrayDfCompOrden=None
         self.numeroDeAbas=None
@@ -1207,6 +1199,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.caminhoPadrao=None
         self.verificou1=None
         self.verificou2=None
+        self.UtilizouPicos1=None
+        self.UtilizouPicos2=None
+        
     #Os métodos a seguir são pop-ups como o de método de erro.
     #Por isso vou me abster de explicar esses comandos de novo
     #com a ressalva de um que vou citar no primeiro método
@@ -1222,6 +1217,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #Aqui, o atributo antes criado armazena o pop-up do QDialog
         self.dialogo=QDialog()
         self.dialogo.setWindowTitle("Comparação concluída")
+        #self.dialogo.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        #self.dialogo.setFixedSize(650,100)
         self.dialogo.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
         #E cria-se um layout para esse pop-up
         layout=QVBoxLayout()
@@ -1270,35 +1267,54 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # sem causar uma segundo multiplicação
         plt.close()
         # Pega-se o menor valor de intensidade do dataframe do padrão
-        menorValor=self.dataFramePadraoNoTodo['y'].min()
+        #menorValor=self.dataFramePadraoNoTodo['y'].min()
+        maiorValor=self.intensidades.max()
+        intensidadesPadraoNormalizadasPara1=(self.intensidades)/maiorValor
+        menorValor = intensidadesPadraoNormalizadasPara1.min()
+        intensidadesPadraoNormalizadasPara1SemBackground = intensidadesPadraoNormalizadasPara1 - menorValor
         # Se o padrão tem como menor valor de intensidade até 500
-        if menorValor <= 500:
+        #if menorValor <= 500:
             # Aumente as intensidades dos 3 melhores CIFs em 50 vezes
-            for i in range(3):
-                dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*50
+        arrayParaAsnovasIntensidadesCIF=[]
+        for i in range(3):
+            dataFrameDaVez=self.arrayAs3melhores[i]
+            #print(dataFrameDaVez)
+            intensidadesCIF=dataFrameDaVez.Intensidade.values
+            #print(intensidadesCIF)
+            maiorValor2=intensidadesCIF.max()
+            intensidadesCIFNormalizadasPara1=intensidadesCIF/maiorValor2
+            #print(intensidadesCIFNormalizadasPara1)
+            arrayParaAsnovasIntensidadesCIF.append(intensidadesCIFNormalizadasPara1)
+            #print(self.arrayParaAsnovasIntensidadesCIF[i])
         # Caso até 1000...
-        elif menorValor <= 1000:
+        #elif menorValor <= 1000:
             # Aumente em 100 vezes
-            for i in range(3):
+            """for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100
+                #print(dataFrameDaVez)
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*100"""
         # Caso em até 2000...
-        elif menorValor <= 2000:
+        #elif menorValor <= 2000:
             # Aumente em 150 vezes...
-            for i in range(3):
+            """for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
-                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150
+                #print(dataFrameDaVez)
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*150"""
+        #elif menorValor > 2000:
+            """for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                #print(dataFrameDaVez)
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]*200"""
         # Então faça um gráfico de barras para cada CIF tendo como label sua colocação e seu nome,
         # como largura tem-se 0.1 pixels e cor vermelha para o primeiro, verde para o segundo e preto
         # para o terceiro
-        plt.bar(self.arrayAs3melhores[0].iloc[:,0],self.arrayAs3melhores[0].iloc[:,1],label=f'Primeiro CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
-        plt.bar(self.arrayAs3melhores[1].iloc[:,0],self.arrayAs3melhores[1].iloc[:,1],label=f'Segundo CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
-        plt.bar(self.arrayAs3melhores[2].iloc[:,0],self.arrayAs3melhores[2].iloc[:,1],label=f'Terceiro CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
+        plt.bar(self.arrayAs3melhores[0].iloc[:,0],arrayParaAsnovasIntensidadesCIF[0],label=f'Melhor CIF: {self.arrayDfNomesOrden[0]}',color='red', width=0.1)
+        plt.bar(self.arrayAs3melhores[1].iloc[:,0],arrayParaAsnovasIntensidadesCIF[1],label=f'Segundo melhor CIF: {self.arrayDfNomesOrden[1]}',color='green', width=0.1)
+        plt.bar(self.arrayAs3melhores[2].iloc[:,0],arrayParaAsnovasIntensidadesCIF[2],label=f'Terceiro melhor CIF: {self.arrayDfNomesOrden[2]}',color='black', width=0.1)
         # Faz o plot do padrão, é importante que ele seja por
         # último para a curva do gráfico não ficar por cima
         # de nehuma barra de CIFs
-        plt.plot(self.dataFramePadraoNoTodo['x'],self.dataFramePadraoNoTodo['y'],label='Dados',color='blue')
+        plt.plot(self.angulos,intensidadesPadraoNormalizadasPara1SemBackground,label='Dados',color='blue')
         plt.xlabel("Ângulo 2theta (°)")
         plt.ylabel("Intensidade (Contagens)")
         plt.legend()
@@ -1309,7 +1325,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # o aumento em até 150 vezes da intensidade dos CIFs
         # utiliza-se o mesmo para diminuir os valores às intensidades
         # anteriores
-        if menorValor <= 500:
+        """if menorValor <= 500:
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/50
@@ -1321,6 +1337,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for i in range(3):
                 dataFrameDaVez=self.arrayAs3melhores[i]
                 dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/150
+        elif menorValor > 2000:
+            for i in range(3):
+                dataFrameDaVez=self.arrayAs3melhores[i]
+                dataFrameDaVez.iloc[:,1]=dataFrameDaVez.iloc[:,1]/200"""
     # Esse método é para escolha de um diretório para salvar
     # os arquivos que foram criados seja com o compararPicos no
     # contexto do de comparar com todos picos
@@ -1332,35 +1352,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         nomeArquivo=None
         opcoes=QFileDialog.Options()
         filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
-        nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilha dos CIFs", "", filtroDeArquivo, options=opcoes)
+        nomeArquivo, _ = QFileDialog.getSaveFileName(self.dialogo, "Salvar planilha dos CIFs", "", filtroDeArquivo, options=opcoes)
         if nomeArquivo:
             if not nomeArquivo.endswith('.xlsx'):
                     nomeArquivo += '.xlsx'
             self.salvarPlanilhaCIF(nomeArquivo)
         else:
-            mensagem=QMessageBox()
-            mensagem.setIcon(QMessageBox.Information)
-            mensagem.setText("A planilha dos CIFs não foi salva")
-            mensagem.setWindowTitle("Arquivo não foi salvo")
-            mensagem.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
-            mensagem.exec_()
+            self.mostrarPopUpNaoSalvouArquivo()
+        self.dialogo.raise_()
+        self.dialogo.activateWindow()
 
     def popUpPlanilhaComparacao(self):
         nomeArquivo=None
         opcoes=QFileDialog.Options()
         filtroDeArquivo = "Excel Files (*.xlsx);;All Files (*)"
-        nomeArquivo, _ = QFileDialog.getSaveFileName(self, "Salvar planilhas de comparação", "", filtroDeArquivo, options=opcoes)
+        nomeArquivo, _ = QFileDialog.getSaveFileName(self.dialogo, "Salvar planilhas de comparação", "", filtroDeArquivo, options=opcoes)
         if nomeArquivo:
             if not nomeArquivo.endswith('.xlsx'):
                     nomeArquivo += '.xlsx'
             self.salvarPlanilhaComparacao(nomeArquivo)
         else:
-            mensagem=QMessageBox()
-            mensagem.setIcon(QMessageBox.Information)
-            mensagem.setText("A planilha de comparação não foi salva")
-            mensagem.setWindowTitle("Arquivo não foi salvo")
-            mensagem.setWindowIcon(QIcon(resource_path(r'icones\icone.ico')))
-            mensagem.exec_()
+            self.mostrarPopUpNaoSalvouArquivo()
+        self.dialogo.raise_()
+        self.dialogo.activateWindow()
 
     def salvarPlanilhaCIF(self,parametroNomeArquivo):
         nomeArquivo=parametroNomeArquivo
@@ -1378,6 +1392,357 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for numeroAba in range(self.numeroDeAbas): #Aqui esse for é para garantir que diferentes dataFrames estão sendo
                                         #sendo adicionados em abas diferentes à planilha saída
                 self.arrayDfCompOrden[numeroAba].to_excel(writer1,sheet_name=self.arrayDfNomesOrden[numeroAba],index=False)
+    #
+    # }
+    #
+
+    #
+    # MÉTODOS DA ABA COMPARAR POUCOS PICOS {
+    #
+
+    # Aqui a ideia é parecida com os métodos de busca de diretório
+    # da aba comparar picos mas existe certas mudanças
+    def abrirDirEventSeuPadraoAdicionarPicos(self):
+        # Vou inicializar esse atributo aqui para não ter problemas no futuro
+        self.tabelaPadrao = None
+        self.arrayPicos=[None,None,None,None,None]
+        self.diretorioPadrao2=None
+        opcoes = QFileDialog.Options()
+        filtroDeArquivo = "Arquivos de texto (*.txt);;Todos os arquivos (*)"
+        tituloPopUp='Selecionar o arquivo do seu padrão de difração'
+        diretorioPadrao, _ = QFileDialog.getOpenFileName(self,tituloPopUp,'', filtroDeArquivo,options=opcoes)
+        self.diretorioPadrao2=diretorioPadrao
+        #Se diretorioPadrao tem um caminho
+        if diretorioPadrao:
+            #Variaveis que vão receber e adicionar os caminhos em string para utilizar mais na frente
+            #caminhoPadrao=diretorioPadrao
+            #Arquivo que vai guardar o caminho do arquivo .xlsx
+            #buscaTabelaPadrao = os.path.join(caminhoPadrao,'*.txt')
+            #Array que vai guardar os caminhos dos arquivos .xlsx
+            #ArrayCaminhoTabelaPadrao = glob.glob(buscaTabelaPadrao)
+            #ArrayCaminhoTabelaPadrao=diretorioPadrao
+            # Se a array não está vazia
+            #if ArrayCaminhoTabelaPadrao:
+            #Só se o caminho houver pelo menos uma pasta,
+            #ou seja, ArrayCaminhoPlanilhaPadrao != None,
+            #será adiconado caminho à caixa de texto editável
+            self.caminhoPadraotextEdit_2.setText(diretorioPadrao)
+            #Aqui entra aquele atributo do ultimoIndex
+            #Caso haja algo guardado nela, indica que já existem
+            #itens nos comboBoxes, portando o método é utilizado
+            #para remover esses itens e ter ideia do ultimoIndex
+            #é importante para determinar o limite do laço de
+            #repetição
+            if self.ultimoIndex:
+                self.removerItens()
+            #Coleta-se o único item dessa array criada na linha anterior
+            #caminhoPadrao=ArrayCaminhoTabelaPadrao[0]
+            self.tabelaPadrao = pd.read_csv(diretorioPadrao,delim_whitespace=True,names=["Ângulos","Intensidades"],header=None)# data-
+            # rame criado para armazenar os ângulos do
+            # arquivo de texto encontrado (Alguns lugares pode estar
+            # planilhas mas essa funcionalidade foi alterada a fim de 
+            # trabalhar com os arquivos mais comuns para leitura de dados,
+            # deixou-se de trabalhar com .xlsx e sim com .txt para entrada
+            # de dados)
+            
+            #
+            # TESTE
+            #
+
+            print(self.tabelaPadrao)
+
+            #Armazenar o número de linhas ao todo
+            numeroLinhasPadrao=self.tabelaPadrao.iloc[:,0].count()
+            for numeroLinha in range(numeroLinhasPadrao):
+                #Ver qual o ângulo de 0 até numeroLinhasPadrao
+                pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                #Adiciona a string do ângulo ao comboBox
+                self.comboBoxPico1.addItem(str(pico))
+                #Adiciona a informação relacionada
+                # ao string deesse dado item, 
+                # tem que ser +1 pois já exiiste o item 0 
+                # que é o Vazio
+                self.comboBoxPico1.setItemData(numeroLinha+1,pico)
+            for numeroLinha in range(numeroLinhasPadrao):
+                pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                self.comboBoxPico2.addItem(str(pico))
+                self.comboBoxPico2.setItemData(numeroLinha+1,pico)
+            for numeroLinha in range(numeroLinhasPadrao):
+                pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                self.comboBoxPico3.addItem(str(pico))
+                self.comboBoxPico3.setItemData(numeroLinha+1,pico)
+            for numeroLinha in range(numeroLinhasPadrao):
+                pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                self.comboBoxPico4.addItem(str(pico))
+                self.comboBoxPico4.setItemData(numeroLinha+1,pico)
+            for numeroLinha in range(numeroLinhasPadrao):
+                pico=self.tabelaPadrao.iloc[numeroLinha,0]
+                self.comboBoxPico5.addItem(str(pico))
+                self.comboBoxPico5.setItemData(numeroLinha+1,pico)
+            #Aqui é onde de fato o atributo self.ultimoIndex deixa de ser None
+            self.ultimoIndex=self.comboBoxPico1.count()-1
+            self.UtilizouPicos2=False
+        #Se o atributo de caminhos está vazio                 
+        else:
+            self.caminhoPadraotextEdit_2.setText('O caminho aparecerá aqui quando selecionado')
+            if self.ultimoIndex:
+                self.removerItens()
+    #Esse aqui é basicamente para fazer o mesmo que o próximo método, não repetir
+    #um monte de linhas, a explicação vou fazer no método
+    def removerItens(self):
+        #Aqui é utilizado um laço de repetição que 
+        #começa no atributo ultimoIndex (Caso ele
+        #esteja com algum valor diferente de None)
+        #e é para terminar no 0 e decresce 1
+        #unidade a cada repetição. Fazer a remoção 
+        #dos itens começando do último para o pri-
+        # meiro se deve ao fato de que caso 
+        # seja feito o do primeiro para o últi-
+        # mo, constantemente o tamanho das comboBoxes esta-
+        # rão sendo trocados. No fim, só vai sobrar o valor 
+        # Vazio nesse caso
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico1.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico2.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico3.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico4.removeItem(i)
+        for i in range(self.ultimoIndex,0,-1):
+            self.comboBoxPico5.removeItem(i)
+        self.emitirSinaisComboBoxPicos()
+    # A explicação dessas linhas de comando e a necessidade do método já foram explicados
+    def emitirSinaisComboBoxPicos(self):
+            self.comboBoxPico1.setCurrentIndex(0)
+            self.comboBoxPico1.activated.emit(0)
+            self.comboBoxPico2.setCurrentIndex(0)
+            self.comboBoxPico2.activated.emit(0)
+            self.comboBoxPico3.setCurrentIndex(0)
+            self.comboBoxPico3.activated.emit(0)
+            self.comboBoxPico4.setCurrentIndex(0)
+            self.comboBoxPico4.activated.emit(0)
+            self.comboBoxPico5.setCurrentIndex(0)
+            self.comboBoxPico5.activated.emit(0)
+    def utilizarPicosDetectados2(self):
+        # Vou inicializar esse atributo aqui para não ter problemas no futuro
+        self.tabelaPadrao = None
+        self.valorLimite=self.doubleSpinBoxMudarLimite.value()
+        fp=findpeaks(method='topology',limit=self.valorLimite)
+        results=fp.fit(self.X)
+        angulosPicos=results['df'].index[results['df']['peak']==True].tolist()
+        quantidadePicos=len(angulosPicos)
+        self.caminhoPadraotextEdit_2.setText(f'Utilizando os {quantidadePicos} picos encontrados com o limite {self.valorLimite}')
+        dataFrameAngulos2=pd.DataFrame({'Ângulos': self.angulos[angulosPicos], 'Intensidades': self.intensidades[angulosPicos]})
+        if self.ultimoIndex:
+            self.removerItens()
+        self.tabelaPadrao=dataFrameAngulos2
+        
+        # data-
+        # rame criado para armazenar os ângulos do
+        # arquivo de texto encontrado (Alguns lugares pode estar
+        # planilhas mas essa funcionalidade foi alterada a fim de 
+        # trabalhar com os arquivos mais comuns para leitura de dados,
+        # deixou-se de trabalhar com .xlsx e sim com .txt para entrada
+        # de dados)
+        
+        #
+        # TESTE
+        #
+
+        #print(tabelaPadrao)
+
+        #Armazenar o número de linhas ao todo
+        numeroLinhasPadrao=self.tabelaPadrao.iloc[:,0].count()
+        for numeroLinha in range(numeroLinhasPadrao):
+            #Ver qual o ângulo de 0 até numeroLinhasPadrao
+            pico=self.tabelaPadrao.iloc[numeroLinha,0]
+            #Adiciona a string do ângulo ao comboBox
+            self.comboBoxPico1.addItem(str(pico))
+            #Adiciona a informação relacionada
+            # ao string deesse dado item, 
+            # tem que ser +1 pois já exiiste o item 0 
+            # que é o Vazio
+            self.comboBoxPico1.setItemData(numeroLinha+1,pico)
+        for numeroLinha in range(numeroLinhasPadrao):
+            pico=self.tabelaPadrao.iloc[numeroLinha,0]
+            self.comboBoxPico2.addItem(str(pico))
+            self.comboBoxPico2.setItemData(numeroLinha+1,pico)
+        for numeroLinha in range(numeroLinhasPadrao):
+            pico=self.tabelaPadrao.iloc[numeroLinha,0]
+            self.comboBoxPico3.addItem(str(pico))
+            self.comboBoxPico3.setItemData(numeroLinha+1,pico)
+        for numeroLinha in range(numeroLinhasPadrao):
+            pico=self.tabelaPadrao.iloc[numeroLinha,0]
+            self.comboBoxPico4.addItem(str(pico))
+            self.comboBoxPico4.setItemData(numeroLinha+1,pico)
+        for numeroLinha in range(numeroLinhasPadrao):
+            pico=self.tabelaPadrao.iloc[numeroLinha,0]
+            self.comboBoxPico5.addItem(str(pico))
+            self.comboBoxPico5.setItemData(numeroLinha+1,pico)
+        #Aqui é onde de fato o atributo self.ultimoIndex deixa de ser None
+        self.ultimoIndex=self.comboBoxPico1.count()-1
+        self.UtilizouPicos2=True
+    # Se o atributo de caminhos está vazio                 
+    # Métodos engatilhados quando o activated é acionado
+    # para selecionar os itens em cada comboBox
+    def picoSelecionado1(self,index):
+        # Caso não haja esses laços condicionais aparecerá 5 erros, 
+        # no momento que o programa for iniciado irá aparecer um 
+        # mesmo erro 5 vezes, basicamente o erro trata-se de tentar 
+        # ler uma array que ainda está setada como None
+        if self.intensidades is None:
+            pass # Comando para o programa não fazer nada
+        else:
+            # Mesmo motivo anterior
+            if self.tabelaPadrao is None:
+                pass
+            else:
+                pico1=self.comboBoxPico1.itemData(index)
+                intensidadePico1=self.tabelaPadrao.iloc[index-1,1]
+                self.arrayPicos[0]=[pico1,intensidadePico1]
+        #Somente para testes
+        #print(self.arrayPicos)
+    def picoSelecionado2(self,index):
+        if self.intensidades is None:
+            pass
+        else:
+            if self.tabelaPadrao is None:
+                pass
+            else:
+                pico2=self.comboBoxPico2.itemData(index)
+                intensidadePico2=self.tabelaPadrao.iloc[index-1,1]
+                self.arrayPicos[1]=[pico2,intensidadePico2]
+        #print(self.arrayPicos)
+    def picoSelecionado3(self,index):
+        if self.intensidades is None:
+            pass
+        else:
+            if self.tabelaPadrao is None:
+                pass
+            else:
+                pico3=self.comboBoxPico3.itemData(index)
+                intensidadePico3=self.tabelaPadrao.iloc[index-1,1]
+                self.arrayPicos[2]=[pico3,intensidadePico3]
+        #print(self.arrayPicos)
+    def picoSelecionado4(self,index):
+        if self.intensidades is None:
+            pass
+        else:
+            if self.tabelaPadrao is None:
+                pass
+            else:
+                pico4=self.comboBoxPico4.itemData(index)
+                intensidadePico4=self.tabelaPadrao.iloc[index-1,1]
+                self.arrayPicos[3]=[pico4,intensidadePico4]
+        #print(self.arrayPicos)  
+    def picoSelecionado5(self,index):
+        if self.intensidades is None:
+            pass
+        else:
+            if self.tabelaPadrao is None:
+                pass
+            else:
+                pico5=self.comboBoxPico5.itemData(index)
+                intensidadePico5=self.tabelaPadrao.iloc[index-1,1]
+                self.arrayPicos[4]=[pico5,intensidadePico5]          
+            """self.arrayPicosSemNone=[item for item in self.arrayPicos if item is not None]
+        print(self.arrayPicosSemNone)"""
+        #print(self.arrayPicos)
+    # Esse é igualzinho ao método de procura
+    # do diretório de CIFs da aba comparar
+    # picos
+    def abrirDirEventCIFs2(self):
+        self.diretorioCIFs2=None
+        opcoes = QFileDialog.Options()
+        opcoes |= QFileDialog.ShowDirsOnly
+        diretorioCIFs = QFileDialog.getExistingDirectory(self,'Selecionar Pasta dos CIFs','',options=opcoes)
+        self.diretorioCIFs2=diretorioCIFs
+        if diretorioCIFs:
+            self.caminhoCIFstextEdit_2.setText(diretorioCIFs)
+        else:
+            self.caminhoCIFstextEdit_2.setText('O caminho aparecerá aqui quando selecionado')
+    # Método ativado quando um item na caixa de radiações
+    # é selecionado
+    def itemSelecionado2(self,index):
+        self.valorSelecionado2=self.caixaRadiacoes_2.itemData(index)
+    # Método idêntico ao verificar utilizado na aba comparar picos
+    def verificar2(self):
+        #Se os dois atributos estão preenchidos simultaneamente
+        #(Não são mais vazios)
+        if self.diretorioCIFs2 and (self.diretorioPadrao2 or self.UtilizouPicos2==True):
+            self.arrayParaDataFrame()
+            #Se a trava lógica está desativada
+            if self.travaLogica == False:
+                self.caminhoCIFs=self.diretorioCIFs2
+                self.caminhoPadrao=self.diretorioPadrao2
+                # Seta as travas para permitirem a entrada de
+                # dados no contexto da tab Comparar Poucos
+                # Picos 
+                self.verificou2=True
+                self.verificou1=False
+                #Inicia a comparação
+                self.compararPicos()
+            else:
+                self.verificou2=None
+                self.verificou1=None
+                raise ValueError("Nenhum pico foi selecionado.")
+        #Se não
+        else:
+            self.verificou2=None
+            self.verificou1=None
+            #Se esse atributo ainda está vazio
+            if not self.diretorioCIFs2:
+                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
+                raise ValueError("A pasta dos CIFs não foi selecionado.")
+            #Se esse atributo ainda está vazio
+            if not self.diretorioPadrao2:
+                #Avisa para o usuário com um pequeno pop-up que ele não preencheu esse diretório
+                raise ValueError("O arquivo do seu padrão de difração não foi selecionado e os picos detectados não foram utilizados.")
+    #Esse método converte uma array para um dataframe
+    def arrayParaDataFrame(self):
+        #Primeiro, é criado uma array que não tem itens None
+        #acho que dá para considerar isso uma compreensão de
+        #lista
+        self.arraySemNone = [item for item in self.arrayPicos if item is not None]
+        #Se array não está vazia
+        if self.arraySemNone != []:
+            # Use o método set para criar uma array com
+            # um conjunto de itens não repetidos e ordenados
+            # (Todos os itens são float)
+            # Transforme essa array em um dataframe de uma única
+            # coluna chamada "Ângulos 2theta (°)"
+            self.arraySNoneSRepet = set(tuple(item) if isinstance(item, list) else item for item in self.arraySemNone)
+            tuplaOrdenada = sorted(self.arraySNoneSRepet)
+            # Note, antes de passar pelo método set, a lista passa 
+            # por uma compreensão de gerador em que ele transforma os itens lista em tuplas 
+            # caso seja avaliado que o item é uma lista utilizando o método isinstance que 
+            # pede como parâmtros o objeto e a classe, caso o objeto (Aqui chamado de item) 
+            # seja da classe lista (list) ele retornará true e passará ele como tupla para 
+            # poder passar pelo método set que só aceita objetos imutáveis como objetos da 
+            # classe tupla, objetos hasháveis
+            self.dfPicos=pd.DataFrame(tuplaOrdenada, columns=["Ângulos","Intensidades"])
+
+            # Para fins de teste e avaliação do valor recebido
+
+            #print(self.dfPicos)
+
+            #Não haverá trava lógica para a ação do método comparar picos
+            #sendo utilizado no contexto do tab Comparar Poucos Picos
+            self.travaLogica=False
+        #Caso a array esteja vazia (Todos os comboBox estão com
+        #o dado "Vazio" selecionado)
+        else:
+            #Reinicie o atributo dfPicos para o valor
+            #padrão None
+            self.dfPicos=None
+            #Acione a trava lógica para não haver acionamento
+            #do método comparar picos no contexto da tab Comparar
+            #Poucos Picos
+            self.travaLogica=True
+    # A partir daqui o método utilizado também é o compararPicos()
+    # que foi colocado na parte da aba de comparar picos
+
     #
     # }
     #

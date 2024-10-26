@@ -67,13 +67,13 @@
        <rect>
         <x>260</x>
         <y>0</y>
-        <width>150</width>
-        <height>30</height>
+        <width>250</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
@@ -83,9 +83,9 @@
      <widget class="QLabel" name="labelLimite">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>150</y>
-        <width>150</width>
+        <x>30</x>
+        <y>670</y>
+        <width>300</width>
         <height>30</height>
        </rect>
       </property>
@@ -95,7 +95,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Limite padrão:</string>
+       <string>Limite de detecção dos picos:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -104,44 +104,26 @@
      <widget class="QPushButton" name="pushButtonExportar">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>490</x>
         <y>200</y>
-        <width>200</width>
-        <height>30</height>
+        <width>250</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
        <string>Exportar picos (.txt)</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButtonDetectar">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>200</y>
-        <width>170</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Detectar e visualizar</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="labelValorLimite">
       <property name="geometry">
        <rect>
-        <x>220</x>
-        <y>150</y>
+        <x>330</x>
+        <y>670</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -161,7 +143,7 @@
      <widget class="QLabel" name="labelAjustarLimite">
       <property name="geometry">
        <rect>
-        <x>370</x>
+        <x>60</x>
         <y>150</y>
         <width>150</width>
         <height>30</height>
@@ -173,7 +155,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Ajustar limite:</string>
+       <string>Limite em uso:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -182,11 +164,16 @@
      <widget class="QDoubleSpinBox" name="doubleSpinBoxMudarLimite">
       <property name="geometry">
        <rect>
-        <x>520</x>
+        <x>220</x>
         <y>150</y>
-        <width>100</width>
+        <width>150</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+       </font>
       </property>
       <property name="maximum">
        <double>1000000000.000000000000000</double>
@@ -196,43 +183,6 @@
       </property>
       <property name="stepType">
        <enum>QAbstractSpinBox::DefaultStepType</enum>
-      </property>
-     </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButtonAjudaSelecionarXY">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>0</y>
-        <width>90</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ajuda</string>
-      </property>
-     </widget>
-     <widget class="QTextEdit" name="informacoesPicostextEdit">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>240</y>
-        <width>800</width>
-        <height>100</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOn</enum>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
       </property>
      </widget>
      <widget class="QTextEdit" name="caminhoXYtextEdit">
@@ -265,30 +215,22 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QCommandLinkButton" name="commandLinkAjudaSecaoPicosLimite">
+     <widget class="QPushButton" name="pushButtonVisualizar">
       <property name="geometry">
        <rect>
-        <x>710</x>
-        <y>140</y>
-        <width>90</width>
+        <x>60</x>
+        <y>200</y>
+        <width>200</width>
         <height>40</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Ajuda</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>650</x>
-        <y>10</y>
-        <width>40</width>
-        <height>40</height>
-       </rect>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+       </font>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string>Visualizar picos</string>
       </property>
      </widget>
     </widget>
@@ -299,16 +241,24 @@
      <widget class="QPushButton" name="botaoComparar">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>680</y>
-        <width>120</width>
+        <x>330</x>
+        <y>670</y>
+        <width>140</width>
         <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: white; background-color: #64D346;</string>
       </property>
       <property name="text">
        <string>Comparar</string>
@@ -318,7 +268,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>180</y>
+        <y>190</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -348,14 +298,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>230</y>
-        <width>150</width>
-        <height>30</height>
+        <y>240</y>
+        <width>200</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
@@ -391,13 +341,13 @@
        <rect>
         <x>10</x>
         <y>50</y>
-        <width>180</width>
-        <height>30</height>
+        <width>250</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
@@ -408,7 +358,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>360</y>
+        <y>380</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -432,14 +382,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>410</y>
-        <width>125</width>
-        <height>30</height>
+        <y>430</y>
+        <width>150</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <item>
@@ -578,24 +528,11 @@
        </property>
       </item>
      </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButtonAjudaSelecionarPadrao">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>0</y>
-        <width>90</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ajuda</string>
-      </property>
-     </widget>
      <widget class="QTextEdit" name="caminhoPadraotextEdit">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>80</y>
+        <y>90</y>
         <width>800</width>
         <height>100</height>
        </rect>
@@ -622,7 +559,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>260</y>
+        <y>280</y>
         <width>800</width>
         <height>100</height>
        </rect>
@@ -645,45 +582,19 @@
      <widget class="QPushButton" name="botaoUtilizarPicos">
       <property name="geometry">
        <rect>
-        <x>210</x>
+        <x>280</x>
         <y>50</y>
-        <width>210</width>
-        <height>30</height>
+        <width>300</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
        <string>Utilizar picos detectados</string>
-      </property>
-     </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButtonAjudaSelecionarCIFs">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>180</y>
-        <width>90</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ajuda</string>
-      </property>
-     </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButtonAjudaSelecRadiacao">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>360</y>
-        <width>90</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ajuda</string>
       </property>
      </widget>
     </widget>
@@ -695,7 +606,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>180</y>
+        <y>190</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -716,14 +627,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>230</y>
-        <width>100</width>
+        <y>240</y>
+        <width>140</width>
         <height>30</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <item>
@@ -735,15 +646,15 @@
      <widget class="QComboBox" name="comboBoxPico2">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>230</y>
-        <width>100</width>
+        <x>160</x>
+        <y>240</y>
+        <width>140</width>
         <height>30</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <item>
@@ -755,15 +666,15 @@
      <widget class="QComboBox" name="comboBoxPico3">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>230</y>
-        <width>100</width>
+        <x>310</x>
+        <y>240</y>
+        <width>140</width>
         <height>30</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <item>
@@ -775,15 +686,15 @@
      <widget class="QComboBox" name="comboBoxPico4">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>230</y>
-        <width>100</width>
+        <x>460</x>
+        <y>240</y>
+        <width>140</width>
         <height>30</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <item>
@@ -795,15 +706,15 @@
      <widget class="QComboBox" name="comboBoxPico5">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>230</y>
-        <width>100</width>
+        <x>610</x>
+        <y>240</y>
+        <width>140</width>
         <height>30</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <item>
@@ -838,13 +749,13 @@
        <rect>
         <x>10</x>
         <y>50</y>
-        <width>180</width>
-        <height>30</height>
+        <width>250</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
@@ -854,11 +765,24 @@
      <widget class="QPushButton" name="botaoComparar_2">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>680</y>
-        <width>120</width>
+        <x>330</x>
+        <y>670</y>
+        <width>140</width>
         <height>40</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: white; background-color: #64D346;</string>
       </property>
       <property name="text">
        <string>Comparar</string>
@@ -868,7 +792,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>260</y>
+        <y>270</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -898,14 +822,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>310</y>
-        <width>150</width>
-        <height>30</height>
+        <y>320</y>
+        <width>200</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
@@ -916,7 +840,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>440</y>
+        <y>460</y>
         <width>700</width>
         <height>50</height>
        </rect>
@@ -940,14 +864,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>490</y>
-        <width>125</width>
-        <height>30</height>
+        <y>510</y>
+        <width>150</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <item>
@@ -1090,7 +1014,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>80</y>
+        <y>90</y>
         <width>800</width>
         <height>100</height>
        </rect>
@@ -1114,7 +1038,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>340</y>
+        <y>360</y>
         <width>800</width>
         <height>100</height>
        </rect>
@@ -1137,123 +1061,19 @@
      <widget class="QPushButton" name="botaoUtilizarPicos_2">
       <property name="geometry">
        <rect>
-        <x>210</x>
+        <x>280</x>
         <y>50</y>
-        <width>210</width>
-        <height>30</height>
+        <width>300</width>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="text">
        <string>Utilizar picos detectados</string>
-      </property>
-     </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButtonAjudaSelecionarPadrao_2">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>0</y>
-        <width>90</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ajuda</string>
-      </property>
-     </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButtonAjudaSelecionarCIFs_2">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>260</y>
-        <width>90</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ajuda</string>
-      </property>
-     </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButtonAjudaSelecRadiacao_2">
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>440</y>
-        <width>90</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ajuda</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabAjuda">
-     <attribute name="title">
-      <string>Manual de uso</string>
-     </attribute>
-     <widget class="QLabel" name="labelExplicacaoAjuda">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>800</width>
-        <height>100</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="text">
-       <string>Acesse o repositório do programa no GitHub e descendo a página chegará no &quot;Leia-me&quot; onde haverá instruções e explicações sobre determinadas funções separadas por seções. Acesse pelo link abaixo:</string>
-      </property>
-      <property name="scaledContents">
-       <bool>false</bool>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelLinkRepositorio">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>100</y>
-        <width>800</width>
-        <height>50</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>13</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">padding: 10px;</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="scaledContents">
-       <bool>false</bool>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
       </property>
      </widget>
     </widget>
