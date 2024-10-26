@@ -818,15 +818,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         elif 0.05 < desnivel <= 0.1:
             notaDesnivel = 0
         elif 0.1 < desnivel <= 0.2:
-            notaDesnivel = -1
+            notaDesnivel = -0.2
         elif 0.2 < desnivel <= 0.3:
-            notaDesnivel = -2
+            notaDesnivel = -0.4
         elif 0.3 < desnivel <= 0.4:
-            notaDesnivel = -3
+            notaDesnivel = -0.6
         elif 0.4 < desnivel <= 0.5:
-            notaDesnivel = -4
+            notaDesnivel = -0.8
         elif desnivel > 0.5:
-            notaDesnivel = -5
+            notaDesnivel = -1
         nota = (notaDistancia+notaDesnivel)/2
         if 0.8 < nota <= 1:
             arrayDataFramesComparacao[numeroAba].loc[contador]=[linhaPico,picoDaVez,intensidadePicoAmostra,distancia,desnivel,'Sim','Muito boa','Não','Não',nota]
